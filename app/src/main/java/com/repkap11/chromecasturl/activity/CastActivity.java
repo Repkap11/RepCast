@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl;
+package com.repkap11.chromecasturl.activity;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -22,11 +22,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.repkap11.chromecasturl.R;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class CastActivity extends AppCompatActivity {
+    private static final String TAG = CastActivity.class.getSimpleName();
     private static final String APPLICATION_ID = "CB2D44C5";
     private MediaRouteSelector mMediaRouteSelector;
     private CastDevice mSelectedDevice;
