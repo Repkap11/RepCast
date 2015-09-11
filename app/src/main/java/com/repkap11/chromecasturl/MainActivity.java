@@ -14,10 +14,16 @@ import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.Cast;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.CastMediaControlIntent;
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaStatus;
+import com.google.android.gms.cast.RemoteMediaPlayer;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ConnectionCallbacks mConnectionCallbacks;
     private ConnectionFailedListener mConnectionFailedListener;
     private Cast.Listener mCastClientListener;
+    private RemoteMediaPlayer mRemoteMediaPlayer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -153,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                                         String applicationStatus = result.getApplicationStatus();
                                         boolean wasLaunched = result.getWasLaunched();
                                         Log.e(TAG, "SessionID:" + sessionId + " applicationStatus:" + applicationStatus + " wasLauncher:" + wasLaunched);
+                                        startCasting();
                                     } else {
                                         teardown();
                                     }
@@ -170,8 +178,97 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void startCasting() {
+        mRemoteMediaPlayer = new RemoteMediaPlayer();
+        mRemoteMediaPlayer.setOnStatusUpdatedListener(
+                new RemoteMediaPlayer.OnStatusUpdatedListener() {
+                    @Override
+                    public void onStatusUpdated() {
+                        MediaStatus mediaStatus = mRemoteMediaPlayer.getMediaStatus();
+                        if (mediaStatus != null) {
+                            boolean isPlaying = mediaStatus.getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING;
+                            Log.e(TAG,"Is playing");
+                        }
+                    }
+                }
+
+        );
+
+        mRemoteMediaPlayer.setOnMetadataUpdatedListener(
+                new RemoteMediaPlayer.OnMetadataUpdatedListener()
+
+                {
+                    @Override
+                    public void onMetadataUpdated() {
+                        MediaInfo mediaInfo = mRemoteMediaPlayer.getMediaInfo();
+                        MediaMetadata metadata = mediaInfo.getMetadata();
+                        //TODO
+                    }
+                }
+
+        );
+        try
+
+        {
+            Cast.CastApi.setMessageReceivedCallbacks(mApiClient, mRemoteMediaPlayer.getNamespace(), mRemoteMediaPlayer);
+        } catch (
+                IOException e
+                )
+
+        {
+            Log.e(TAG, "Exception while creating media channel", e);
+        }
+
+        mRemoteMediaPlayer.requestStatus(mApiClient).
+
+                setResultCallback(new ResultCallback<RemoteMediaPlayer.MediaChannelResult>() {
+                                      @Override
+                                      public void onResult(RemoteMediaPlayer.MediaChannelResult result) {
+                                          if (!result.getStatus().isSuccess()) {
+                                              Log.e(TAG, "Failed to request status.");
+                                          }
+                                      }
+                                  }
+
+                );
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, "My video");
+        MediaInfo mediaInfo = new MediaInfo.Builder(
+                "http://repkam09.agrius.feralhosting.com/files/Cops.S27E18.HDTV.x264-W4F.mp4")
+                .setContentType("video/mp4")
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setMetadata(mediaMetadata)
+                .build();
+        try
+
+        {
+            mRemoteMediaPlayer.load(mApiClient, mediaInfo, true)
+                    .setResultCallback(new ResultCallback<RemoteMediaPlayer.MediaChannelResult>() {
+                        @Override
+                        public void onResult(RemoteMediaPlayer.MediaChannelResult result) {
+                            if (result.getStatus().isSuccess()) {
+                                Log.d(TAG, "Media loaded successfully");
+                            }
+                        }
+                    });
+        } catch (
+                IllegalStateException e
+                )
+
+        {
+            Log.e(TAG, "Problem occurred with media during loading", e);
+        } catch (
+                Exception e
+                )
+
+        {
+            Log.e(TAG, "Problem opening media during loading", e);
+        }
+
+    }
+
     private void reconnectChannels() {
-        Log.e(TAG, "Reconnect Chanels called");
+        Log.e(TAG, "Reconnect Channels called");
     }
 
 }
