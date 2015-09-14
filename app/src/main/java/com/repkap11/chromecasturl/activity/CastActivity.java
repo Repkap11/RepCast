@@ -26,7 +26,7 @@ import com.repkap11.chromecasturl.R;
 
 import java.io.IOException;
 
-public class CastActivity extends AppCompatActivity {
+public abstract class CastActivity extends AppCompatActivity {
     private static final String TAG = CastActivity.class.getSimpleName();
     private static final String APPLICATION_ID = "CB2D44C5";
     private MediaRouteSelector mMediaRouteSelector;
@@ -202,8 +202,10 @@ public class CastActivity extends AppCompatActivity {
                     @Override
                     public void onMetadataUpdated() {
                         MediaInfo mediaInfo = mRemoteMediaPlayer.getMediaInfo();
-                        MediaMetadata metadata = mediaInfo.getMetadata();
-                        //TODO
+                        if (mediaInfo != null) {
+                            MediaMetadata metadata = mediaInfo.getMetadata();
+                            //TODO
+                        }
                     }
                 }
 
@@ -233,9 +235,13 @@ public class CastActivity extends AppCompatActivity {
 
                 );
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE, "My video");
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE,
+
+                getVideoTitle()
+
+        );
         MediaInfo mediaInfo = new MediaInfo.Builder(
-                "http://repkam09.agrius.feralhosting.com/files/Cops.S27E18.HDTV.x264-W4F.mp4")
+                getCastURL())
                 .setContentType("video/mp4")
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(mediaMetadata)
@@ -267,6 +273,10 @@ public class CastActivity extends AppCompatActivity {
         }
 
     }
+
+    protected abstract String getCastURL();
+
+    protected abstract String getVideoTitle();
 
     private void reconnectChannels() {
         Log.e(TAG, "Reconnect Channels called");

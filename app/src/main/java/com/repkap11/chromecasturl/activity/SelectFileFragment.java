@@ -17,6 +17,7 @@ public class SelectFileFragment extends Fragment {
     private static final String TAG = SelectFileFragment.class.getSimpleName();
     private FileListAdapter mAdapter;
     private AbsListView mListView;
+    private String mDirectoryName;
 
     public SelectFileFragment() {
         Log.e(TAG, "Fragment Created");
@@ -35,9 +36,14 @@ public class SelectFileFragment extends Fragment {
     }
 
     public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
+        mDirectoryName = dir.name;
         mAdapter = new FileListAdapter(dir.path64);
 
 
 
+    }
+
+    public String getDirectoryName() {
+        return mDirectoryName;
     }
 }

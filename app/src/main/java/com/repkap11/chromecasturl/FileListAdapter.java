@@ -35,6 +35,9 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public int getCount() {
+        if (mFileList == null){
+            return 0;
+        }
         return mFileList.result.size();
     }
 
@@ -68,7 +71,6 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             convertView = LayoutInflater.from(mActivity).inflate(layout, parent, false);
             holder = new Holder();
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_name);
-            holder.mType = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_type);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selectfile_list_element_icon);
             convertView.setOnClickListener(this);
             convertView.setTag(holder);
@@ -76,7 +78,6 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             holder = (Holder) convertView.getTag();
         }
         holder.mName.setText(result.name);
-        holder.mType.setText(result.type);
         holder.mIndex = position;
         int iconResource;
         if (itemID == TYPE_DIR) {
@@ -109,7 +110,6 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     public class Holder {
         public TextView mName;
-        public TextView mType;
         public ImageView mIcon;
         public int mIndex;
     }

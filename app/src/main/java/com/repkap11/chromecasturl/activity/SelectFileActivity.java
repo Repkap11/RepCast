@@ -1,6 +1,8 @@
 package com.repkap11.chromecasturl.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,7 +13,7 @@ import com.repkap11.chromecasturl.model.JsonDirectory;
 /**
  * Created by paul on 9/10/15.
  */
-public class SelectFileActivity extends AppCompatActivity {
+public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
     private static final String TAG = SelectFileActivity.class.getSimpleName();
 
     @Override
@@ -24,13 +26,13 @@ public class SelectFileActivity extends AppCompatActivity {
             Log.e(TAG, "Adapter null");
             JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
             dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
-            dir.name = "Root";
-            dir.path = "";
-            dir.path64 = "Root";
+            dir.name = "Seedbox";
+            dir.path = "IDGAF";
             dir.path64 = "";
             dir.isRoot = true;
             showListUsingDirectory(dir);
         }
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
     public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
@@ -57,5 +59,17 @@ public class SelectFileActivity extends AppCompatActivity {
 
     public void showFile(JsonDirectory.JsonFileDir dir) {
         Log.e(TAG, "Starting file:" + dir.name);
+        Intent intent = new Intent();
+        intent.setClass(this,MainActivity.class);
+        intent.putExtra(MainActivity.CAST_DATA, dir);
+        Log.e(TAG,"About to cast:"+dir.path);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        SelectFileFragment fragment = (SelectFileFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_selectfile_list_holder);
+        String name = fragment.getDirectoryName();
+        getSupportActionBar().setTitle(name);
     }
 }
