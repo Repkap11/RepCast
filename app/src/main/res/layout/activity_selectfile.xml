@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_select_file_fragment_holder"
-    android:name="com.repkap11.chromecasturl.activity.SelectFileFragment"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:layout="@layout/fragment_selectfile">
+    android:id="@+id/fragment_selectfile_list_holder"
+    android:layout_height="match_parent" />
 
-</fragment>

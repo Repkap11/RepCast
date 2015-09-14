@@ -16,5 +16,6 @@ public class JsonDirectory {
         public String type;
         public String path64;
         public String path;
+        public boolean isRoot = false;
     }
 }
