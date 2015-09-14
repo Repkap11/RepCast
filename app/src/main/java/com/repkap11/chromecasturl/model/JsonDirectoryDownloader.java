@@ -8,8 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repkap11.chromecasturl.FileListAdapter;
 
 import java.lang.ref.WeakReference;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -27,11 +25,6 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
     protected JsonDirectory doInBackground(String... params) {
         String url = params[0];
         try {
-            Authenticator.setDefault(new Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("myuser", "mypass".toCharArray());
-                }
-            });
             URLConnection c = new URL(url).openConnection();
             String username = "guest";
             String password = "guest";

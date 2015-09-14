@@ -49,10 +49,12 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
         Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            //It should do this by default...
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            //This manages the back stack by itself.
             super.onBackPressed();
         }
     }
@@ -69,7 +71,9 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
     @Override
     public void onBackStackChanged() {
         SelectFileFragment fragment = (SelectFileFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_selectfile_list_holder);
-        String name = fragment.getDirectoryName();
-        getSupportActionBar().setTitle(name);
+        if (fragment != null) {
+            String name = fragment.getDirectoryName();
+            getSupportActionBar().setTitle(name);
+        }
     }
 }

@@ -26,9 +26,7 @@ public class MainActivity extends CastActivity {
 
     @Override
     protected String getCastURL() {
-
-        //String path = URLEncoder.encode(mCastData.path, "UTF-8");
-        String path = Uri.encode(mCastData.path);
+        String path = Uri.encode(mCastData.path,"//");
         String castPath = "http://repkam09.agrius.feralhosting.com/files/" + path;
         Log.e(TAG, "Casting:" + castPath);
         return castPath;
