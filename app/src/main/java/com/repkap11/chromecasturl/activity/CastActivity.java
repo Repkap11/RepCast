@@ -242,7 +242,7 @@ public abstract class CastActivity extends AppCompatActivity {
         );
         MediaInfo mediaInfo = new MediaInfo.Builder(
                 getCastURL())
-                .setContentType("video/mp4")
+                .setContentType(getCastMeme())
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(mediaMetadata)
                 .build();
@@ -273,6 +273,8 @@ public abstract class CastActivity extends AppCompatActivity {
         }
 
     }
+
+    protected abstract String getCastMeme();
 
     protected abstract String getCastURL();
 

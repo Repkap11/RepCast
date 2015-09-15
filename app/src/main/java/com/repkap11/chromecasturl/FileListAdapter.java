@@ -46,12 +46,20 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         return mFileList.result.get(position);
     }
 
-    private static final long TYPE_DIR = 0;
-    private static final long TYPE_FILE = 1;
+    private static final long ICON_DIR = 0;
+    private static final long ICON_VIDEO = 1;
+    private static final long ICON_MPEG = 2;
 
     @Override
     public long getItemId(int position) {
-        return mFileList.result.get(position).type.equals(JsonDirectory.JsonFileDir.TYPE_DIR) ? TYPE_DIR : TYPE_FILE;
+        if (mFileList.result.get(position).type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
+            return ICON_DIR;
+        } else if (mFileList.result.get(position).memeType.equals(JsonDirectory.JsonFileDir.MIME_MP4)) {
+            return ICON_VIDEO;
+        } else if (mFileList.result.get(position).memeType.equals(JsonDirectory.JsonFileDir.MIME_MPEG)) {
+            return ICON_MPEG;
+        }
+        return -1;
     }
 
     @Override
@@ -61,9 +69,11 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         JsonDirectory.JsonFileDir result = mFileList.result.get(position);
         if (convertView == null) {
             int layout;
-            if (itemID == TYPE_DIR) {
+            if (itemID == ICON_DIR) {
                 layout = R.layout.fragment_selectfile_list_element;
-            } else if (itemID == TYPE_FILE) {
+            } else if (itemID == ICON_VIDEO) {
+                layout = R.layout.fragment_selectfile_list_element;
+            } else if (itemID == ICON_MPEG) {
                 layout = R.layout.fragment_selectfile_list_element;
             } else {
                 throw new RuntimeException("Wrong ID");
@@ -80,10 +90,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         holder.mName.setText(result.name);
         holder.mIndex = position;
         int iconResource;
-        if (itemID == TYPE_DIR) {
+        if (itemID == ICON_DIR) {
             iconResource = R.drawable.folder;
-        } else if (itemID == TYPE_FILE) {
+        } else if (itemID == ICON_VIDEO) {
             iconResource = R.drawable.mp4;
+        } else if (itemID == ICON_MPEG) {
+            iconResource = R.drawable.mpeg;
         } else {
             throw new RuntimeException("Wrong ID");
         }

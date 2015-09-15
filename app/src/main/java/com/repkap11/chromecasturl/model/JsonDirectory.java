@@ -25,10 +25,13 @@ public class JsonDirectory {
         };
         public static final String TYPE_FILE = "file";
         public static final String TYPE_DIR = "dir";
+        public static final String MIME_MP4 = "video/mp4";
+        public static final String MIME_MPEG = "audio/mpeg";
         public String name;
         public String type;
         public String path64;
         public String path;
+        public String memeType = null;
         public boolean isRoot = false;
 
         public JsonFileDir() {
@@ -41,6 +44,7 @@ public class JsonDirectory {
                 path64 = in.readString();
                 path = in.readString();
                 isRoot = in.readByte() != 0;
+                memeType = in.readString();
             }
         }
 
@@ -56,6 +60,7 @@ public class JsonDirectory {
             dest.writeString(path64);
             dest.writeString(path);
             dest.writeByte((byte) (isRoot ? 1 : 0));
+            dest.writeString(memeType);
         }
     }
 }

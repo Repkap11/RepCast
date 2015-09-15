@@ -25,6 +25,11 @@ public class MainActivity extends CastActivity {
     }
 
     @Override
+    protected String getCastMeme() {
+        return mCastData.memeType;
+    }
+
+    @Override
     protected String getCastURL() {
         String path = Uri.encode(mCastData.path,"//");
         String castPath = "http://repkam09.agrius.feralhosting.com/files/" + path;
