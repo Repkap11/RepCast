@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl.model;
+package com.repkap11.repcast.model;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -7,7 +7,7 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.repkap11.chromecasturl.FileListAdapter;
+import com.repkap11.repcast.FileListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -21,7 +21,7 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
     private final WeakReference<FileListAdapter> mAdapterReference;
 
     public JsonDirectoryDownloader(FileListAdapter adapter) {
-        mAdapterReference = new WeakReference<FileListAdapter>(adapter);
+        mAdapterReference = new WeakReference<>(adapter);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
             for (JsonDirectory.JsonFileDir dir : fileList.result) {
                 if (!dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
                     dir.memeType = getMimeType(dir.path);
-                    Log.e(TAG,"Name:"+dir.name+" Type:"+dir.memeType);
+                    //Log.e(TAG,"Name:"+dir.name+" Type:"+dir.memeType);
                 }
             }
             return fileList;

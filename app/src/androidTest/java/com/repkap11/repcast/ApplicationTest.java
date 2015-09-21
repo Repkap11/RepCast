@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl;
+package com.repkap11.repcast;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

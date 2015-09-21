@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl.model;
+package com.repkap11.repcast.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

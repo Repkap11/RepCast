@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl.activity;
+package com.repkap11.repcast.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.repkap11.chromecasturl.R;
-import com.repkap11.chromecasturl.model.JsonDirectory;
+import com.repkap11.repcast.R;
+import com.repkap11.repcast.model.JsonDirectory;
 
 /**
  * Created by paul on 9/10/15.

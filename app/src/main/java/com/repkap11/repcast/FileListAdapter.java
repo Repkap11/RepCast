@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl;
+package com.repkap11.repcast;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.repkap11.chromecasturl.activity.SelectFileActivity;
-import com.repkap11.chromecasturl.model.JsonDirectory;
-import com.repkap11.chromecasturl.model.JsonDirectoryDownloader;
+import com.repkap11.repcast.activity.SelectFileActivity;
+import com.repkap11.repcast.model.JsonDirectory;
+import com.repkap11.repcast.model.JsonDirectoryDownloader;
 
 /**
  * Created by paul on 9/10/15.

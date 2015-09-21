@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl.activity;
+package com.repkap11.repcast.activity;
 
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -22,7 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.repkap11.chromecasturl.R;
+import com.repkap11.repcast.R;
 
 import java.io.IOException;
 

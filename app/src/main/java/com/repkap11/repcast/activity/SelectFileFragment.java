@@ -1,4 +1,4 @@
-package com.repkap11.chromecasturl.activity;
+package com.repkap11.repcast.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
-import com.repkap11.chromecasturl.FileListAdapter;
-import com.repkap11.chromecasturl.R;
-import com.repkap11.chromecasturl.model.JsonDirectory;
+import com.repkap11.repcast.FileListAdapter;
+import com.repkap11.repcast.R;
+import com.repkap11.repcast.model.JsonDirectory;
 
 public class SelectFileFragment extends Fragment {
 
