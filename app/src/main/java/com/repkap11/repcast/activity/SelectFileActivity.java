@@ -24,7 +24,7 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         super.onCreate(savedInstanceState);
         Log.e(TAG, "Activity Created");
         setContentView(R.layout.activity_selectfile);
-        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_selectfile_list_holder);
+        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
         if (frag == null) {
             Log.e(TAG, "Adapter null");
             JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
@@ -45,7 +45,7 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         if (!dir.isRoot) {
             transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         }
-        transaction.replace(R.id.fragment_selectfile_list_holder, newFragment);
+        transaction.replace(R.id.activity_seleft_file_fragment_holder, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -66,14 +66,14 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         Log.e(TAG, "Starting file:" + dir.name);
         Intent intent = new Intent();
         intent.setClass(this,MainActivity.class);
-        intent.putExtra(MainActivity.CAST_DATA, dir);
+        intent.putExtra(MainFragment.CAST_DATA, dir);
         Log.e(TAG,"About to cast:"+dir.path);
         startActivity(intent);
     }
 
     @Override
     public void onBackStackChanged() {
-        SelectFileFragment fragment = (SelectFileFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_selectfile_list_holder);
+        SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
         if (fragment != null) {
             String name = fragment.getDirectoryName();
             getSupportActionBar().setTitle(name);

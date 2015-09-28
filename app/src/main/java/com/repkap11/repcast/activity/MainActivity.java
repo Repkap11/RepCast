@@ -1,44 +1,53 @@
 package com.repkap11.repcast.activity;
 
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.model.JsonDirectory;
 
 /**
  * Created by paul on 9/10/15.
  */
-public class MainActivity extends CastActivity {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String CAST_DATA = MainActivity.class.getName() + ".CAST_DATA";
-    private JsonDirectory.JsonFileDir mCastData;
+    private MainFragment mContentFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "Main Activity Created");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mCastData = getIntent().getParcelableExtra(CAST_DATA);
-        Log.e(TAG, "Got cast data:" + mCastData);
+        mContentFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.activity_main_fragment_holder);
+        if (mContentFragment == null) {
+            Log.e(TAG, "Adapter null");
+            mContentFragment = new MainFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.activity_main_fragment_holder, mContentFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        } else {
+            Log.e(TAG, "Fragmemt reused");
+        }
+        mContentFragment.initilize(getIntent());
     }
 
     @Override
-    protected String getCastMeme() {
-        return mCastData.memeType;
+    protected void onStart() {
+        super.onStart();
+        mContentFragment.notifyOnStart();
     }
 
     @Override
-    protected String getCastURL() {
-        String path = Uri.encode(mCastData.path,"//");
-        String castPath = "http://repkam09.agrius.feralhosting.com/files/" + path;
-        Log.e(TAG, "Casting:" + castPath);
-        return castPath;
+    protected void onStop() {
+        mContentFragment.notifyOnStop();
+        super.onStop();
     }
 
     @Override
-    protected String getVideoTitle() {
-        return mCastData.name;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return mContentFragment.notifyOnCreateOptionsMenu(menu);
     }
 }

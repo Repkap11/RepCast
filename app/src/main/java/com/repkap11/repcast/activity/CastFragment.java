@@ -1,8 +1,8 @@
 package com.repkap11.repcast.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteActionProvider;
 import android.support.v7.media.MediaRouteSelector;
 import android.support.v7.media.MediaRouter;
@@ -26,9 +26,9 @@ import com.repkap11.repcast.R;
 
 import java.io.IOException;
 
-public abstract class CastActivity extends AppCompatActivity {
-    private static final String TAG = CastActivity.class.getSimpleName();
-    private static final String APPLICATION_ID = "CB2D44C5";
+public abstract class CastFragment extends Fragment {
+    private static final String TAG = CastFragment.class.getSimpleName();
+
     private MediaRouteSelector mMediaRouteSelector;
     private CastDevice mSelectedDevice;
     private MediaRouter mMediaRouter;
@@ -43,37 +43,33 @@ public abstract class CastActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMediaRouter = MediaRouter.getInstance(getApplicationContext());
+        mMediaRouter = MediaRouter.getInstance(getActivity().getApplicationContext());
         mMediaRouterCallback = new MyMediaRouterCallback();
         mMediaRouteSelector = new MediaRouteSelector.Builder()
-                .addControlCategory(CastMediaControlIntent.categoryForCast(APPLICATION_ID))
+                .addControlCategory(CastMediaControlIntent.categoryForCast(MainFragment.APPLICATION_ID))
                 .build();
 
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.select_file, menu);
+    public boolean notifyOnCreateOptionsMenu(Menu menu) {
+        getActivity().getMenuInflater().inflate(R.menu.cast, menu);
         MenuItem mediaRouteMenuItem = menu.findItem(R.id.media_route_menu_item);
         MediaRouteActionProvider mediaRouteActionProvider = (MediaRouteActionProvider) MenuItemCompat.getActionProvider(mediaRouteMenuItem);
         mediaRouteActionProvider.setRouteSelector(mMediaRouteSelector);
         return true;
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+
+    public void notifyOnStart() {
         mMediaRouter.addCallback(mMediaRouteSelector, mMediaRouterCallback,
                 MediaRouter.CALLBACK_FLAG_REQUEST_DISCOVERY);
     }
 
-    @Override
-    protected void onStop() {
+    public void notifyOnStop() {
         mMediaRouter.removeCallback(mMediaRouterCallback);
-        super.onStop();
     }
+
 
     private void connectWithGoogleAPI() {
         mCastClientListener = new Cast.Listener() {
@@ -103,7 +99,7 @@ public abstract class CastActivity extends AppCompatActivity {
 
         mConnectionCallbacks = new ConnectionCallbacks();
         mConnectionFailedListener = new ConnectionFailedListener();
-        mApiClient = new GoogleApiClient.Builder(this)
+        mApiClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
                 .addApi(Cast.API, apiOptionsBuilder.build())
                 .addConnectionCallbacks(mConnectionCallbacks)
                 .addOnConnectionFailedListener(mConnectionFailedListener)
@@ -149,7 +145,7 @@ public abstract class CastActivity extends AppCompatActivity {
                 reconnectChannels();
             } else {
                 try {
-                    Cast.CastApi.launchApplication(mApiClient, APPLICATION_ID, false).setResultCallback(
+                    Cast.CastApi.launchApplication(mApiClient, MainFragment.APPLICATION_ID, false).setResultCallback(
                             new ResultCallback<Cast.ApplicationConnectionResult>() {
                                 @Override
                                 public void onResult(Cast.ApplicationConnectionResult result) {
@@ -178,6 +174,20 @@ public abstract class CastActivity extends AppCompatActivity {
         }
     }
 
+    protected void pauseMediaPlayer() {
+        if (mRemoteMediaPlayer != null && mApiClient != null) {
+            Log.e(TAG, "Doing pause");
+            mRemoteMediaPlayer.pause(mApiClient);
+        }
+    }
+
+    protected void resumeMediaPlayer() {
+        if (mRemoteMediaPlayer != null && mApiClient != null) {
+            Log.e(TAG, "Doing resume");
+            mRemoteMediaPlayer.play(mApiClient);
+        }
+    }
+
     private void startCasting() {
         mRemoteMediaPlayer = new RemoteMediaPlayer();
         mRemoteMediaPlayer.setOnStatusUpdatedListener(
@@ -186,12 +196,12 @@ public abstract class CastActivity extends AppCompatActivity {
                     public void onStatusUpdated() {
                         MediaStatus mediaStatus = mRemoteMediaPlayer.getMediaStatus();
                         if (mediaStatus != null) {
+                            onPlayerStatusChanged(mediaStatus.getPlayerState());
                             boolean isPlaying = mediaStatus.getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING;
                             Log.e(TAG,"Is playing");
                         }
                     }
                 }
-
         );
 
         mRemoteMediaPlayer.setOnMetadataUpdatedListener(
@@ -209,20 +219,14 @@ public abstract class CastActivity extends AppCompatActivity {
                 }
 
         );
-        try
-
-        {
+        try {
             Cast.CastApi.setMessageReceivedCallbacks(mApiClient, mRemoteMediaPlayer.getNamespace(), mRemoteMediaPlayer);
-        } catch (
-                IOException e
-                )
-
+        } catch (IOException e)
         {
             Log.e(TAG, "Exception while creating media channel", e);
         }
 
         mRemoteMediaPlayer.requestStatus(mApiClient).
-
                 setResultCallback(new ResultCallback<RemoteMediaPlayer.MediaChannelResult>() {
                                       @Override
                                       public void onResult(RemoteMediaPlayer.MediaChannelResult result) {
@@ -234,44 +238,34 @@ public abstract class CastActivity extends AppCompatActivity {
 
                 );
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE,
-
-                getVideoTitle()
-
-        );
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, getVideoTitle());
         MediaInfo mediaInfo = new MediaInfo.Builder(
                 getCastURL())
                 .setContentType(getCastMeme())
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(mediaMetadata)
                 .build();
-        try
-
-        {
+        try {
             mRemoteMediaPlayer.load(mApiClient, mediaInfo, true)
                     .setResultCallback(new ResultCallback<RemoteMediaPlayer.MediaChannelResult>() {
                         @Override
                         public void onResult(RemoteMediaPlayer.MediaChannelResult result) {
                             if (result.getStatus().isSuccess()) {
                                 Log.d(TAG, "Media loaded successfully");
-                            }
+                        }
                         }
                     });
-        } catch (
-                IllegalStateException e
-                )
-
+        } catch (IllegalStateException e)
         {
             Log.e(TAG, "Problem occurred with media during loading", e);
-        } catch (
-                Exception e
-                )
-
+        } catch (Exception e)
         {
             Log.e(TAG, "Problem opening media during loading", e);
         }
 
     }
+
+    protected abstract void onPlayerStatusChanged(int playerState);
 
     protected abstract String getCastMeme();
 
