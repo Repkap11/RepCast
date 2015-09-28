@@ -69,6 +69,8 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
                 mContext.startActivity(intent);
             } else {
                 Log.e(TAG,"Not installing because apk is older or the same");
+                return "No update avaliable from Repkam09.com";
+
             }
 
 

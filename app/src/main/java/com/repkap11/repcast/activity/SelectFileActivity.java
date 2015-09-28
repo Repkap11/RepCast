@@ -6,8 +6,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.repkap11.repcast.R;
+import com.repkap11.repcast.UpdateAppTask;
 import com.repkap11.repcast.model.JsonDirectory;
 
 /**
@@ -75,5 +78,21 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
             String name = fragment.getDirectoryName();
             getSupportActionBar().setTitle(name);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.select_file, menu);
+        MenuItem updateApplicationMenuItem = menu.findItem(R.id.update_app_menu_button);
+        updateApplicationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                UpdateAppTask task = new UpdateAppTask(getApplicationContext());
+                task.execute();
+                return true;
+            }
+        });
+        return true;
     }
 }

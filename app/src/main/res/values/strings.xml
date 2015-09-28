@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RepCast</string>
     <string name="media_route_menu_title">Paul Test Cast String</string>
+    <string name="update_application">Update App from Repkam09.com</string>
 </resources>
