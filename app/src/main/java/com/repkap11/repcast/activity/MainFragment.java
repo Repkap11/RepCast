@@ -40,6 +40,11 @@ public class MainFragment extends CastFragment {
         setRetainInstance(true);
     }
 
+    @Override
+    protected void onSeekStateChanged(long position) {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

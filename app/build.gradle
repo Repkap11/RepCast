@@ -17,6 +17,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    signingConfigs {
+        release {
+            storeFile file("RuneTrackKeyStore")
+            storePassword file('RuneTrackKeyStorePassword').text.trim()
+            keyAlias "Repkap11"
+            keyPassword file('RuneTrackKeyStorePassword').text.trim()
+        }
+        debug {
+            storeFile file("RuneTrackKeyStore")
+            storePassword file('RuneTrackKeyStorePassword').text.trim()
+            keyAlias "Repkap11"
+            keyPassword file('RuneTrackKeyStorePassword').text.trim()
+        }
+    }
     packagingOptions {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/LICENSE'

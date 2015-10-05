@@ -188,55 +188,63 @@ public abstract class CastFragment extends Fragment {
         }
     }
 
+    protected long getSeekMax() {
+        if (mRemoteMediaPlayer != null && mApiClient != null) {
+            return mRemoteMediaPlayer.getStreamDuration();
+        }
+        return 0;
+    }
+
+    protected abstract void onSeekStateChanged(long position);
+
+    protected void seekMediaPlayer(long position) {
+        if (mRemoteMediaPlayer != null && mApiClient != null) {
+            mRemoteMediaPlayer.seek(mApiClient, position);
+        }
+    }
+
+
     private void startCasting() {
         mRemoteMediaPlayer = new RemoteMediaPlayer();
-        mRemoteMediaPlayer.setOnStatusUpdatedListener(
-                new RemoteMediaPlayer.OnStatusUpdatedListener() {
-                    @Override
-                    public void onStatusUpdated() {
-                        MediaStatus mediaStatus = mRemoteMediaPlayer.getMediaStatus();
-                        if (mediaStatus != null) {
-                            onPlayerStatusChanged(mediaStatus.getPlayerState());
-                            boolean isPlaying = mediaStatus.getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING;
-                            Log.e(TAG,"Is playing");
-                        }
-                    }
+        mRemoteMediaPlayer.setOnStatusUpdatedListener(new RemoteMediaPlayer.OnStatusUpdatedListener() {
+            @Override
+            public void onStatusUpdated() {
+                MediaStatus mediaStatus = mRemoteMediaPlayer.getMediaStatus();
+                if (mediaStatus != null) {
+                    onPlayerStatusChanged(mediaStatus.getPlayerState());
+                    boolean isPlaying = mediaStatus.getPlayerState() == MediaStatus.PLAYER_STATE_PLAYING;
+                    Log.e(TAG, "Is playing");
                 }
-        );
-
-        mRemoteMediaPlayer.setOnMetadataUpdatedListener(
-                new RemoteMediaPlayer.OnMetadataUpdatedListener()
-
-                {
-                    @Override
-                    public void onMetadataUpdated() {
-                        MediaInfo mediaInfo = mRemoteMediaPlayer.getMediaInfo();
-                        if (mediaInfo != null) {
-                            MediaMetadata metadata = mediaInfo.getMetadata();
-                            //TODO
-                        }
-                    }
+            }
+        });
+        mRemoteMediaPlayer.setOnMetadataUpdatedListener(new RemoteMediaPlayer.OnMetadataUpdatedListener() {
+            @Override
+            public void onMetadataUpdated() {
+                MediaInfo mediaInfo = mRemoteMediaPlayer.getMediaInfo();
+                if (mediaInfo != null) {
+                    MediaMetadata metadata = mediaInfo.getMetadata();
+                    Log.e(TAG, "Got cast metadata");
+                    //TODO
                 }
-
-        );
+            }
+        });
         try {
             Cast.CastApi.setMessageReceivedCallbacks(mApiClient, mRemoteMediaPlayer.getNamespace(), mRemoteMediaPlayer);
         } catch (IOException e)
         {
             Log.e(TAG, "Exception while creating media channel", e);
         }
+        mRemoteMediaPlayer.requestStatus(mApiClient).setResultCallback(
+                new ResultCallback<RemoteMediaPlayer.MediaChannelResult>() {
+                    @Override
+                    public void onResult(RemoteMediaPlayer.MediaChannelResult result) {
+                        if (!result.getStatus().isSuccess()) {
+                            Log.e(TAG, "Failed to request status.");
+                        }
+                    }
+                }
 
-        mRemoteMediaPlayer.requestStatus(mApiClient).
-                setResultCallback(new ResultCallback<RemoteMediaPlayer.MediaChannelResult>() {
-                                      @Override
-                                      public void onResult(RemoteMediaPlayer.MediaChannelResult result) {
-                                          if (!result.getStatus().isSuccess()) {
-                                              Log.e(TAG, "Failed to request status.");
-                                          }
-                                      }
-                                  }
-
-                );
+        );
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, getVideoTitle());
         MediaInfo mediaInfo = new MediaInfo.Builder(
