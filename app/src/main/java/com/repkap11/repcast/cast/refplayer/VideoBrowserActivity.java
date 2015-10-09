@@ -22,6 +22,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
@@ -40,11 +42,14 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.repkap11.repcast.R;
+import com.repkap11.repcast.cast.refplayer.browser.SelectFileFragment;
+import com.repkap11.repcast.cast.refplayer.mediaplayer.LocalPlayerActivity;
 import com.repkap11.repcast.cast.refplayer.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.cast.refplayer.settings.CastPreference;
 import com.repkap11.repcast.cast.refplayer.utils.Utils;
+import com.repkap11.repcast.model.JsonDirectory;
 
-public class VideoBrowserActivity extends AppCompatActivity {
+public class VideoBrowserActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
     private static final String TAG = "VideoBrowserActivity";
     private VideoCastManager mCastManager;
@@ -62,11 +67,26 @@ public class VideoBrowserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VideoCastManager.checkGooglePlayServices(this);
-        setContentView(R.layout.video_browser);
+
+        Log.e(TAG, "Activity Created");
+        setContentView(R.layout.activity_selectfile);
+        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
+        if (frag == null) {
+            Log.e(TAG, "Adapter null");
+            JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
+            dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
+            dir.name = "Seedbox";
+            dir.path = "IDGAF";
+            dir.path64 = "";
+            dir.isRoot = true;
+            showListUsingDirectory(dir);
+        }
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+
+
 
         mCastManager = VideoCastManager.getInstance();
         mCastConsumer = new VideoCastConsumerImpl() {
-
             @Override
             public void onFailed(int resourceId, int statusCode) {
                 String reason = "Not Available";
@@ -75,13 +95,11 @@ public class VideoBrowserActivity extends AppCompatActivity {
                 }
                 Log.e(TAG, "Action failed, reason:  " + reason + ", status code: " + statusCode);
             }
-
             @Override
             public void onApplicationConnected(ApplicationMetadata appMetadata, String sessionId,
                                                boolean wasLaunched) {
                 invalidateOptionsMenu();
             }
-
             @Override
             public void onDisconnected() {
                 invalidateOptionsMenu();
@@ -117,7 +135,6 @@ public class VideoBrowserActivity extends AppCompatActivity {
                 }
             }
         };
-
         setupActionBar();
     }
 
@@ -132,10 +149,16 @@ public class VideoBrowserActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.browse, menu);
-
-        mediaRouteMenuItem = mCastManager.
-                addMediaRouterButton(menu, R.id.media_route_menu_item);
-
+        mediaRouteMenuItem = mCastManager.addMediaRouterButton(menu, R.id.media_route_menu_item);
+        MenuItem updateApplicationMenuItem = menu.findItem(R.id.update_app_menu_button);
+        updateApplicationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                UpdateAppTask task = new UpdateAppTask(getApplicationContext());
+                task.execute();
+                return true;
+            }
+        });
         return true;
     }
 
@@ -202,6 +225,54 @@ public class VideoBrowserActivity extends AppCompatActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy is called");
         super.onDestroy();
+    }
+
+    public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
+        SelectFileFragment newFragment = new SelectFileFragment();
+        newFragment.showListUsingDirectory(dir);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (!dir.isRoot) {
+            transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+        }
+        transaction.replace(R.id.activity_seleft_file_fragment_holder, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            //This manages the back stack by itself.
+            super.onBackPressed();
+        }
+    }
+
+    public void showFile(JsonDirectory.JsonFileDir dir) {
+
+        Log.e(TAG, "Starting file:" + dir.name);
+        Intent intent = new Intent();
+        intent.setClass(this, LocalPlayerActivity.class);
+        intent.putExtra("media", dir);
+        intent.putExtra("shouldStart", false);
+        Log.e(TAG, "About to cast:" + dir.path);
+        String transitionName = getString(R.string.transition_image);
+        //VideoListAdapter.ViewHolder viewHolder = (VideoListAdapter.ViewHolder) mRecyclerView.findViewHolderForPosition(position);
+        //Pair<View, String> imagePair = Pair.create((View) viewHolder.getImageView(), transitionName);
+        //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imagePair);
+        startActivity(intent);//, options.toBundle());
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
+        if (fragment != null) {
+            String name = fragment.getDirectoryName();
+            getSupportActionBar().setTitle(name);
+        }
     }
 
 }

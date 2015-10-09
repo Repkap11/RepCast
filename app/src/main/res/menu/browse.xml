@@ -36,4 +36,8 @@
         android:title="@string/action_settings"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/update_app_menu_button"
+        app:showAsAction="never"
+        android:title="@string/update_application" />
+
 </menu>

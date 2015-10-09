@@ -19,7 +19,7 @@
     </uses-feature>
 
     <application
-        android:name="com.repkap11.repcast.cast.refplayer.CastApplication"
+        android:name="com.repkap11.repcast.AutoUpdateApplication"
         android:allowBackup="true"
         android:icon="@mipmap/repcast_icon"
         android:label="@string/app_name"
@@ -30,8 +30,7 @@
 
         <activity
             android:name="com.repkap11.repcast.cast.refplayer.VideoBrowserActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

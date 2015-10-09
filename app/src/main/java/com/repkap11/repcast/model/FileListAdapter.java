@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.browser.SelectFileActivity;
+import com.repkap11.repcast.cast.refplayer.VideoBrowserActivity;
 
 
 /**
@@ -18,7 +18,7 @@ import com.repkap11.repcast.cast.refplayer.browser.SelectFileActivity;
 public class FileListAdapter extends BaseAdapter implements View.OnClickListener {
     private static final String TAG = FileListAdapter.class.getSimpleName();
     private final String mURL;
-    private SelectFileActivity mActivity;
+    private VideoBrowserActivity mActivity;
     private JsonDirectory mFileList;
 
     public FileListAdapter(String path64) {
@@ -28,7 +28,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         downloader.execute(mURL);
     }
 
-    public void updateContext(SelectFileActivity activity) {
+    public void updateContext(VideoBrowserActivity activity) {
         mActivity = activity;
         notifyDataSetChanged();
     }

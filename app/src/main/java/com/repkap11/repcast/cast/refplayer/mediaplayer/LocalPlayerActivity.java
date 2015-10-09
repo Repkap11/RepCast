@@ -55,6 +55,7 @@ import com.androidquery.AQuery;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaTrack;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.repkap11.repcast.R;
@@ -68,6 +69,7 @@ import com.repkap11.repcast.model.JsonDirectory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -129,7 +131,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         if (null != b) {
             JsonDirectory.JsonFileDir dir = getIntent().getParcelableExtra("media");
-            MediaInfo.Builder builder = new MediaInfo.Builder(dir.path);
+            String path = Uri.encode(dir.path, "//");
+            String castPath = "http://repkam09.agrius.feralhosting.com/files/" + path;
+            MediaInfo.Builder builder = new MediaInfo.Builder(castPath);
             builder.setStreamType(MediaInfo.STREAM_TYPE_BUFFERED);
             builder.setContentType("mp4");
             MediaMetadata metadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
@@ -141,14 +145,20 @@ public class LocalPlayerActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to add description to the json object", e);
             }
+            MediaTrack.Builder trackBuilder = new MediaTrack.Builder(1,MediaTrack.TYPE_VIDEO);
 
+
+            //trackBuilder.setContentId(castPath);
+            Log.e(TAG, "Setting path String: " + castPath);
+            //trackBuilder.setName(dir.name);
+            builder.setMediaTracks(Collections.singletonList(trackBuilder.build()));
             builder.setCustomData(jsonObj);
             mSelectedMedia = builder.build();
             setupActionBar();
             boolean shouldStartPlayback = b.getBoolean("shouldStart");
             int startPosition = b.getInt("startPosition", 0);
-            mVideoView.setVideoURI(Uri.parse(dir.path));//TODO get real url
-            Log.d(TAG, "Setting url of the VideoView to: " + dir.path);
+            mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
+            Log.e(TAG, "Setting url of the VideoView to: " + Uri.parse(mSelectedMedia.getContentId()));
             if (shouldStartPlayback) {
                 // this will be the case only if we are coming from the
                 // CastControllerActivity by disconnecting from a device

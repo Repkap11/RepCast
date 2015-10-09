@@ -38,6 +38,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.cast.refplayer.mediaplayer.LocalPlayerActivity;
+import com.repkap11.repcast.cast.refplayer.utils.Utils;
 import com.repkap11.repcast.model.JsonDirectory;
 
 import java.util.List;
@@ -106,7 +107,7 @@ public class VideoBrowserFragment extends Fragment implements VideoListAdapter.I
     public void itemClicked(View view, MediaInfo item, int position) {
         if (view instanceof ImageButton) {
             Log.d(TAG, "menu was clicked");
-            com.repkap11.repcast.cast.refplayer.utils.Utils.showQueuePopup(getActivity(), view, item);
+            Utils.showQueuePopup(getActivity(), view, item);
         } else {
             String transitionName = getString(R.string.transition_image);
             VideoListAdapter.ViewHolder viewHolder = (VideoListAdapter.ViewHolder) mRecyclerView.findViewHolderForPosition(position);
@@ -120,7 +121,7 @@ public class VideoBrowserFragment extends Fragment implements VideoListAdapter.I
             JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
             dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
             dir.name = "Seedbox";
-            dir.path = "IDGAF";
+            dir.path = "Jimmy.Fallon.2015.09.18.Keith.Richards.HDTV.x264-aAF[rarbg]/Jimmy.Fallon.2015.09.18.Keith.Richards.HDTV.x264-aAF.mp4";
             dir.path64 = "";
             dir.isRoot = true;
             intent.putExtra("media",dir);

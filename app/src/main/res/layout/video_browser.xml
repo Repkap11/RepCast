@@ -36,7 +36,7 @@
         android:layout_above="@+id/miniController1"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="-5dp"
-        class="com.repkap11.repcast.cast.refplayer.browser.VideoBrowserFragment" />
+        class="com.repkap11.repcast.cast.refplayer.browser.SelectFileFragment" />
 
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController1"
