@@ -125,6 +125,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         mAquery = new AQuery(this);
         loadViews();
         mCastManager = VideoCastManager.getInstance();
+        mCastManager.setCastControllerImmersive(false);
         setupControlsCallbacks();
         setupCastListener();
         // see what we need to play and were
@@ -133,15 +134,18 @@ public class LocalPlayerActivity extends AppCompatActivity {
             JsonDirectory.JsonFileDir dir = getIntent().getParcelableExtra("media");
             String path = Uri.encode(dir.path, "//");
             String castPath = "http://repkam09.agrius.feralhosting.com/files/" + path;
+
             MediaInfo.Builder builder = new MediaInfo.Builder(castPath);
             builder.setStreamType(MediaInfo.STREAM_TYPE_BUFFERED);
             builder.setContentType("mp4");
             MediaMetadata metadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+            metadata.putString(MediaMetadata.KEY_TITLE, dir.name);
+            //metadata.putString(MediaMetadata.KEY_SUBTITLE, "Sub title Text");
             builder.setMetadata(metadata);
             JSONObject jsonObj = null;
             try {
                 jsonObj = new JSONObject();
-                jsonObj.put(VideoProvider.KEY_DESCRIPTION, "Temp Subtitle Text");
+                jsonObj.put(VideoProvider.KEY_DESCRIPTION, "Description Text");
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to add description to the json object", e);
             }
@@ -150,7 +154,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
 
             //trackBuilder.setContentId(castPath);
             Log.e(TAG, "Setting path String: " + castPath);
-            //trackBuilder.setName(dir.name);
+            trackBuilder.setName(dir.name);
             builder.setMediaTracks(Collections.singletonList(trackBuilder.build()));
             builder.setCustomData(jsonObj);
             mSelectedMedia = builder.build();
@@ -668,19 +672,19 @@ public class LocalPlayerActivity extends AppCompatActivity {
         getSupportActionBar().show();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
             updateMetadata(false);
             mContainer.setBackgroundColor(getResources().getColor(R.color.black));
 
         } else {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-            getWindow().clearFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             }

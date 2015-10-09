@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.VideoBrowserActivity;
 import com.repkap11.repcast.model.FileListAdapter;
 import com.repkap11.repcast.model.JsonDirectory;
 
@@ -32,7 +31,7 @@ public class SelectFileFragment extends Fragment {
         rootView.setKeepScreenOn(true);
         mListView = (AbsListView) rootView.findViewById(R.id.fragment_selectfile_list);
         setRetainInstance(true);
-        mAdapter.updateContext((VideoBrowserActivity) getActivity());
+        mAdapter.updateContext((SelectFileActivity) getActivity());
         mListView.setAdapter(mAdapter);
         return rootView;
     }

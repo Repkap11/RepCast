@@ -41,31 +41,31 @@ import java.util.Map;
 public class VideoProvider {
 
     private static final String TAG = "VideoProvider";
-    private static final String TAG_VIDEOS = "videos";
-    private static final String TAG_HLS = "hls";
-    private static final String TAG_DASH = "dash";
-    private static final String TAG_MP4 = "mp4";
-    private static final String TAG_IMAGES = "images";
-    private static final String TAG_VIDEO_TYPE = "type";
-    private static final String TAG_VIDEO_URL = "url";
-    private static final String TAG_VIDEO_MIME = "mime";
+    public static final String TAG_VIDEOS = "videos";
+    public static final String TAG_HLS = "hls";
+    public static final String TAG_DASH = "dash";
+    public static final String TAG_MP4 = "mp4";
+    public static final String TAG_IMAGES = "images";
+    public static final String TAG_VIDEO_TYPE = "type";
+    public static final String TAG_VIDEO_URL = "url";
+    public static final String TAG_VIDEO_MIME = "mime";
 
-    private static final String TAG_CATEGORIES = "categories";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_STUDIO = "studio";
-    private static final String TAG_SOURCES = "sources";
-    private static final String TAG_SUBTITLE = "subtitle";
-    private static final String TAG_DURATION = "duration";
-    private static final String TAG_TRACKS = "tracks";
-    private static final String TAG_TRACK_ID = "id";
-    private static final String TAG_TRACK_TYPE = "type";
-    private static final String TAG_TRACK_SUBTYPE = "subtype";
-    private static final String TAG_TRACK_CONTENT_ID = "contentId";
-    private static final String TAG_TRACK_NAME = "name";
-    private static final String TAG_TRACK_LANGUAGE = "language";
-    private static final String TAG_THUMB = "image-480x270"; // "thumb";
-    private static final String TAG_IMG_780_1200 = "image-780x1200";
-    private static final String TAG_TITLE = "title";
+    public static final String TAG_CATEGORIES = "categories";
+    public static final String TAG_NAME = "name";
+    public static final String TAG_STUDIO = "studio";
+    public static final String TAG_SOURCES = "sources";
+    public static final String TAG_SUBTITLE = "subtitle";
+    public static final String TAG_DURATION = "duration";
+    public static final String TAG_TRACKS = "tracks";
+    public static final String TAG_TRACK_ID = "id";
+    public static final String TAG_TRACK_TYPE = "type";
+    public static final String TAG_TRACK_SUBTYPE = "subtype";
+    public static final String TAG_TRACK_CONTENT_ID = "contentId";
+    public static final String TAG_TRACK_NAME = "name";
+    public static final String TAG_TRACK_LANGUAGE = "language";
+    public static final String TAG_THUMB = "image-480x270"; // "thumb";
+    public static final String TAG_IMG_780_1200 = "image-780x1200";
+    public static final String TAG_TITLE = "title";
 
     public static final String KEY_DESCRIPTION = "description";
 

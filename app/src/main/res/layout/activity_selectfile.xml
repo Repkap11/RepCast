@@ -20,9 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/miniController1"
-        android:layout_below="@+id/toolbar"
         android:layout_marginBottom="-5dp"
-        android:layout_marginTop="8dp"
+        android:layout_below="@+id/toolbar"
         android:orientation="vertical" />
 
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
@@ -31,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone"
-        app:auto_setup="true"></com.google.android.libraries.cast.companionlibrary.widgets.MiniController>
+        app:auto_setup="true" />
 
 </RelativeLayout>
 

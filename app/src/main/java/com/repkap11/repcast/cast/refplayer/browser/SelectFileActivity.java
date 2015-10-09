@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer;
+package com.repkap11.repcast.cast.refplayer.browser;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -42,16 +42,17 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.browser.SelectFileFragment;
+import com.repkap11.repcast.cast.refplayer.CastApplication;
+import com.repkap11.repcast.cast.refplayer.UpdateAppTask;
 import com.repkap11.repcast.cast.refplayer.mediaplayer.LocalPlayerActivity;
 import com.repkap11.repcast.cast.refplayer.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.cast.refplayer.settings.CastPreference;
 import com.repkap11.repcast.cast.refplayer.utils.Utils;
 import com.repkap11.repcast.model.JsonDirectory;
 
-public class VideoBrowserActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
-    private static final String TAG = "VideoBrowserActivity";
+    private static final String TAG = "SelectFileActivity";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
     private MiniController mMini;
@@ -108,18 +109,18 @@ public class VideoBrowserActivity extends AppCompatActivity implements FragmentM
             @Override
             public void onConnectionSuspended(int cause) {
                 Log.d(TAG, "onConnectionSuspended() was called with cause: " + cause);
-                Utils.showToast(VideoBrowserActivity.this, R.string.connection_temp_lost);
+                Utils.showToast(SelectFileActivity.this, R.string.connection_temp_lost);
             }
 
             @Override
             public void onConnectivityRecovered() {
-                Utils.showToast(VideoBrowserActivity.this, R.string.connection_recovered);
+                Utils.showToast(SelectFileActivity.this, R.string.connection_recovered);
             }
 
             @Override
             public void onCastDeviceDetected(final RouteInfo info) {
-                if (!CastPreference.isFtuShown(VideoBrowserActivity.this) && mIsHoneyCombOrAbove) {
-                    CastPreference.setFtuShown(VideoBrowserActivity.this);
+                if (!CastPreference.isFtuShown(SelectFileActivity.this) && mIsHoneyCombOrAbove) {
+                    CastPreference.setFtuShown(SelectFileActivity.this);
 
                     Log.d(TAG, "Route is visible: " + info);
                     new Handler().postDelayed(new Runnable() {
@@ -140,9 +141,8 @@ public class VideoBrowserActivity extends AppCompatActivity implements FragmentM
 
     private void setupActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //mToolbar.setLogo(R.drawable.actionbar_logo_castvideos);
-        mToolbar.setTitle(R.string.app_name);
         setSupportActionBar(mToolbar);
+        setTitleBasedOnFragment();
     }
 
     @Override
@@ -154,7 +154,7 @@ public class VideoBrowserActivity extends AppCompatActivity implements FragmentM
         updateApplicationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                UpdateAppTask task = new UpdateAppTask(getApplicationContext());
+                UpdateAppTask task = new UpdateAppTask(getApplicationContext(), true);
                 task.execute();
                 return true;
             }
@@ -173,11 +173,11 @@ public class VideoBrowserActivity extends AppCompatActivity implements FragmentM
         Intent i;
         int i1 = item.getItemId();
         if (i1 == R.id.action_settings) {
-            i = new Intent(VideoBrowserActivity.this, CastPreference.class);
+            i = new Intent(SelectFileActivity.this, CastPreference.class);
             startActivity(i);
 
         } else if (i1 == R.id.action_show_queue) {
-            i = new Intent(VideoBrowserActivity.this, QueueListViewActivity.class);
+            i = new Intent(SelectFileActivity.this, QueueListViewActivity.class);
             startActivity(i);
 
         }
@@ -259,15 +259,14 @@ public class VideoBrowserActivity extends AppCompatActivity implements FragmentM
         intent.putExtra("media", dir);
         intent.putExtra("shouldStart", false);
         Log.e(TAG, "About to cast:" + dir.path);
-        String transitionName = getString(R.string.transition_image);
-        //VideoListAdapter.ViewHolder viewHolder = (VideoListAdapter.ViewHolder) mRecyclerView.findViewHolderForPosition(position);
-        //Pair<View, String> imagePair = Pair.create((View) viewHolder.getImageView(), transitionName);
-        //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imagePair);
-        startActivity(intent);//, options.toBundle());
+        startActivity(intent);
     }
 
     @Override
     public void onBackStackChanged() {
+        setTitleBasedOnFragment();
+    }
+    private void setTitleBasedOnFragment(){
         SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
         if (fragment != null) {
             String name = fragment.getDirectoryName();

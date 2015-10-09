@@ -23,11 +23,13 @@ import java.util.Arrays;
  */
 public class UpdateAppTask extends AsyncTask<Void, Void, String> {
     private static final String TAG = UpdateAppTask.class.getSimpleName();
+    private final boolean mNotifyUserOfNoUpdate;
     private Context mContext;
     private static final String REMOTE_URL = "https://repkam09.com/dl/repcast/repcast.apk";
 
-    public UpdateAppTask(Context applicationContext) {
+    public UpdateAppTask(Context applicationContext, boolean notifyUserOfNoUpdate) {
         mContext = applicationContext;
+        mNotifyUserOfNoUpdate = notifyUserOfNoUpdate;
     }
 
     @Override
@@ -81,7 +83,11 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
             } else {
                 outputFile.delete();
                 Log.e(TAG,"Not installing because apk is older or the same");
-                return "No update avaliable from Repkam09.com";
+                if (mNotifyUserOfNoUpdate) {
+                    return "No update available from Repkam09.com";
+                } else {
+                    return null;
+                }
 
             }
         } catch (Exception e) {
