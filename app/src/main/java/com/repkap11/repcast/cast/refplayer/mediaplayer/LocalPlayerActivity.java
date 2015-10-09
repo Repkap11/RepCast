@@ -145,7 +145,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             JSONObject jsonObj = null;
             try {
                 jsonObj = new JSONObject();
-                jsonObj.put(VideoProvider.KEY_DESCRIPTION, "Description Text");
+                jsonObj.put(VideoProvider.KEY_DESCRIPTION, "");
             } catch (JSONException e) {
                 Log.e(TAG, "Failed to add description to the json object", e);
             }

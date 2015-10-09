@@ -84,7 +84,12 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
                 outputFile.delete();
                 Log.e(TAG,"Not installing because apk is older or the same");
                 if (mNotifyUserOfNoUpdate) {
-                    return "No update available from Repkam09.com";
+                    if  (newInfo.versionCode == oldPackageInfo.versionCode){
+                        return "No update available from Repkam09.com";
+                    } else {
+                        return "You have a newer version than the server. Lucky you.";
+                    }
+
                 } else {
                     return null;
                 }
