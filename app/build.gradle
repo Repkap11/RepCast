@@ -39,10 +39,19 @@ android {
         exclude 'META-INF/notice.txt'
     }
 }
+repositories {
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+}
 dependencies {
     compile 'com.android.support:appcompat-v7'
-    compile 'com.android.support:mediarouter-v7'
-    compile 'com.google.android.gms:play-services-cast:7.8.0'
+    compile files('libs/android-query.0.25.10.jar')
+    // to get around https://code.google.com/p/android/issues/detail?id=52962, we need to
+    // depend on both debug and release versions of the library
+    compile project(path: ':cast-companion-library')
+    compile project(':ShowCaseLibrary')
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
-    compile project(':android-video-cast')
+    compile 'com.android.support:recyclerview-v7:22.2.+'
 }

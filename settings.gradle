@@ -1,1 +1,1 @@
-include ':app', ':android-video-cast', ':cast-companion-library', ':ShowCaseLibrary'
+include ':app', ':cast-companion-library', ':ShowCaseLibrary'

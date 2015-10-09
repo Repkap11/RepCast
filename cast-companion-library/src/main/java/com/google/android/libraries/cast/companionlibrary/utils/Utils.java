@@ -16,16 +16,6 @@
 
 package com.google.android.libraries.cast.companionlibrary.utils;
 
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
-
-import com.google.android.gms.cast.MediaInfo;
-import com.google.android.gms.cast.MediaMetadata;
-import com.google.android.gms.cast.MediaQueueItem;
-import com.google.android.gms.cast.MediaTrack;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.images.WebImage;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -43,12 +33,22 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.widget.Toast;
 
+import com.google.android.gms.cast.MediaInfo;
+import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaQueueItem;
+import com.google.android.gms.cast.MediaTrack;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.images.WebImage;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
 
 /**
  * A collection of utility methods, all static.
@@ -226,11 +226,8 @@ public final class Utils {
         if (wrapper == null) {
             return null;
         }
-
         MediaMetadata metaData = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-
-        metaData.putString(MediaMetadata.KEY_SUBTITLE,
-                wrapper.getString(MediaMetadata.KEY_SUBTITLE));
+        metaData.putString(MediaMetadata.KEY_SUBTITLE, wrapper.getString(MediaMetadata.KEY_SUBTITLE));
         metaData.putString(MediaMetadata.KEY_TITLE, wrapper.getString(MediaMetadata.KEY_TITLE));
         metaData.putString(MediaMetadata.KEY_STUDIO, wrapper.getString(MediaMetadata.KEY_STUDIO));
         ArrayList<String> images = wrapper.getStringArrayList(KEY_IMAGES);

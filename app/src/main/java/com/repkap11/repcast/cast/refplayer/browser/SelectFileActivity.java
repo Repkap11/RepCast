@@ -1,0 +1,105 @@
+package com.repkap11.repcast.cast.refplayer.browser;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.repkap11.repcast.R;
+import com.repkap11.repcast.cast.refplayer.UpdateAppTask;
+import com.repkap11.repcast.cast.refplayer.mediaplayer.LocalPlayerActivity;
+import com.repkap11.repcast.model.JsonDirectory;
+
+/**
+ * Created by paul on 9/10/15.
+ */
+public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+    private static final String TAG = SelectFileActivity.class.getSimpleName();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e(TAG, "Activity Created");
+        setContentView(R.layout.activity_selectfile);
+        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
+        if (frag == null) {
+            Log.e(TAG, "Adapter null");
+            JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
+            dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
+            dir.name = "Seedbox";
+            dir.path = "IDGAF";
+            dir.path64 = "";
+            dir.isRoot = true;
+            showListUsingDirectory(dir);
+        }
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+    }
+
+    public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
+        SelectFileFragment newFragment = new SelectFileFragment();
+        newFragment.showListUsingDirectory(dir);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (!dir.isRoot) {
+            transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
+        }
+        transaction.replace(R.id.activity_seleft_file_fragment_holder, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
+        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+            finish();
+        } else {
+            //This manages the back stack by itself.
+            super.onBackPressed();
+        }
+    }
+
+    public void showFile(JsonDirectory.JsonFileDir dir) {
+
+        Log.e(TAG, "Starting file:" + dir.name);
+        Intent intent = new Intent();
+        intent.setClass(this, LocalPlayerActivity.class);
+        intent.putExtra("media", dir);
+        intent.putExtra("shouldStart", false);
+        Log.e(TAG, "About to cast:" + dir.path);
+        String transitionName = getString(R.string.transition_image);
+        //VideoListAdapter.ViewHolder viewHolder = (VideoListAdapter.ViewHolder) mRecyclerView.findViewHolderForPosition(position);
+        //Pair<View, String> imagePair = Pair.create((View) viewHolder.getImageView(), transitionName);
+        //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imagePair);
+        startActivity(intent);//, options.toBundle());
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
+        if (fragment != null) {
+            String name = fragment.getDirectoryName();
+            getSupportActionBar().setTitle(name);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.select_file, menu);
+        MenuItem updateApplicationMenuItem = menu.findItem(R.id.update_app_menu_button);
+        updateApplicationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                UpdateAppTask task = new UpdateAppTask(getApplicationContext());
+                task.execute();
+                return true;
+            }
+        });
+        return true;
+    }
+}

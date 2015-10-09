@@ -7,7 +7,6 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.repkap11.repcast.FileListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
