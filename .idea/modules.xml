@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RepCast.iml" filepath="$PROJECT_DIR$/RepCast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ShowCaseLibrary/ShowCaseLibrary.iml" filepath="$PROJECT_DIR$/ShowCaseLibrary/ShowCaseLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-video-cast/android-video-cast.iml" filepath="$PROJECT_DIR$/android-video-cast/android-video-cast.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cast-companion-library/cast-companion-library.iml" filepath="$PROJECT_DIR$/cast-companion-library/cast-companion-library.iml" />
     </modules>
   </component>
 </project>
