@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.cast.refplayer.browser.SelectFileActivity;
@@ -106,6 +107,9 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     public void updataFileList(JsonDirectory fileList) {
         Log.e(TAG,"File list changed");
         mFileList = fileList;
+        if (mFileList == null) {
+            Toast.makeText(mActivity.getApplicationContext(), "Unable to read data from Repkam09.com", Toast.LENGTH_SHORT).show();
+        }
         notifyDataSetChanged();
     }
 
