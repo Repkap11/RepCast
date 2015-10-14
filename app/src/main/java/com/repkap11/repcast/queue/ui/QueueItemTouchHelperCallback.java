@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.queue.ui;
+package com.repkap11.repcast.queue.ui;
 
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;

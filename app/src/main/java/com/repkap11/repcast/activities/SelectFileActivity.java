@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.browser;
+package com.repkap11.repcast.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -41,13 +41,12 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
+import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.CastApplication;
-import com.repkap11.repcast.cast.refplayer.UpdateAppTask;
-import com.repkap11.repcast.cast.refplayer.mediaplayer.LocalPlayerActivity;
-import com.repkap11.repcast.cast.refplayer.queue.ui.QueueListViewActivity;
-import com.repkap11.repcast.cast.refplayer.settings.CastPreference;
-import com.repkap11.repcast.cast.refplayer.utils.Utils;
+import com.repkap11.repcast.activities.fragments.SelectFileFragment;
+import com.repkap11.repcast.UpdateAppTask;
+import com.repkap11.repcast.queue.ui.QueueListViewActivity;
+import com.repkap11.repcast.utils.Utils;
 import com.repkap11.repcast.model.JsonDirectory;
 
 public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
@@ -119,8 +118,8 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
 
             @Override
             public void onCastDeviceDetected(final RouteInfo info) {
-                if (!CastPreference.isFtuShown(SelectFileActivity.this) && mIsHoneyCombOrAbove) {
-                    CastPreference.setFtuShown(SelectFileActivity.this);
+                if (!CastPreferenceActivity.isFtuShown(SelectFileActivity.this) && mIsHoneyCombOrAbove) {
+                    CastPreferenceActivity.setFtuShown(SelectFileActivity.this);
 
                     Log.d(TAG, "Route is visible: " + info);
                     new Handler().postDelayed(new Runnable() {
@@ -173,7 +172,7 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         Intent i;
         int i1 = item.getItemId();
         if (i1 == R.id.action_settings) {
-            i = new Intent(SelectFileActivity.this, CastPreference.class);
+            i = new Intent(SelectFileActivity.this, CastPreferenceActivity.class);
             startActivity(i);
 
         } else if (i1 == R.id.action_show_queue) {

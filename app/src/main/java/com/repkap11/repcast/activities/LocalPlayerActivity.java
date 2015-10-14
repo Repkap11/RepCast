@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.repkap11.repcast.cast.refplayer.mediaplayer;
+package com.repkap11.repcast.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -58,12 +58,11 @@ import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaTrack;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.CastApplication;
-import com.repkap11.repcast.cast.refplayer.browser.VideoProvider;
-import com.repkap11.repcast.cast.refplayer.queue.ui.QueueListViewActivity;
-import com.repkap11.repcast.cast.refplayer.settings.CastPreference;
-import com.repkap11.repcast.cast.refplayer.utils.Utils;
+import com.repkap11.repcast.VideoProvider;
+import com.repkap11.repcast.queue.ui.QueueListViewActivity;
+import com.repkap11.repcast.utils.Utils;
 import com.repkap11.repcast.model.JsonDirectory;
 
 import org.json.JSONException;
@@ -744,7 +743,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         Intent i;
         int i1 = item.getItemId();
         if (i1 == R.id.action_settings) {
-            i = new Intent(LocalPlayerActivity.this, CastPreference.class);
+            i = new Intent(LocalPlayerActivity.this, CastPreferenceActivity.class);
             startActivity(i);
 
         } else if (i1 == R.id.action_show_queue) {

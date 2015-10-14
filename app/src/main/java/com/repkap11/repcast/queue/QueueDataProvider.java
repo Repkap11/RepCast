@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.queue;
+package com.repkap11.repcast.queue;
 
 import android.util.Log;
 import android.view.View;

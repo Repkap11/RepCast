@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.browser.SelectFileActivity;
+import com.repkap11.repcast.activities.SelectFileActivity;
 
 
 /**

@@ -1,7 +1,5 @@
-package com.repkap11.repcast;
+package com.repkap11.repcast.application;
 
-
-import com.repkap11.repcast.cast.refplayer.CastApplication;
 
 /**
  * Created by paul on 9/20/15.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.utils;
+package com.repkap11.repcast.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -38,8 +38,8 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastEx
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.CastApplication;
-import com.repkap11.repcast.cast.refplayer.queue.QueueDataProvider;
+import com.repkap11.repcast.application.CastApplication;
+import com.repkap11.repcast.queue.QueueDataProvider;
 
 import java.io.IOException;
 

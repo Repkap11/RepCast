@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.queue.ui;
+package com.repkap11.repcast.queue.ui;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
@@ -36,7 +36,7 @@ import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.cast.MediaStatus;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.queue.QueueDataProvider;
+import com.repkap11.repcast.queue.QueueDataProvider;
 
 /**
  * An adapter to show the list of queue items.

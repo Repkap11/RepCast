@@ -1,4 +1,4 @@
-package com.repkap11.repcast.cast.refplayer.browser;
+package com.repkap11.repcast.activities.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.repkap11.repcast.R;
+import com.repkap11.repcast.activities.SelectFileActivity;
 import com.repkap11.repcast.model.FileListAdapter;
 import com.repkap11.repcast.model.JsonDirectory;
 

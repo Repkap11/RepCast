@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.queue.ui;
+package com.repkap11.repcast.queue.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,8 +34,8 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConn
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.CastApplication;
-import com.repkap11.repcast.cast.refplayer.queue.QueueDataProvider;
+import com.repkap11.repcast.application.CastApplication;
+import com.repkap11.repcast.queue.QueueDataProvider;
 
 /**
  * A fragment to show the list of queue items.

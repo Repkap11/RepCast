@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer;
+package com.repkap11.repcast.application;
 
 import android.app.Application;
 

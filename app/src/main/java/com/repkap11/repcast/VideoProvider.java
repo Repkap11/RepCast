@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.repkap11.repcast.cast.refplayer.browser;
+package com.repkap11.repcast;
 
 import android.net.Uri;
 import android.util.Log;

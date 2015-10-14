@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.queue.ui;
+package com.repkap11.repcast.queue.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,8 +29,8 @@ import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.queue.QueueDataProvider;
-import com.repkap11.repcast.cast.refplayer.settings.CastPreference;
+import com.repkap11.repcast.queue.QueueDataProvider;
+import com.repkap11.repcast.activities.CastPreferenceActivity;
 
 import java.util.List;
 
@@ -109,7 +109,7 @@ public class QueueListViewActivity extends AppCompatActivity {
         Intent i;
         int i1 = item.getItemId();
         if (i1 == R.id.action_settings) {
-            i = new Intent(QueueListViewActivity.this, CastPreference.class);
+            i = new Intent(QueueListViewActivity.this, CastPreferenceActivity.class);
             startActivity(i);
 
         } else if (i1 == R.id.action_clear_queue) {

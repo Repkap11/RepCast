@@ -1,4 +1,4 @@
-package com.repkap11.repcast.cast.refplayer;
+package com.repkap11.repcast;
 
 import android.content.Context;
 import android.content.Intent;

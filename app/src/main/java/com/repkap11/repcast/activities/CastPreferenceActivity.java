@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.repkap11.repcast.cast.refplayer.settings;
+package com.repkap11.repcast.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,9 +27,9 @@ import android.preference.PreferenceManager;
 
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.cast.refplayer.utils.Utils;
+import com.repkap11.repcast.utils.Utils;
 
-public class CastPreference extends PreferenceActivity
+public class CastPreferenceActivity extends PreferenceActivity
         implements OnSharedPreferenceChangeListener {
 
     public static final String FTU_SHOWN_KEY = "ftu_shown";
