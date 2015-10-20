@@ -8,9 +8,11 @@ import android.webkit.MimeTypeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 
 /**
  * Created by paul on 9/10/15.
@@ -60,12 +62,19 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
     }
 
     public static String getMimeType(String url) {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.encode(url));
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        try {
+            String type = null;
+            String encoded = Uri.encode(url);
+            encoded = URLEncoder.encode(encoded, "UTF-8");
+            String extension = MimeTypeMap.getFileExtensionFromUrl(encoded);
+            if (extension != null) {
+                type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+            }
+            return type;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        return type;
+        return null;
     }
 }
 

@@ -53,11 +53,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public long getItemId(int position) {
-        if (mFileList.result.get(position).type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
+        JsonDirectory.JsonFileDir dir = mFileList.result.get(position);
+        if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
             return ICON_DIR;
-        } else if (mFileList.result.get(position).memeType.equals(JsonDirectory.JsonFileDir.MIME_MP4)) {
+        } else if (dir.memeType.equals(JsonDirectory.JsonFileDir.MIME_MP4)) {
             return ICON_VIDEO;
-        } else if (mFileList.result.get(position).memeType.equals(JsonDirectory.JsonFileDir.MIME_MPEG)) {
+        } else if (dir.memeType.equals(JsonDirectory.JsonFileDir.MIME_MPEG)) {
             return ICON_MPEG;
         }
         return -1;
