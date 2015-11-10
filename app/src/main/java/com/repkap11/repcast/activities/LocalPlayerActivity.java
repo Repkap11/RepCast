@@ -132,7 +132,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         if (null != b) {
             JsonDirectory.JsonFileDir dir = getIntent().getParcelableExtra("media");
             String path = Uri.encode(dir.path, "//");
-            String castPath = "http://repkam09.agrius.feralhosting.com/files/" + path;
+            String castPath = "http://repkam09.com//wbchromecast-repcast/whatbox/" + path;
 
             MediaInfo.Builder builder = new MediaInfo.Builder(castPath);
             builder.setStreamType(MediaInfo.STREAM_TYPE_BUFFERED);
