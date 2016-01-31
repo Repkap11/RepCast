@@ -58,12 +58,12 @@ import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaTrack;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.VideoProvider;
+import com.repkap11.repcast.application.CastApplication;
+import com.repkap11.repcast.model.JsonDirectory;
 import com.repkap11.repcast.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.utils.Utils;
-import com.repkap11.repcast.model.JsonDirectory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -409,7 +409,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             return;
         }
         mControllersTimer = new Timer();
-        mControllersTimer.schedule(new HideControllersTask(), 5000);
+        mControllersTimer.schedule(new HideControllersTask(), 2000);
     }
 
     // should be called from the main thread
@@ -423,6 +423,28 @@ public class LocalPlayerActivity extends AppCompatActivity {
             }
             mControllers.setVisibility(View.INVISIBLE);
         }
+        //onConfigurationChanged(getResources().getConfiguration());
+    }
+
+    // This hides the system bars using immersive mode
+    private void hideSystemUI() {
+        // Set the IMMERSIVE flag.
+        // Set the content to appear under the system bars so that the content
+        // doesn't resize when the system bars hide and show.
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE //dont resize when system bars visible
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION// dont resize when system bars visible
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        //hideSystemUI();
     }
 
     @Override
@@ -474,6 +496,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
+        //hideSystemUI();
         mCastManager = VideoCastManager.getInstance();
         mCastManager.addVideoCastConsumer(mCastConsumer);
         mCastManager.incrementUiCounter();
@@ -482,6 +505,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         } else {
             updatePlaybackLocation(PlaybackLocation.LOCAL);
         }
+        onConfigurationChanged(getResources().getConfiguration());
         super.onResume();
     }
 
@@ -569,7 +593,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (!mControllersVisible) {
-                    updateControllersVisibility(true);
+                    updateControllersVisibility(!mControllersVisible);
                 }
                 startControllersTimer();
                 return false;
@@ -668,20 +692,25 @@ public class LocalPlayerActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        getSupportActionBar().show();
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getSupportActionBar().hide();
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                getWindow().getDecorView().setSystemUiVisibility(
+                          View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
             updateMetadata(false);
             mContainer.setBackgroundColor(getResources().getColor(R.color.black));
 
         } else {
+            getSupportActionBar().show();
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {

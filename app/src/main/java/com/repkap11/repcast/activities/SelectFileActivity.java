@@ -27,12 +27,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -41,23 +44,26 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
-import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.activities.fragments.SelectFileFragment;
 import com.repkap11.repcast.UpdateAppTask;
+import com.repkap11.repcast.activities.fragments.SelectFileFragment;
+import com.repkap11.repcast.application.CastApplication;
+import com.repkap11.repcast.model.JsonDirectory;
 import com.repkap11.repcast.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.utils.Utils;
-import com.repkap11.repcast.model.JsonDirectory;
 
-public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, SearchView.OnQueryTextListener {
 
     private static final String TAG = "SelectFileActivity";
+    private static final java.lang.String INSTANCE_STATE_INITIAL_STRING = "INSTANCE_STATE_INITIAL_STRING";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
     private MiniController mMini;
     private MenuItem mediaRouteMenuItem;
     private boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     private Toolbar mToolbar;
+    private SearchView mSearchView;
+    private String mInitialSearchString = null;
 
     /*
      * (non-Javadoc)
@@ -158,6 +164,24 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
                 return true;
             }
         });
+
+
+        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
+        if (frag != null) {
+            MenuItem searchItem = menu.findItem(R.id.action_search);
+            if (searchItem != null) {
+                mSearchView = (SearchView) searchItem.getActionView();
+                mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+                mSearchView.setQuery(mInitialSearchString, false);
+                if (!TextUtils.isEmpty(mInitialSearchString)) {
+                    mSearchView.setIconified(false);
+                    mSearchView.clearFocus();
+                }
+                mSearchView.setOnQueryTextListener(this);
+            }
+        }
+
+
         return true;
     }
 
@@ -227,6 +251,10 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
     }
 
     public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
+        if (mSearchView != null) {
+            mSearchView.setQuery(null, false);
+            mSearchView.setIconified(true);
+        }
         SelectFileFragment newFragment = new SelectFileFragment();
         newFragment.showListUsingDirectory(dir);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -240,8 +268,12 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
 
     @Override
     public void onBackPressed() {
-
         Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
+        if (!TextUtils.isEmpty(mSearchView.getQuery()) || !mSearchView.isIconified()) {
+            mSearchView.setQuery(null, false);
+            mSearchView.setIconified(true);
+            return;
+        }
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             finish();
         } else {
@@ -273,4 +305,40 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         }
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        View closeButton = mSearchView.findViewById(R.id.search_close_btn);
+        if (closeButton != null) {
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSearchView.setQuery(null, false);
+                    mSearchView.setIconified(true);
+                    mSearchView.clearFocus();
+                }
+            });
+        }
+        SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_seleft_file_fragment_holder);
+        if (fragment != null) {
+            fragment.searchFile(newText);
+        }
+        return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(INSTANCE_STATE_INITIAL_STRING, mSearchView.getQuery().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mInitialSearchString = savedInstanceState.getString(INSTANCE_STATE_INITIAL_STRING);
+    }
 }

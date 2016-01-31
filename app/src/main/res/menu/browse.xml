@@ -39,5 +39,11 @@
     <item android:id="@+id/update_app_menu_button"
         app:showAsAction="never"
         android:title="@string/update_application" />
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="Search"/>
 
 </menu>

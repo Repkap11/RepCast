@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,12 +20,14 @@ import com.repkap11.repcast.activities.SelectFileActivity;
 public class FileListAdapter extends BaseAdapter implements View.OnClickListener {
     private static final String TAG = FileListAdapter.class.getSimpleName();
     private final String mURL;
+    private FileListFilter mFilter;
     private SelectFileActivity mActivity;
     private JsonDirectory mFileList;
 
     public FileListAdapter(String path64) {
         mURL = "https://repkam09.com/dl/dirget/" + path64;
         mFileList = new JsonDirectory();
+        mFilter = new FileListFilter(mFileList,this);
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
         downloader.execute(mURL);
     }
@@ -104,10 +107,15 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         holder.mIcon.setImageResource(iconResource);
         return convertView;
     }
-
     public void updataFileList(JsonDirectory fileList) {
-        Log.e(TAG,"File list changed");
+        updataFileList(fileList, false);
+    }
+    public void updataFileList(JsonDirectory fileList, boolean isFiltered) {
+        Log.e(TAG, "File list changed");
         mFileList = fileList;
+        if (!isFiltered){
+            mFilter = new FileListFilter(mFileList,this);
+        }
         if (mFileList == null) {
             Toast.makeText(mActivity.getApplicationContext(), "Unable to read data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
@@ -123,6 +131,10 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
             mActivity.showFile(dir);
         }
+    }
+
+    public Filter getFilter() {
+        return mFilter;
     }
 
     public class Holder {
