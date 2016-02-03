@@ -25,6 +25,10 @@
         <activity
             android:name=".activities.SelectFileActivity"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activities.SelectTorrentActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

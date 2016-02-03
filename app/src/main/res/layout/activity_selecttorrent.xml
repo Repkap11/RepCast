@@ -16,7 +16,7 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/activity_select_file_fragment_holder"
+        android:id="@+id/activity_select_torrent_fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/miniController1"

@@ -46,16 +46,16 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.UpdateAppTask;
-import com.repkap11.repcast.activities.fragments.SelectFileFragment;
+import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
 import com.repkap11.repcast.application.CastApplication;
-import com.repkap11.repcast.model.JsonDirectory;
+import com.repkap11.repcast.model.JsonTorrent;
 import com.repkap11.repcast.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.utils.Utils;
 
-public class SelectFileActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, SearchView.OnQueryTextListener {
+public class SelectTorrentActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, SearchView.OnQueryTextListener {
 
-    private static final String TAG = SelectFileActivity.class.getSimpleName();
-    private static final java.lang.String INSTANCE_STATE_INITIAL_STRING = "INSTANCE_STATE_INITIAL_STRING";
+    private static final String TAG = SelectTorrentActivity.class.getSimpleName();
+    private static final String INSTANCE_STATE_INITIAL_STRING = "INSTANCE_STATE_INITIAL_STRING";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
     private MiniController mMini;
@@ -75,17 +75,12 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         VideoCastManager.checkGooglePlayServices(this);
 
         Log.e(TAG, "Activity Created");
-        setContentView(R.layout.activity_selectfile);
-        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        setContentView(R.layout.activity_selecttorrent);
+        SelectTorrentFragment frag = (SelectTorrentFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_torrent_fragment_holder);
         if (frag == null) {
             Log.e(TAG, "Adapter null");
-            JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
-            dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
-            dir.name = "Seedbox";
-            dir.path = "IDGAF";
-            dir.path64 = "";
-            dir.isRoot = true;
-            showListUsingDirectory(dir);
+            String defaultQuery =  "Runescape";
+            showListUsingQuery(defaultQuery);
         }
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
@@ -114,18 +109,18 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
             @Override
             public void onConnectionSuspended(int cause) {
                 Log.d(TAG, "onConnectionSuspended() was called with cause: " + cause);
-                Utils.showToast(SelectFileActivity.this, R.string.connection_temp_lost);
+                Utils.showToast(SelectTorrentActivity.this, R.string.connection_temp_lost);
             }
 
             @Override
             public void onConnectivityRecovered() {
-                Utils.showToast(SelectFileActivity.this, R.string.connection_recovered);
+                Utils.showToast(SelectTorrentActivity.this, R.string.connection_recovered);
             }
 
             @Override
             public void onCastDeviceDetected(final RouteInfo info) {
-                if (!CastPreferenceActivity.isFtuShown(SelectFileActivity.this) && mIsHoneyCombOrAbove) {
-                    CastPreferenceActivity.setFtuShown(SelectFileActivity.this);
+                if (!CastPreferenceActivity.isFtuShown(SelectTorrentActivity.this) && mIsHoneyCombOrAbove) {
+                    CastPreferenceActivity.setFtuShown(SelectTorrentActivity.this);
 
                     Log.d(TAG, "Route is visible: " + info);
                     new Handler().postDelayed(new Runnable() {
@@ -166,7 +161,7 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         });
 
 
-        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        SelectTorrentFragment frag = (SelectTorrentFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_torrent_fragment_holder);
         if (frag != null) {
             MenuItem searchItem = menu.findItem(R.id.action_search);
             if (searchItem != null) {
@@ -196,11 +191,11 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         Intent i;
         int i1 = item.getItemId();
         if (i1 == R.id.action_settings) {
-            i = new Intent(SelectFileActivity.this, CastPreferenceActivity.class);
+            i = new Intent(SelectTorrentActivity.this, CastPreferenceActivity.class);
             startActivity(i);
 
         } else if (i1 == R.id.action_show_queue) {
-            i = new Intent(SelectFileActivity.this, QueueListViewActivity.class);
+            i = new Intent(SelectTorrentActivity.this, QueueListViewActivity.class);
             startActivity(i);
 
         }
@@ -250,18 +245,15 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         super.onDestroy();
     }
 
-    public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
+    public void showListUsingQuery(String query) {
         if (mSearchView != null) {
             mSearchView.setQuery(null, false);
             mSearchView.setIconified(true);
         }
-        SelectFileFragment newFragment = new SelectFileFragment();
-        newFragment.showListUsingDirectory(dir);
+        SelectTorrentFragment newFragment = new SelectTorrentFragment();
+        newFragment.showListUsingQuery(query);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (!dir.isRoot) {
-            transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
-        }
-        transaction.replace(R.id.activity_select_file_fragment_holder, newFragment);
+        transaction.replace(R.id.activity_select_torrent_fragment_holder, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -282,23 +274,12 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
         }
     }
 
-    public void showFile(JsonDirectory.JsonFileDir dir) {
-
-        Log.e(TAG, "Starting file:" + dir.name);
-        Intent intent = new Intent();
-        intent.setClass(this, LocalPlayerActivity.class);
-        intent.putExtra("media", dir);
-        intent.putExtra("shouldStart", false);
-        Log.e(TAG, "About to cast:" + dir.path);
-        startActivity(intent);
-    }
-
     @Override
     public void onBackStackChanged() {
         setTitleBasedOnFragment();
     }
     private void setTitleBasedOnFragment(){
-        SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        SelectTorrentFragment fragment = (SelectTorrentFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_torrent_fragment_holder);
         if (fragment != null) {
             String name = fragment.getDirectoryName();
             getSupportActionBar().setTitle(name);
@@ -323,7 +304,7 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
                 }
             });
         }
-        SelectFileFragment fragment = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        SelectTorrentFragment fragment = (SelectTorrentFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_torrent_fragment_holder);
         if (fragment != null) {
             fragment.searchFile(newText);
         }
@@ -340,5 +321,9 @@ public class SelectFileActivity extends AppCompatActivity implements FragmentMan
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mInitialSearchString = savedInstanceState.getString(INSTANCE_STATE_INITIAL_STRING);
+    }
+
+    public void downloadTorrent(JsonTorrent.JsonTorrentResult element) {
+
     }
 }

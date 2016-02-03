@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="4dp"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/fragment_selecttorrent_list_element_icon"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size" />
+    <TextView
+        android:padding="4dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/fragment_selecttorrent_list_element_name"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        android:layout_toRightOf="@id/fragment_selecttorrent_list_element_icon"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

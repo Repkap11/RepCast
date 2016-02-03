@@ -117,7 +117,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             mFilter = new FileListFilter(mFileList,this);
         }
         if (mFileList == null) {
-            Toast.makeText(mActivity.getApplicationContext(), "Unable to read data from Repkam09.com", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity.getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
         notifyDataSetChanged();
     }
