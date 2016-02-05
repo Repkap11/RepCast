@@ -1,7 +1,6 @@
 package com.repkap11.repcast.activities.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +8,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.activities.SelectFileActivity;
 import com.repkap11.repcast.activities.SelectTorrentActivity;
 import com.repkap11.repcast.model.TorrentListAdapter;
 
 
-public class SelectTorrentFragment extends Fragment {
+public class SelectTorrentFragment extends RepcastFragment {
 
     private static final String TAG = SelectTorrentFragment.class.getSimpleName();
     private static final String INSTANCE_STATE_QUERY = "INSTANCE_STATE_QUERY";
@@ -57,16 +55,24 @@ public class SelectTorrentFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public void showListUsingQuery(String query) {
+    @Override
+    public String getName() {
+        return mQuery;
+    }
+
+    @Override
+    public boolean onQuerySubmit(String query) {
+        searchForTorrentsWithName(query);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryChange(String newText) {
+        return false;
+    }
+
+    public void searchForTorrentsWithName(String query) {
         mQuery = query;
         mAdapter = new TorrentListAdapter(query);
-    }
-
-    public void searchFile(String string) {
-        mAdapter.getFilter().filter(string);
-    }
-
-    public String getDirectoryName() {
-        return mQuery;
     }
 }

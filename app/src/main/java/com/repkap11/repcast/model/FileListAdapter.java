@@ -127,7 +127,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         Holder h = (Holder) v.getTag();
         JsonDirectory.JsonFileDir dir = mFileList.result.get(h.mIndex);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-            mActivity.showListUsingDirectory(dir);
+            mActivity.showContent(dir);
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
             mActivity.showFile(dir);
         }
