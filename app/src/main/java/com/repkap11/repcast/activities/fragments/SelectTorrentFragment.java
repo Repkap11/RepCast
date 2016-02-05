@@ -62,6 +62,7 @@ public class SelectTorrentFragment extends RepcastFragment {
 
     @Override
     public boolean onQuerySubmit(String query) {
+        Log.e(TAG, "Stringing Query with string: " + query);
         searchForTorrentsWithName(query);
         return true;
     }
@@ -74,5 +75,13 @@ public class SelectTorrentFragment extends RepcastFragment {
     public void searchForTorrentsWithName(String query) {
         mQuery = query;
         mAdapter = new TorrentListAdapter(query);
+        SelectTorrentActivity activity = (SelectTorrentActivity) getActivity();
+        mAdapter.updateContext(activity);
+        if (mListView != null) {
+            mListView.setAdapter(mAdapter);
+        }
+        if (activity != null) {
+            activity.setTitleBasedOnFragment();
+        }
     }
 }

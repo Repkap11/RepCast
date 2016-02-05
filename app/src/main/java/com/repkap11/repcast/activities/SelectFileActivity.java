@@ -38,7 +38,7 @@ public class SelectFileActivity extends RepcastActivity {
     }
     protected void completeOnCreate(Bundle savedInstanceState){
         super.completeOnCreate(savedInstanceState);
-        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        SelectFileFragment frag = (SelectFileFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_holder);
         if (frag == null) {
             Log.e(TAG, "Adapter null");
             JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
@@ -60,7 +60,7 @@ public class SelectFileActivity extends RepcastActivity {
         if (!dir.isRoot) {
             transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         }
-        transaction.replace(R.id.activity_select_file_fragment_holder, newFragment);
+        transaction.replace(R.id.activity_fragment_holder, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

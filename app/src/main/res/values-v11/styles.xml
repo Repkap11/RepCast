@@ -24,4 +24,8 @@
         <item name="android:scrollbars">vertical</item>
     </style>
 
+    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlActivated">#FFffffff</item>
+    </style>
+
 </resources>

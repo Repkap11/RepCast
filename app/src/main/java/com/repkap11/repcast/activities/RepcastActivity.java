@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -153,6 +155,7 @@ public abstract class RepcastActivity extends AppCompatActivity implements Fragm
             mSearchView = (SearchView) searchItem.getActionView();
             mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             mSearchView.setQuery(mInitialSearchString, false);
+            mSearchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             if (!TextUtils.isEmpty(mInitialSearchString)) {
                 mSearchView.setIconified(false);
                 mSearchView.clearFocus();
@@ -256,8 +259,8 @@ public abstract class RepcastActivity extends AppCompatActivity implements Fragm
         setTitleBasedOnFragment();
     }
 
-    private void setTitleBasedOnFragment() {
-        RepcastFragment fragment = (RepcastFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+    public void setTitleBasedOnFragment() {
+        RepcastFragment fragment = (RepcastFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_holder);
         if (fragment != null) {
             String name = fragment.getName();
             getSupportActionBar().setTitle(name);
@@ -266,10 +269,24 @@ public abstract class RepcastActivity extends AppCompatActivity implements Fragm
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        RepcastFragment fragment = (RepcastFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        Log.e(TAG, "Got onQueryTextSubmit");
+        RepcastFragment fragment = (RepcastFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_holder);
+        mSearchView.clearFocus();
+        boolean result = fragment.getView().requestFocus();
+        Log.e(TAG, "Took Focus:" + result);
+
+        //This is the only way to stop the cursor in the TextView.
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                mSearchView.clearFocus();
+            }
+        });
         if (fragment != null) {
             return fragment.onQuerySubmit(query);
         }
+
+
         return false;
     }
 
@@ -286,7 +303,7 @@ public abstract class RepcastActivity extends AppCompatActivity implements Fragm
                 }
             });
         }
-        RepcastFragment fragment = (RepcastFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_file_fragment_holder);
+        RepcastFragment fragment = (RepcastFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_holder);
         if (fragment != null) {
             return fragment.onQueryChange(newText);
         }

@@ -33,6 +33,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     }
 
     public void updateContext(SelectTorrentActivity activity) {
+        Log.e(TAG,"Context Updateing:"+activity);
         mActivity = activity;
         notifyDataSetChanged();
     }
@@ -78,11 +79,11 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         return convertView;
     }
 
-    public void updataTorrentList(JsonTorrent fileList) {
-        updataTorrentList(fileList, false);
+    public void updateTorrentList(JsonTorrent fileList) {
+        updateTorrentList(fileList, false);
     }
 
-    public void updataTorrentList(JsonTorrent fileList, boolean isFiltered) {
+    public void updateTorrentList(JsonTorrent fileList, boolean isFiltered) {
         Log.e(TAG, "Torrent list changed");
         mTorrentList = fileList;
         if (!isFiltered) {

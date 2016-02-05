@@ -45,7 +45,7 @@ public class FileListFilter extends Filter {
         //if (results.count == 0) {
         //    mFileListAdapter.notifyDataSetInvalidated();
         //} else {
-            mFileListAdapter.updataFileList((JsonDirectory) results.values, true);
+            mFileListAdapter.updateFileList((JsonDirectory) results.values, true);
         //}
     }
 

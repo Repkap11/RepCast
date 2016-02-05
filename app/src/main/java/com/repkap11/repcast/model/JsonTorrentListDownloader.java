@@ -47,7 +47,7 @@ public class JsonTorrentListDownloader extends AsyncTask<String, Void, JsonTorre
     protected void onPostExecute(JsonTorrent fileList) {
         TorrentListAdapter adapter = mAdapterReference.get();
         if (adapter != null) {
-            adapter.updataTorrentList(fileList);
+            adapter.updateTorrentList(fileList);
         }
         super.onPostExecute(fileList);
     }

@@ -107,10 +107,10 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         holder.mIcon.setImageResource(iconResource);
         return convertView;
     }
-    public void updataFileList(JsonDirectory fileList) {
-        updataFileList(fileList, false);
+    public void updateFileList(JsonDirectory fileList) {
+        updateFileList(fileList, false);
     }
-    public void updataFileList(JsonDirectory fileList, boolean isFiltered) {
+    public void updateFileList(JsonDirectory fileList, boolean isFiltered) {
         Log.e(TAG, "File list changed");
         mFileList = fileList;
         if (!isFiltered){

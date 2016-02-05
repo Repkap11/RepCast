@@ -40,7 +40,7 @@ public class SelectTorrentActivity extends RepcastActivity {
     protected void completeOnCreate(Bundle savedInstanceState) {
         super.completeOnCreate(savedInstanceState);
         VideoCastManager.checkGooglePlayServices(this);
-        SelectTorrentFragment frag = (SelectTorrentFragment) getSupportFragmentManager().findFragmentById(R.id.activity_select_torrent_fragment_holder);
+        SelectTorrentFragment frag = (SelectTorrentFragment) getSupportFragmentManager().findFragmentById(R.id.activity_fragment_holder);
         if (frag == null) {
             Log.e(TAG, "Adapter null");
             JsonTorrent.JsonTorrentResult result = new JsonTorrent.JsonTorrentResult();
@@ -49,13 +49,14 @@ public class SelectTorrentActivity extends RepcastActivity {
         }
     }
 
+
     @Override
     protected void doShowContent(Parcelable data) {
         SelectTorrentFragment newFragment = new SelectTorrentFragment();
         JsonTorrent.JsonTorrentResult torrent = (JsonTorrent.JsonTorrentResult) data;
         newFragment.searchForTorrentsWithName(torrent.name);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_select_torrent_fragment_holder, newFragment);
+        transaction.replace(R.id.activity_fragment_holder, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

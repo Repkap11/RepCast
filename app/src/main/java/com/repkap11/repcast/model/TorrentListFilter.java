@@ -41,7 +41,7 @@ public class TorrentListFilter extends Filter {
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        mTorrentListAdapter.updataTorrentList((JsonTorrent) results.values, true);
+        mTorrentListAdapter.updateTorrentList((JsonTorrent) results.values, true);
     }
 
 }

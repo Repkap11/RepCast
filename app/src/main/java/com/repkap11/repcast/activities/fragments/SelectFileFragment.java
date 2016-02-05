@@ -18,6 +18,7 @@ public class SelectFileFragment extends RepcastFragment {
     private static final String INSTANCE_STATE_DIR = "INSTANCE_STATE_DIR";
     private FileListAdapter mAdapter;
     private JsonDirectory.JsonFileDir mDirectory;
+    private AbsListView mListView;
 
     @Override
     public boolean onQuerySubmit(String query) {
@@ -42,7 +43,7 @@ public class SelectFileFragment extends RepcastFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_selectfile, container, false);
         rootView.setKeepScreenOn(true);
-        AbsListView mListView = (AbsListView) rootView.findViewById(R.id.fragment_selectfile_list);
+        mListView = (AbsListView) rootView.findViewById(R.id.fragment_selectfile_list);
         setRetainInstance(true);
 
         if (mAdapter == null) {
@@ -63,6 +64,10 @@ public class SelectFileFragment extends RepcastFragment {
     public void showListUsingDirectory(JsonDirectory.JsonFileDir dir) {
         mDirectory = dir;
         mAdapter = new FileListAdapter(dir.path64);
+        mAdapter.updateContext((SelectFileActivity) getActivity());
+        if (mListView != null) {
+            mListView.setAdapter(mAdapter);
+        }
     }
 
     @Override
