@@ -19,12 +19,15 @@ package com.repkap11.repcast.activities;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
 import com.repkap11.repcast.model.JsonTorrent;
+import com.repkap11.repcast.model.JsonTorrentUploader;
 
 public class SelectTorrentActivity extends RepcastActivity {
 
@@ -44,7 +47,7 @@ public class SelectTorrentActivity extends RepcastActivity {
         if (frag == null) {
             Log.e(TAG, "Adapter null");
             JsonTorrent.JsonTorrentResult result = new JsonTorrent.JsonTorrentResult();
-            result.name = "Runescape";
+            result.name = "Fallon";
             doShowContent(result);
         }
     }
@@ -61,8 +64,18 @@ public class SelectTorrentActivity extends RepcastActivity {
         transaction.commit();
     }
 
-    public void downloadTorrent(JsonTorrent.JsonTorrentResult element) {
+    public void uploadTorrent(JsonTorrent.JsonTorrentResult element) {
         Log.e(TAG, "Should start download of torrent " + element.name);
+        String magnetLink64 = Base64.encodeToString(element.magnetLink.getBytes(),Base64.NO_WRAP);
 
+        String url = "https://repkam09.com/dl/toradd/" + magnetLink64;
+        JsonTorrentUploader uploader = new JsonTorrentUploader(this);
+        uploader.execute(url);
+
+    }
+
+    public void torrentUploadComplete(Integer resultCode) {
+        Toast.makeText(this,"Result:"+resultCode,Toast.LENGTH_SHORT).show();
+        Log.e(TAG,"Got Result:"+resultCode);
     }
 }

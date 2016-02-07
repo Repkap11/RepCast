@@ -43,7 +43,7 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
             String username = "guest";
             String password = "guest";
             String userPassword = username + ":" + password;
-            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.DEFAULT);
+            String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.NO_WRAP);
             c.setRequestProperty("Authorization", "Basic " + encoding);
             c.setUseCaches(false);
             c.connect();

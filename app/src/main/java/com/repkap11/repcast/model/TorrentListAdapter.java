@@ -1,5 +1,6 @@
 package com.repkap11.repcast.model;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,8 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     private JsonTorrent mTorrentList;
 
     public TorrentListAdapter(String query) {
-        mURL = "https://repkam09.com/dl/torsearch/" + query;
+        String query64 = Base64.encodeToString(query.getBytes(), Base64.NO_WRAP);
+        mURL = "https://repkam09.com/dl/torsearch/" + query64;
         mTorrentList = new JsonTorrent();
         mFilter = new TorrentListFilter(mTorrentList, this);
         JsonTorrentListDownloader downloader = new JsonTorrentListDownloader(this);
@@ -99,11 +101,15 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     public void onClick(View v) {
         Holder h = (Holder) v.getTag();
         JsonTorrent.JsonTorrentResult element = mTorrentList.torrents.get(h.mIndex);
-        mActivity.downloadTorrent(element);
+        mActivity.uploadTorrent(element);
     }
 
     public Filter getFilter() {
         return mFilter;
+    }
+
+    public void torrentUploadComplete(Integer resultCode) {
+        Log.e(TAG, "Torrent Complete:"+resultCode);
     }
 
     public class Holder {

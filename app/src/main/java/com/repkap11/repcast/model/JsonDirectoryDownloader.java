@@ -33,7 +33,7 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
             String username = "guest";
             String password = "guest";
             String userPassword = username + ":" + password;
-            String encoding = Base64.encodeToString(userPassword.getBytes(),Base64.DEFAULT);
+            String encoding = Base64.encodeToString(userPassword.getBytes(),Base64.NO_WRAP);
             c.setRequestProperty("Authorization", "Basic " + encoding);
             c.setUseCaches(false);
 
@@ -47,7 +47,7 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
             }
             return fileList;
         } catch (Exception e) {
-            Log.e("MainActivity", e.getMessage(), e);
+            Log.e(TAG, e.getMessage(), e);
         }
         return null;
     }
