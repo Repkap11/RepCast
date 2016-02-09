@@ -94,4 +94,7 @@
     <string name="queue_item_added_to_play_next">An item was added to play next</string>
     <string name="queue_item_added_to_queue">An item was added to the queue</string>
     <string name="update_application">Update App from Repkam09.com</string>
+    <string name="tab_torrent_title">Add</string>
+    <string name="tab_file_title">Watch</string>
+    <string name="add_torrent_initial_title">Search Torrents</string>
 </resources>

@@ -22,17 +22,14 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <activity
-            android:name=".activities.SelectFileActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".activities.SelectTorrentActivity"
+            android:name=".activities.RepcastActivity"
+            android:windowSoftInputMode="adjustPan|adjustNothing"
             android:label="@string/app_name" >
         </activity>
 
         <activity-alias
             android:name=".Launcher"
-            android:targetActivity=".activities.SelectTorrentActivity">
+            android:targetActivity=".activities.RepcastActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,10 +50,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.CastVideosDark"
-            android:parentActivityName=".activities.SelectFileActivity">
+            android:parentActivityName=".activities.RepcastActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.SelectFileActivity" />
+                android:value=".activities.RepcastActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

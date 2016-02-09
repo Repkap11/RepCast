@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-import com.repkap11.repcast.activities.SelectTorrentActivity;
+import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
 
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
@@ -15,10 +15,10 @@ import java.net.URL;
  */
 public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
     private static final String TAG = JsonTorrentUploader.class.getSimpleName();
-    private final WeakReference<SelectTorrentActivity> mActivityReference;
+    private final WeakReference<SelectTorrentFragment> mFragmentReference;
 
-    public JsonTorrentUploader(SelectTorrentActivity activity) {
-        mActivityReference = new WeakReference<>(activity);
+    public JsonTorrentUploader(SelectTorrentFragment fragment) {
+        mFragmentReference = new WeakReference<>(fragment);
     }
 
     @Override
@@ -49,9 +49,9 @@ public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer resultCode) {
-        SelectTorrentActivity activity = mActivityReference.get();
-        if (activity != null) {
-            activity.torrentUploadComplete(resultCode);
+        SelectTorrentFragment fragment = mFragmentReference.get();
+        if (fragment != null) {
+            fragment.torrentUploadComplete(resultCode);
         }
         super.onPostExecute(resultCode);
     }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.activities.SelectFileActivity;
+import com.repkap11.repcast.activities.fragments.SelectFileFragment;
 
 
 /**
@@ -21,7 +21,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     private static final String TAG = FileListAdapter.class.getSimpleName();
     private final String mURL;
     private FileListFilter mFilter;
-    private SelectFileActivity mActivity;
+    private SelectFileFragment mFragment;
     private JsonDirectory mFileList;
 
     public FileListAdapter(String path64) {
@@ -32,8 +32,8 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         downloader.execute(mURL);
     }
 
-    public void updateContext(SelectFileActivity activity) {
-        mActivity = activity;
+    public void updateContext(SelectFileFragment activity) {
+        mFragment = activity;
         notifyDataSetChanged();
     }
 
@@ -83,7 +83,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             } else {
                 throw new RuntimeException("Wrong ID");
             }
-            convertView = LayoutInflater.from(mActivity).inflate(layout, parent, false);
+            convertView = LayoutInflater.from(mFragment.getActivity()).inflate(layout, parent, false);
             holder = new Holder();
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_name);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selectfile_list_element_icon);
@@ -117,7 +117,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             mFilter = new FileListFilter(mFileList,this);
         }
         if (mFileList == null) {
-            Toast.makeText(mActivity.getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
         notifyDataSetChanged();
     }
@@ -127,9 +127,9 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         Holder h = (Holder) v.getTag();
         JsonDirectory.JsonFileDir dir = mFileList.result.get(h.mIndex);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-            mActivity.showContent(dir);
+            mFragment.doShowContent(mFragment.getFragmentManager(),dir);
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
-            mActivity.showFile(dir);
+            mFragment.showFile(dir);
         }
     }
 
