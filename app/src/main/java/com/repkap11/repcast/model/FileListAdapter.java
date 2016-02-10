@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.activities.fragments.SelectFileFragment;
+import com.repkap11.repcast.activities.RepcastActivity;
 
 
 /**
@@ -21,7 +21,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     private static final String TAG = FileListAdapter.class.getSimpleName();
     private final String mURL;
     private FileListFilter mFilter;
-    private SelectFileFragment mFragment;
+    private RepcastActivity mActivity;
     private JsonDirectory mFileList;
 
     public FileListAdapter(String path64) {
@@ -32,8 +32,8 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         downloader.execute(mURL);
     }
 
-    public void updateContext(SelectFileFragment activity) {
-        mFragment = activity;
+    public void updateContext(RepcastActivity activity) {
+        mActivity = activity;
         notifyDataSetChanged();
     }
 
@@ -83,7 +83,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             } else {
                 throw new RuntimeException("Wrong ID");
             }
-            convertView = LayoutInflater.from(mFragment.getActivity()).inflate(layout, parent, false);
+            convertView = LayoutInflater.from(mActivity).inflate(layout, parent, false);
             holder = new Holder();
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_name);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selectfile_list_element_icon);
@@ -111,13 +111,13 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         updateFileList(fileList, false);
     }
     public void updateFileList(JsonDirectory fileList, boolean isFiltered) {
-        Log.e(TAG, "File list changed");
+        Log.e(TAG, "File list changed on"+this);
         mFileList = fileList;
         if (!isFiltered){
             mFilter = new FileListFilter(mFileList,this);
         }
         if (mFileList == null) {
-            Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity.getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
         notifyDataSetChanged();
     }
@@ -127,9 +127,9 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         Holder h = (Holder) v.getTag();
         JsonDirectory.JsonFileDir dir = mFileList.result.get(h.mIndex);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-            mFragment.doShowContent(mFragment.getFragmentManager(),dir);
+            mActivity.showContent(dir);
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
-            mFragment.showFile(dir);
+            mActivity.showFile(dir);
         }
     }
 

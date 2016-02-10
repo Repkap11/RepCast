@@ -16,13 +16,25 @@
 
 package com.repkap11.repcast.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.fragments.RepcastFragment;
+import com.repkap11.repcast.activities.fragments.SelectFileFragment;
+import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
+import com.repkap11.repcast.model.JsonDirectory;
+import com.repkap11.repcast.model.JsonTorrent;
+import com.repkap11.repcast.model.JsonTorrentUploader;
+import com.repkap11.repcast.model.RepcastPageAdapter;
+
+import java.util.Stack;
 
 public class RepcastActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
@@ -34,21 +46,85 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repcast);
-        mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), getApplicationContext());
+        mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), this, getApplicationContext());
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(RepcastPageAdapter.FILE_INDEX);
         mViewPager.addOnPageChangeListener(this);
+
+
         completeOnCreate(savedInstanceState);
         tabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
     protected void doShowContent(Parcelable data) {
-        RepcastFragment currentFragment = (RepcastFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem());
-        currentFragment.doShowContent(getSupportFragmentManager(), data);
+        int pageIndex = -1;
+        if (data instanceof JsonDirectory.JsonFileDir) {
+            Log.e(TAG, "Showing File data of:" + ((JsonDirectory.JsonFileDir) data).name);
+            pageIndex = RepcastPageAdapter.FILE_INDEX;
+        }
+        if (data instanceof JsonTorrent.JsonTorrentResult) {
+            pageIndex = RepcastPageAdapter.TORRENT_INDEX;
+        }
+        if (pageIndex == -1) {
+            Log.e(TAG, "Unexpected data type. Class:" + data.getClass() + " String:" + data);
+        }
+        RepcastFragment newFragment = mPagerAdapter.updatePageAtIndex(pageIndex, data);
+        addFragmentToABackStack(newFragment);
+        setTitleBasedOnFragment();
     }
+
+    Stack<RepcastFragment> mBackSelectFileFragments = new Stack<>();
+    Stack<RepcastFragment> mBackTorrentFragments = new Stack<>();
+
+    public void addFragmentToABackStack(RepcastFragment newFragment) {
+        if (newFragment instanceof SelectFileFragment) {
+            mBackSelectFileFragments.add(newFragment);
+        } else if (newFragment instanceof SelectTorrentFragment) {
+            mBackTorrentFragments.add(newFragment);
+        }
+    }
+
+    public RepcastFragment removeFragmentFromABackStack(Class<? extends RepcastFragment> targetClass) {
+        RepcastFragment oldFragment = null;
+        if (targetClass.equals(SelectFileFragment.class)) {
+            if (mBackSelectFileFragments.empty()) {
+                return null;
+            }
+            mBackSelectFileFragments.pop();
+            if (mBackSelectFileFragments.empty()) {
+                return null;
+            }
+            oldFragment = mBackSelectFileFragments.peek();
+        } else if (targetClass.equals(SelectTorrentFragment.class)) {
+            if (mBackTorrentFragments.empty()) {
+                return null;
+            }
+            mBackTorrentFragments.pop();
+            if (mBackTorrentFragments.empty()) {
+                return null;
+            }
+            oldFragment = mBackTorrentFragments.peek();
+        }
+        return oldFragment;
+
+    }
+
+    @Override
+    protected boolean handleOnBackPressed() {
+        Log.e(TAG, "Handleing back press");
+        RepcastFragment currentFragment = (RepcastFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem());
+        RepcastFragment previousFragment = removeFragmentFromABackStack(currentFragment.getClass());
+        if (previousFragment == null) {
+            return false;
+        }
+        mPagerAdapter.updateFragment(previousFragment, mViewPager.getCurrentItem());
+        setTitleBasedOnFragment();
+        return true;
+    }
+
 
     @Override
     public void setTitleBasedOnFragment() {
@@ -89,5 +165,29 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    public void uploadTorrent(JsonTorrent.JsonTorrentResult element) {
+        Log.e(TAG, "Should start download of torrent " + element.name);
+        String magnetLink64 = Base64.encodeToString(element.magnetLink.getBytes(), Base64.NO_WRAP);
+
+        String url = "https://repkam09.com/dl/toradd/" + magnetLink64;
+        JsonTorrentUploader uploader = new JsonTorrentUploader(this);
+        uploader.execute(url);
+    }
+
+    public void torrentUploadComplete(Integer resultCode) {
+        Toast.makeText(this, "Result:" + resultCode, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "Got Result:" + resultCode);
+    }
+
+    public void showFile(JsonDirectory.JsonFileDir dir) {
+        Log.e(TAG, "Starting file:" + dir.name);
+        Intent intent = new Intent();
+        intent.setClass(this, LocalPlayerActivity.class);
+        intent.putExtra("media", dir);
+        intent.putExtra("shouldStart", false);
+        Log.e(TAG, "About to cast:" + dir.path);
+        startActivity(intent);
     }
 }

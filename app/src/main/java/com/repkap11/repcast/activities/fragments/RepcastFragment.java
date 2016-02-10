@@ -1,6 +1,5 @@
 package com.repkap11.repcast.activities.fragments;
 
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -20,5 +19,11 @@ public abstract class RepcastFragment extends Fragment {
 
     public abstract boolean onQueryChange(String newText);
 
-    public abstract void doShowContent(FragmentManager fm, Parcelable data);
+    protected static void assertThat(boolean b) {
+        if (!b){
+            throw new RuntimeException("Assertion Failed");
+        }
+    }
+
+    public abstract void doFragmentTransition(FragmentManager mFragmentManager);
 }

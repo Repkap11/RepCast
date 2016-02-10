@@ -132,7 +132,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     protected void completeOnCreate(Bundle savedInstanceState) {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        setTitleBasedOnFragment();
+        //
+        // setTitleBasedOnFragment();
     }
 
     @Override
@@ -247,13 +248,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             mSearchView.setIconified(true);
             return;
         }
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+        if (!handleOnBackPressed()) {
             finish();
-        } else {
-            //This manages the back stack by itself.
-            super.onBackPressed();
         }
+
     }
+
+    protected abstract boolean handleOnBackPressed();
 
     @Override
     public void onBackStackChanged() {

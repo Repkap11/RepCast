@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
+import com.repkap11.repcast.activities.RepcastActivity;
 
 
 /**
@@ -22,7 +22,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     private static final String TAG = TorrentListAdapter.class.getSimpleName();
     private final String mURL;
     private TorrentListFilter mFilter;
-    private SelectTorrentFragment mFragment;
+    private RepcastActivity mActivity;
     private JsonTorrent mTorrentList;
 
     public TorrentListAdapter(String query) {
@@ -34,9 +34,9 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         downloader.execute(mURL);
     }
 
-    public void updateContext(SelectTorrentFragment fragment) {
-        Log.e(TAG,"Context Updateing:"+fragment);
-        mFragment = fragment;
+    public void updateContext(RepcastActivity activity) {
+        Log.e(TAG,"Context Updateing:"+activity);
+        mActivity = activity;
         notifyDataSetChanged();
     }
 
@@ -65,7 +65,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         JsonTorrent.JsonTorrentResult result = mTorrentList.torrents.get(position);
         if (convertView == null) {
             int layout = R.layout.fragment_selecttorrent_list_element;
-            convertView = LayoutInflater.from(mFragment.getActivity()).inflate(layout, parent, false);
+            convertView = LayoutInflater.from(mActivity).inflate(layout, parent, false);
             holder = new Holder();
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selecttorrent_list_element_name);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selecttorrent_list_element_icon);
@@ -92,7 +92,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
             mFilter = new TorrentListFilter(mTorrentList, this);
         }
         if (mTorrentList == null) {
-            Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read torrent data from Repkam09.com", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity.getApplicationContext(), "Unable to read torrent data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
         notifyDataSetChanged();
     }
@@ -101,7 +101,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     public void onClick(View v) {
         Holder h = (Holder) v.getTag();
         JsonTorrent.JsonTorrentResult element = mTorrentList.torrents.get(h.mIndex);
-        mFragment.uploadTorrent(element);
+        mActivity.uploadTorrent(element);
     }
 
     public Filter getFilter() {
