@@ -1,8 +1,11 @@
 package com.repkap11.repcast.activities.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ public class SelectFileFragment extends RepcastFragment {
     public static SelectFileFragment newInstance(JsonDirectory.JsonFileDir dir) {
         SelectFileFragment fragment = new SelectFileFragment();
         fragment.mDirectory = dir;
+        Log.e(TAG, "Fragment Created");
         return fragment;
     }
     @Override
@@ -53,9 +57,20 @@ public class SelectFileFragment extends RepcastFragment {
     }
 
     @Override
+    public Parcelable getParceable() {
+        return mDirectory;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            //mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
+            if (RepcastFragment.DO_SAVE_STATE) {
+                mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
+            }
+        }
+        mAdapter = new FileListAdapter(mDirectory.path64);
+        if (getActivity() != null) {
+            mAdapter.updateContext((RepcastActivity) getActivity());
         }
         super.onCreate(savedInstanceState);
     }
@@ -63,18 +78,31 @@ public class SelectFileFragment extends RepcastFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_selectfile, container, false);
-        rootView.setKeepScreenOn(true);
         mListView = (AbsListView) rootView.findViewById(R.id.fragment_selectfile_list);
-        setRetainInstance(true);
-        mAdapter = new FileListAdapter(mDirectory.path64);
-        mAdapter.updateContext((RepcastActivity) getActivity());
+        setRetainInstance(DO_RETAIN_INSTANCE);
         mListView.setAdapter(mAdapter);
         return rootView;
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (mAdapter != null) {
+            mAdapter.updateContext((RepcastActivity) activity);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mAdapter.updateContext(null);
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
-        //outState.putParcelable(INSTANCE_STATE_DIR, mDirectory);
+        if (RepcastFragment.DO_SAVE_STATE) {
+            outState.putParcelable(INSTANCE_STATE_DIR, mDirectory);
+        }
         super.onSaveInstanceState(outState);
     }
 

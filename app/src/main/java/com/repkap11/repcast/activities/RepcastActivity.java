@@ -71,24 +71,24 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         if (pageIndex == -1) {
             Log.e(TAG, "Unexpected data type. Class:" + data.getClass() + " String:" + data);
         }
-        RepcastFragment newFragment = mPagerAdapter.updatePageAtIndex(pageIndex, data);
-        addFragmentToABackStack(newFragment);
+        mPagerAdapter.updatePageAtIndex(pageIndex, data);
+        addFragmentToABackStack(data);
         setTitleBasedOnFragment();
     }
 
-    Stack<RepcastFragment> mBackSelectFileFragments = new Stack<>();
-    Stack<RepcastFragment> mBackTorrentFragments = new Stack<>();
+    Stack<Parcelable> mBackSelectFileFragments = new Stack<>();
+    Stack<Parcelable> mBackTorrentFragments = new Stack<>();
 
-    public void addFragmentToABackStack(RepcastFragment newFragment) {
-        if (newFragment instanceof SelectFileFragment) {
-            mBackSelectFileFragments.add(newFragment);
-        } else if (newFragment instanceof SelectTorrentFragment) {
-            mBackTorrentFragments.add(newFragment);
+    public void addFragmentToABackStack(Parcelable newFragmentData) {
+        if (newFragmentData instanceof JsonDirectory.JsonFileDir) {
+            mBackSelectFileFragments.add(newFragmentData);
+        } else if (newFragmentData instanceof JsonTorrent.JsonTorrentResult) {
+            mBackTorrentFragments.add(newFragmentData);
         }
     }
 
-    public RepcastFragment removeFragmentFromABackStack(Class<? extends RepcastFragment> targetClass) {
-        RepcastFragment oldFragment = null;
+    public Parcelable removeFragmentFromABackStack(Class<? extends RepcastFragment> targetClass) {
+        Parcelable oldFragmentData = null;
         if (targetClass.equals(SelectFileFragment.class)) {
             if (mBackSelectFileFragments.empty()) {
                 return null;
@@ -97,7 +97,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
             if (mBackSelectFileFragments.empty()) {
                 return null;
             }
-            oldFragment = mBackSelectFileFragments.peek();
+            oldFragmentData = mBackSelectFileFragments.peek();
         } else if (targetClass.equals(SelectTorrentFragment.class)) {
             if (mBackTorrentFragments.empty()) {
                 return null;
@@ -106,21 +106,21 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
             if (mBackTorrentFragments.empty()) {
                 return null;
             }
-            oldFragment = mBackTorrentFragments.peek();
+            oldFragmentData = mBackTorrentFragments.peek();
         }
-        return oldFragment;
+        return oldFragmentData;
 
     }
 
     @Override
     protected boolean handleOnBackPressed() {
         Log.e(TAG, "Handleing back press");
-        RepcastFragment currentFragment = (RepcastFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem());
-        RepcastFragment previousFragment = removeFragmentFromABackStack(currentFragment.getClass());
-        if (previousFragment == null) {
+        RepcastFragment currentFragment = mPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+        Parcelable previousFragmentData = removeFragmentFromABackStack(currentFragment.getClass());
+        if (previousFragmentData == null) {
             return false;
         }
-        mPagerAdapter.updateFragment(previousFragment, mViewPager.getCurrentItem());
+        mPagerAdapter.updateFragment(previousFragmentData, mViewPager.getCurrentItem());
         setTitleBasedOnFragment();
         return true;
     }
@@ -128,16 +128,19 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     @Override
     public void setTitleBasedOnFragment() {
-        RepcastFragment currentFragment = (RepcastFragment) mPagerAdapter.getItem(mViewPager.getCurrentItem());
-        String name = currentFragment.getName();
-        getSupportActionBar().setTitle(name);
+        RepcastFragment frag = mPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+        if (frag != null) {
+            String name = frag.getName();
+            getSupportActionBar().setTitle(name);
+        }
+
     }
 
     @Override
     protected boolean onQuerySubmit(String query) {
         //Propagate query submit only to the current fragment.
         for (int i = 0; i < mPagerAdapter.getCount(); i++){
-            RepcastFragment fragment = (RepcastFragment)mPagerAdapter.getItem(i);
+            RepcastFragment fragment = mPagerAdapter.getRegisteredFragment(i);
             fragment.onQuerySubmit(query);
         }
         return true;
@@ -147,7 +150,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     protected void onQueryChanged(String query) {
         //Propagate query changed to all fragments.
         for (int i = 0; i < mPagerAdapter.getCount(); i++){
-            RepcastFragment fragment = (RepcastFragment)mPagerAdapter.getItem(i);
+            RepcastFragment fragment = mPagerAdapter.getRegisteredFragment(i);
             fragment.onQueryChange(query);
         }
     }
