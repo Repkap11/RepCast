@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
@@ -18,7 +18,7 @@ import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
 /**
  * Created by paul on 2/7/16.
  */
-public class RepcastPageAdapter extends FragmentPagerAdapter {
+public class RepcastPageAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = RepcastPageAdapter.class.getSimpleName();
     private final Parcelable[] mFragmentContent = new Parcelable[2];
     private final Context mApplicationContest;
@@ -36,12 +36,12 @@ public class RepcastPageAdapter extends FragmentPagerAdapter {
         dir.path64 = "";
         dir.isRoot = true;
         mFragmentContent[FILE_INDEX] = dir;
-        //activity.addFragmentToABackStack(mFragments[FILE_INDEX]);
+        activity.addFragmentToABackStack(mFragmentContent[FILE_INDEX]);
 
         JsonTorrent.JsonTorrentResult torrent = new JsonTorrent.JsonTorrentResult();
         torrent.name = "Colbert";
         mFragmentContent[TORRENT_INDEX] = torrent;
-        //activity.addFragmentToABackStack(mFragments[TORRENT_INDEX]);
+        activity.addFragmentToABackStack(mFragmentContent[TORRENT_INDEX]);
     }
 
     public void updateFragment(Parcelable mostRecentFragContent, int index) {
@@ -77,9 +77,9 @@ public class RepcastPageAdapter extends FragmentPagerAdapter {
     public int getItemPosition(Object object) {
         RepcastFragment fragObject = (RepcastFragment) object;
         int result;
-        if (fragObject == getRegisteredFragment(TORRENT_INDEX)) {
+        if (fragObject.getParceable() == mFragmentContent[TORRENT_INDEX]) {
             result = TORRENT_INDEX;
-        } else if (fragObject == getRegisteredFragment(FILE_INDEX)) {
+        } else if (fragObject.getParceable() == mFragmentContent[FILE_INDEX]) {
             result = FILE_INDEX;
         } else {
             result = POSITION_NONE;
@@ -90,6 +90,7 @@ public class RepcastPageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Log.d(TAG, "getItem() called with: " + "position = [" + position + "]");
         if (position == FILE_INDEX) {
             return SelectFileFragment.newInstance((JsonDirectory.JsonFileDir) mFragmentContent[FILE_INDEX]);
         } else if (position == TORRENT_INDEX) {
