@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 public abstract class RepcastFragment extends Fragment {
 
     private static final String TAG = RepcastFragment.class.getSimpleName();
-    protected static final boolean DO_SAVE_STATE = false;
+    protected static final boolean DO_SAVE_STATE = true;
     protected static final boolean DO_RETAIN_INSTANCE = true;
 
     public RepcastFragment() {

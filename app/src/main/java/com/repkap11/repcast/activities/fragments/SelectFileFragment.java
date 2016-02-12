@@ -65,7 +65,9 @@ public class SelectFileFragment extends RepcastFragment {
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (RepcastFragment.DO_SAVE_STATE) {
-                mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
+                if (mDirectory == null) {
+                    mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
+                }
             }
         }
         mAdapter = new FileListAdapter(mDirectory.path64);

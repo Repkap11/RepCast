@@ -34,11 +34,14 @@ import com.repkap11.repcast.model.JsonTorrent;
 import com.repkap11.repcast.model.JsonTorrentUploader;
 import com.repkap11.repcast.model.RepcastPageAdapter;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 public class RepcastActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     private static final String TAG = RepcastActivity.class.getSimpleName();
+    private static final String INSTANCE_STATE_BACK_STACK_TORRENTS = "INSTANCE_STATE_BACK_STACK_TORRENTS";
+    private static final String INSTANCE_STATE_BACK_STACK_FILES = "INSTANCE_STATE_BACK_STACK_FILES";
     private ViewPager mViewPager;
     private RepcastPageAdapter mPagerAdapter;
 
@@ -46,7 +49,13 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repcast);
-        mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), this, getApplicationContext());
+        if (savedInstanceState == null) {
+            mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), this, getApplicationContext());
+        } else {
+            mBackSelectFileFragments.addAll(Arrays.asList(savedInstanceState.getParcelableArray(INSTANCE_STATE_BACK_STACK_FILES)));
+            mBackTorrentFragments.addAll(Arrays.asList(savedInstanceState.getParcelableArray(INSTANCE_STATE_BACK_STACK_TORRENTS)));
+            mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), getApplicationContext(), (JsonDirectory.JsonFileDir) mBackSelectFileFragments.peek(), (JsonTorrent.JsonTorrentResult) mBackTorrentFragments.peek());
+        }
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
@@ -115,7 +124,12 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     protected boolean handleOnBackPressed() {
         Log.e(TAG, "Handleing back press");
-        RepcastFragment currentFragment = mPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+        int currentFragmentIndex = mViewPager.getCurrentItem();
+        if (currentFragmentIndex == RepcastPageAdapter.TORRENT_INDEX){
+            mViewPager.setCurrentItem(RepcastPageAdapter.FILE_INDEX);
+            return true;
+        }
+        RepcastFragment currentFragment = mPagerAdapter.getRegisteredFragment(currentFragmentIndex);
         Parcelable previousFragmentData = removeFragmentFromABackStack(currentFragment.getClass());
         if (previousFragmentData == null) {
             return false;
@@ -192,5 +206,12 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         intent.putExtra("shouldStart", false);
         Log.e(TAG, "About to cast:" + dir.path);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArray(INSTANCE_STATE_BACK_STACK_FILES, mBackSelectFileFragments.toArray(new JsonDirectory.JsonFileDir[0]));
+        outState.putParcelableArray(INSTANCE_STATE_BACK_STACK_TORRENTS, mBackTorrentFragments.toArray(new JsonTorrent.JsonTorrentResult[0]));
+        super.onSaveInstanceState(outState);
     }
 }

@@ -35,7 +35,9 @@ public class SelectTorrentFragment extends RepcastFragment {
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             if (RepcastFragment.DO_SAVE_STATE) {
-                mTorrent = savedInstanceState.getParcelable(INSTANCE_STATE_QUERY);
+                if (mTorrent == null) {
+                    mTorrent = savedInstanceState.getParcelable(INSTANCE_STATE_QUERY);
+                }
             }
         }
         mAdapter = new TorrentListAdapter(mTorrent.name);
