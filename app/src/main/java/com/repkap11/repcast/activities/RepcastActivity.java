@@ -17,13 +17,12 @@
 package com.repkap11.repcast.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.fragments.RepcastFragment;
@@ -31,7 +30,6 @@ import com.repkap11.repcast.activities.fragments.SelectFileFragment;
 import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
 import com.repkap11.repcast.model.JsonDirectory;
 import com.repkap11.repcast.model.JsonTorrent;
-import com.repkap11.repcast.model.JsonTorrentUploader;
 import com.repkap11.repcast.model.RepcastPageAdapter;
 
 import java.util.Arrays;
@@ -63,7 +61,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         mViewPager.addOnPageChangeListener(this);
 
 
-        completeOnCreate(savedInstanceState);
+        completeOnCreate(savedInstanceState, true);
         tabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -186,16 +184,15 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     public void uploadTorrent(JsonTorrent.JsonTorrentResult element) {
         Log.e(TAG, "Should start download of torrent " + element.name);
-        String magnetLink64 = Base64.encodeToString(element.magnetLink.getBytes(), Base64.NO_WRAP);
 
-        String url = "https://repkam09.com/dl/toradd/" + magnetLink64;
-        JsonTorrentUploader uploader = new JsonTorrentUploader(this);
-        uploader.execute(url);
-    }
 
-    public void torrentUploadComplete(Integer resultCode) {
-        Toast.makeText(this, "Result:" + resultCode, Toast.LENGTH_SHORT).show();
-        Log.e(TAG, "Got Result:" + resultCode);
+        Intent intent = new Intent();
+        intent.setClass(this, TorrentConfirmationActivity.class);
+        intent.setData(Uri.parse(element.magnetLink));
+        intent.putExtra(TorrentConfirmationActivity.EXTRA_TORRENT_RESULT, element);
+        Log.e(TAG, "About to download:" + element.name);
+        startActivity(intent);
+
     }
 
     public void showFile(JsonDirectory.JsonFileDir dir) {
@@ -203,7 +200,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Intent intent = new Intent();
         intent.setClass(this, LocalPlayerActivity.class);
         intent.putExtra("media", dir);
-        intent.putExtra("shouldStart", false);
+        intent.putExtra("shouldStart", false);//TODO should start?
         Log.e(TAG, "About to cast:" + dir.path);
         startActivity(intent);
     }

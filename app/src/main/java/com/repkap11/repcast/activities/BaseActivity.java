@@ -64,6 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     protected Toolbar mToolbar;
     private SearchView mSearchView;
     private String mInitialSearchString = null;
+    private boolean mIncludeSearch;
 
     /*
      * (non-Javadoc)
@@ -129,7 +130,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         };
     }
 
-    protected void completeOnCreate(Bundle savedInstanceState) {
+    protected void completeOnCreate(Bundle savedInstanceState, boolean includeSearch) {
+        mIncludeSearch = includeSearch;
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         //
@@ -152,6 +154,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         });
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
+            searchItem.setVisible(mIncludeSearch);
             mSearchView = (SearchView) searchItem.getActionView();
             mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             mSearchView.setQuery(mInitialSearchString, false);

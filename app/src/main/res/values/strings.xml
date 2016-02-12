@@ -97,4 +97,8 @@
     <string name="tab_torrent_title">Add</string>
     <string name="tab_file_title">Watch</string>
     <string name="add_torrent_initial_title">Search Torrents</string>
+    <string name="torrent_size_prefix">Size: </string>
+    <string name="torrent_confirmation_yes">Yes</string>
+    <string name="torrent_confirmation_no">No</string>
+    <string name="torrent_confirmation_message">Add this to the Seedbox?</string>
 </resources>
