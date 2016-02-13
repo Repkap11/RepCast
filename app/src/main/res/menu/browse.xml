@@ -21,25 +21,25 @@
         android:id="@+id/action_show_queue"
         android:icon="@drawable/ic_playlist_white_24dp"
         android:title="@string/show_queue"
-        android:orderInCategory="100"
         app:showAsAction="always" />
+
 
     <item
         android:id="@+id/media_route_menu_item"
         android:title="@string/media_route_menu_title"
         app:actionProviderClass="android.support.v7.app.MediaRouteActionProvider"
-        android:orderInCategory="101"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_menu_search_mtrl_alpha"
+        android:title="Search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView" />
 
     <item android:id="@+id/update_app_menu_button"
         app:showAsAction="never"
         android:title="@string/update_application" />
-    <item
-        android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        app:showAsAction="always"
 
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        android:title="Search"/>
 
 </menu>

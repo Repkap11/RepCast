@@ -25,6 +25,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
@@ -155,7 +156,24 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
             searchItem.setVisible(mIncludeSearch);
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    if (!mSearchView.isIconified()) {
+                        //return false;
+                    }
+                    mediaRouteMenuItem.setVisible(false);
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    mediaRouteMenuItem.setVisible(mCastManager.isAnyRouteAvailable());
+                    return true;
+                }
+            });
             mSearchView = (SearchView) searchItem.getActionView();
+            ;
             mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             mSearchView.setQuery(mInitialSearchString, false);
             mSearchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);

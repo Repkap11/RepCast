@@ -200,7 +200,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Intent intent = new Intent();
         intent.setClass(this, LocalPlayerActivity.class);
         intent.putExtra("media", dir);
-        intent.putExtra("shouldStart", false);//TODO should start?
+        intent.putExtra("shouldStart", true);//TODO should start?
         Log.e(TAG, "About to cast:" + dir.path);
         startActivity(intent);
     }

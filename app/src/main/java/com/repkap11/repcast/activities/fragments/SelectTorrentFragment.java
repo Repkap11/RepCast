@@ -40,10 +40,12 @@ public class SelectTorrentFragment extends RepcastFragment {
                 }
             }
         }
+        /*
         mAdapter = new TorrentListAdapter(mTorrent.name);
         if (getActivity() != null) {
             mAdapter.updateContext((RepcastActivity) getActivity());
         }
+        */
 
         super.onCreate(savedInstanceState);
     }
@@ -54,6 +56,7 @@ public class SelectTorrentFragment extends RepcastFragment {
         mListView = (AbsListView) rootView.findViewById(R.id.fragment_selectfile_list);
         setRetainInstance(RepcastFragment.DO_RETAIN_INSTANCE);
         mListView.setAdapter(mAdapter);
+
         //searchForTorrentsWithName(mTorrent.name);
         return rootView;
     }
@@ -69,7 +72,9 @@ public class SelectTorrentFragment extends RepcastFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mAdapter.updateContext(null);
+        if (mAdapter != null) {
+            mAdapter.updateContext(null);
+        }
     }
 
     @Override

@@ -23,6 +23,11 @@ public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
         String url = params[0];
         //url = "https://repkam09.com/dl/toradd/bWFnbmV0Oj94dD11cm46YnRpaDpiOTQwY2IzZTc1MWYyYTc4NTQ2NGEyNTcwYzA3OTdlNzI3NmNiMzk3JmRuPVNhdHVyZGF5K05pZ2h0K0xpdmUrUzM5RTEwK0ppbW15K0ZhbGxvbi1KdXN0aW4rVGltYmVybGFrZStIRFRWK3gmdHI9dWRwJTNBJTJGJTJGdHJhY2tlci5vcGVuYml0dG9ycmVudC5jb20lM0E4MCZ0cj11ZHAlM0ElMkYlMkZvcGVuLmRlbW9uaWkuY29tJTNBMTMzNyZ0cj11ZHAlM0ElMkYlMkZ0cmFja2VyLmNvcHBlcnN1cmZlci50ayUzQTY5NjkmdHI9dWRwJTNBJTJGJTJGZXhvZHVzLmRlc3luYy5jb20lM0E2OTY5";
         Log.e(TAG, "URL:" + url);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         /*
         try {
             HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();

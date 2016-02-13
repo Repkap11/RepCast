@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ public class TorrentConfirmationActivity extends BaseActivity {
     private TextView mTextViewTitle;
     public static final String EXTRA_TORRENT_RESULT = "com.repkap11.repcast.extra_torrent_result";
     private TextView mTextViewSize;
+    private String mMagnetLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +54,10 @@ public class TorrentConfirmationActivity extends BaseActivity {
         String displayName = null;
         JsonTorrent.JsonTorrentResult torrent = startingIntent.getParcelableExtra(EXTRA_TORRENT_RESULT);
         if (torrent == null) {
-            String dataString = startingIntent.getDataString();
+            mMagnetLink = startingIntent.getDataString();
+            String dataString;
             try {
-                dataString = URLDecoder.decode(dataString, Charset.defaultCharset().name());
+                dataString = URLDecoder.decode(mMagnetLink, Charset.defaultCharset().name());
             } catch (UnsupportedEncodingException e) {
                 Log.e(TAG, "Default charset not supported");
                 finish();
@@ -68,10 +72,25 @@ public class TorrentConfirmationActivity extends BaseActivity {
             }
         } else {
             displayName = torrent.name;
+            mMagnetLink = torrent.magnetLink;
         }
 
 
         setContentView(R.layout.activity_torrent_confirmation);
+        ((Button) findViewById(R.id.activity_torrent_confirmation_yes)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doStartUpload(mMagnetLink);
+            }
+        });
+        ((Button) findViewById(R.id.activity_torrent_confirmation_no)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+
+            }
+        });
+
         mTextViewTitle = (TextView) findViewById(R.id.activity_torrent_confirmation_title);
         mTextViewSize = (TextView) findViewById(R.id.activity_torrent_confirmation_size);
 
@@ -116,7 +135,17 @@ public class TorrentConfirmationActivity extends BaseActivity {
     }
 
     public void torrentUploadComplete(Integer resultCode) {
-        Toast.makeText(this, "Result:" + resultCode, Toast.LENGTH_SHORT).show();
-        Log.e(TAG, "Got Result:" + resultCode);
+        String message;
+        if (resultCode == 200) {
+            message = getResources().getString(R.string.torrent_confirmation_upload_succeed);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            message = getResources().getString(R.string.torrent_confirmation_upload_failed);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+        Log.i(TAG, "Got Result:" + resultCode);
+
+
     }
 }

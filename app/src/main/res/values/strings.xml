@@ -101,4 +101,6 @@
     <string name="torrent_confirmation_yes">Yes</string>
     <string name="torrent_confirmation_no">No</string>
     <string name="torrent_confirmation_message">Add this to the Seedbox?</string>
+    <string name="torrent_confirmation_upload_succeed" />
+    <string name="torrent_confirmation_upload_failed" />
 </resources>

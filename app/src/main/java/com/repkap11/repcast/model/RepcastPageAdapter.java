@@ -31,7 +31,7 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
 
         JsonDirectory.JsonFileDir dir = new JsonDirectory.JsonFileDir();
         dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
-        dir.name = "Seedbox";
+        dir.name = activity.getString(R.string.app_name);
         dir.path = "IDGAF";
         dir.path64 = "";
         dir.isRoot = true;
@@ -39,7 +39,7 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
         activity.addFragmentToABackStack(mFragmentContent[FILE_INDEX]);
 
         JsonTorrent.JsonTorrentResult torrent = new JsonTorrent.JsonTorrentResult();
-        torrent.name = "Colbert";
+        torrent.name = activity.getString(R.string.add_torrent_initial_title);
         mFragmentContent[TORRENT_INDEX] = torrent;
         activity.addFragmentToABackStack(mFragmentContent[TORRENT_INDEX]);
     }
