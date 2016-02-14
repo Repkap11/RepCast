@@ -30,7 +30,6 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.queue.QueueDataProvider;
-import com.repkap11.repcast.activities.CastPreferenceActivity;
 
 import java.util.List;
 
@@ -108,11 +107,7 @@ public class QueueListViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         int i1 = item.getItemId();
-        if (i1 == R.id.action_settings) {
-            i = new Intent(QueueListViewActivity.this, CastPreferenceActivity.class);
-            startActivity(i);
-
-        } else if (i1 == R.id.action_clear_queue) {
+        if (i1 == R.id.action_clear_queue) {
             QueueDataProvider.getInstance().removeAll();
 
         } else if (i1 == android.R.id.home) {

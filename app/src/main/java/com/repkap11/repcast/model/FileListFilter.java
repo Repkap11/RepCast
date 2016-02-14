@@ -1,6 +1,5 @@
 package com.repkap11.repcast.model;
 
-import android.util.Log;
 import android.widget.Filter;
 
 
@@ -35,7 +34,7 @@ public class FileListFilter extends Filter {
             results.values = resultDir;
             results.count = resultDir.result.size();
         }
-        Log.e(TAG,"Searching Returned "+results.count);
+        //Log.e(TAG,"Searching Returned "+results.count);
         return results;
     }
 

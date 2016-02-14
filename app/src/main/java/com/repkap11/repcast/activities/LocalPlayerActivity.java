@@ -422,6 +422,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 getSupportActionBar().hide();
             }
             mControllers.setVisibility(View.INVISIBLE);
+            hideSystemUI();
         }
         //onConfigurationChanged(getResources().getConfiguration());
     }
@@ -771,11 +772,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         int i1 = item.getItemId();
-        if (i1 == R.id.action_settings) {
-            i = new Intent(LocalPlayerActivity.this, CastPreferenceActivity.class);
-            startActivity(i);
-
-        } else if (i1 == R.id.action_show_queue) {
+        if (i1 == R.id.action_show_queue) {
             i = new Intent(LocalPlayerActivity.this, QueueListViewActivity.class);
             startActivity(i);
 

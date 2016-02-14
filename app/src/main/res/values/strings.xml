@@ -101,6 +101,9 @@
     <string name="torrent_confirmation_yes">Yes</string>
     <string name="torrent_confirmation_no">No</string>
     <string name="torrent_confirmation_message">Add this to the Seedbox?</string>
-    <string name="torrent_confirmation_upload_succeed" />
-    <string name="torrent_confirmation_upload_failed" />
+    <string name="torrent_confirmation_upload_succeed">"Torrent download started"</string>
+    <string name="torrent_confirmation_upload_failed">"Torrent download failed to start"</string>
+    <string name="empty_message_files">Tap Search to Download Files</string>
+    <string name="empty_message_torents">Folder Contains no Videos</string>
+    <string name="no_results_for_prefix">"No Results for: "</string>
 </resources>

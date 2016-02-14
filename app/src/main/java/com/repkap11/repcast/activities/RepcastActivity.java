@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.repkap11.repcast.R;
@@ -34,6 +35,8 @@ import com.repkap11.repcast.model.RepcastPageAdapter;
 
 import java.util.Arrays;
 import java.util.Stack;
+
+;
 
 public class RepcastActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
@@ -122,9 +125,16 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     protected boolean handleOnBackPressed() {
         Log.e(TAG, "Handleing back press");
+        //Return to the FILE_INDEX fragment
         int currentFragmentIndex = mViewPager.getCurrentItem();
         if (currentFragmentIndex == RepcastPageAdapter.TORRENT_INDEX){
             mViewPager.setCurrentItem(RepcastPageAdapter.FILE_INDEX);
+            return true;
+        }
+        //Clear the selectFileFragment search term
+        RepcastFragment selectFileFragment = mPagerAdapter.getRegisteredFragment(RepcastPageAdapter.FILE_INDEX);
+        if (!TextUtils.isEmpty(selectFileFragment.getResultEmptyString())) {
+            selectFileFragment.onQueryChange(null);
             return true;
         }
         RepcastFragment currentFragment = mPagerAdapter.getRegisteredFragment(currentFragmentIndex);
@@ -132,7 +142,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         if (previousFragmentData == null) {
             return false;
         }
-        mPagerAdapter.updateFragment(previousFragmentData, mViewPager.getCurrentItem());
+        mPagerAdapter.updatePageAtIndex(mViewPager.getCurrentItem(), previousFragmentData);
         setTitleBasedOnFragment();
         return true;
     }
@@ -151,20 +161,16 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     protected boolean onQuerySubmit(String query) {
         //Propagate query submit only to the current fragment.
-        for (int i = 0; i < mPagerAdapter.getCount(); i++){
-            RepcastFragment fragment = mPagerAdapter.getRegisteredFragment(i);
-            fragment.onQuerySubmit(query);
-        }
+        RepcastFragment fragment = mPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+        fragment.onQuerySubmit(query);
         return true;
     }
 
     @Override
     protected void onQueryChanged(String query) {
         //Propagate query changed to all fragments.
-        for (int i = 0; i < mPagerAdapter.getCount(); i++){
-            RepcastFragment fragment = mPagerAdapter.getRegisteredFragment(i);
-            fragment.onQueryChange(query);
-        }
+        RepcastFragment fragment = mPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
+        fragment.onQueryChange(query);
     }
 
     @Override
@@ -200,7 +206,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Intent intent = new Intent();
         intent.setClass(this, LocalPlayerActivity.class);
         intent.putExtra("media", dir);
-        intent.putExtra("shouldStart", true);//TODO should start?
+        intent.putExtra("shouldStart", false);//Dont do this, it breaks the queue.
         Log.e(TAG, "About to cast:" + dir.path);
         startActivity(intent);
     }

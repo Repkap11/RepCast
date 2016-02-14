@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -57,6 +56,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     private static final String TAG = BaseActivity.class.getSimpleName();
     private static final String INSTANCE_STATE_INITIAL_STRING = "INSTANCE_STATE_INITIAL_STRING";
+    private static final String INSTANCE_STATE_SEARCH_EXPANDED = "INSTANCE_STATE_SEARCH_EXPANDED";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
     private MiniController mMini;
@@ -66,6 +66,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     private SearchView mSearchView;
     private String mInitialSearchString = null;
     private boolean mIncludeSearch;
+    private MenuItem mediaQueueItem;
+    private boolean mIsSearchExpanded = false;
+    private MenuItem mSearchItem;
+    private boolean mSkipTextChange = false;
 
     /*
      * (non-Javadoc)
@@ -78,6 +82,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         VideoCastManager.checkGooglePlayServices(this);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         mCastManager = VideoCastManager.getInstance();
+        if (savedInstanceState != null) {
+            mIsSearchExpanded = savedInstanceState.getBoolean(INSTANCE_STATE_SEARCH_EXPANDED);
+            mInitialSearchString = savedInstanceState.getString(INSTANCE_STATE_INITIAL_STRING);
+        }
         mCastConsumer = new VideoCastConsumerImpl() {
             @Override
             public void onFailed(int resourceId, int statusCode) {
@@ -144,6 +152,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.browse, menu);
         mediaRouteMenuItem = mCastManager.addMediaRouterButton(menu, R.id.media_route_menu_item);
+        mediaQueueItem = menu.findItem(R.id.action_show_queue);
         MenuItem updateApplicationMenuItem = menu.findItem(R.id.update_app_menu_button);
         updateApplicationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -153,34 +162,42 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
                 return true;
             }
         });
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        if (searchItem != null) {
-            searchItem.setVisible(mIncludeSearch);
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+        mSearchItem = menu.findItem(R.id.action_search);
+        if (mSearchItem != null) {
+            mSearchItem.setVisible(mIncludeSearch);
+            MenuItemCompat.setOnActionExpandListener(mSearchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
+                    Log.d(TAG, "onMenuItemActionExpand() called with: " + "item = [" + item + "]");
+                    mIsSearchExpanded = true;
                     if (!mSearchView.isIconified()) {
                         //return false;
                     }
                     mediaRouteMenuItem.setVisible(false);
+                    mediaQueueItem.setVisible(false);
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
+                    Log.d(TAG, "onMenuItemActionCollapse() called with: " + "item = [" + item + "]");
+                    mIsSearchExpanded = false;
                     mediaRouteMenuItem.setVisible(mCastManager.isAnyRouteAvailable());
+                    mediaQueueItem.setVisible(mCastManager.isConnected());
                     return true;
                 }
             });
-            mSearchView = (SearchView) searchItem.getActionView();
-            ;
+
+            mSearchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
             mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-            mSearchView.setQuery(mInitialSearchString, false);
-            mSearchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            if (!TextUtils.isEmpty(mInitialSearchString)) {
-                mSearchView.setIconified(false);
-                mSearchView.clearFocus();
+            if (mIsSearchExpanded) {
+                Log.e(TAG, "Expanding Search 1");
+                MenuItemCompat.expandActionView(mSearchItem);
+                mSearchView.setQuery(mInitialSearchString, false);
             }
+
+            mSearchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
             mSearchView.setOnQueryTextListener(this);
         }
         return true;
@@ -189,6 +206,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_show_queue).setVisible(mCastManager.isConnected());
+        if (mIsSearchExpanded) {
+            Log.e(TAG, "Expanding Search 2");
+            //mSearchView.setIconified(false);
+            //mSearchView.clearFocus();
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -196,11 +218,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         int i1 = item.getItemId();
-        if (i1 == R.id.action_settings) {
-            i = new Intent(BaseActivity.this, CastPreferenceActivity.class);
-            startActivity(i);
-
-        } else if (i1 == R.id.action_show_queue) {
+        if (i1 == R.id.action_show_queue) {
             i = new Intent(BaseActivity.this, QueueListViewActivity.class);
             startActivity(i);
 
@@ -220,7 +238,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         }
     }
 
-    @Override
     public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
         return mCastManager.onDispatchVolumeKeyEvent(event, CastApplication.VOLUME_INCREMENT)
                 || super.dispatchKeyEvent(event);
@@ -287,18 +304,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.e(TAG, "Got onQueryTextSubmit");
         mSearchView.clearFocus();
-        //getActionBar().getCustomView().requestFocus();
-        //Log.e(TAG, "Took Focus:" + result);
-
-        //This is the only way to stop the cursor in the TextView.
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                mSearchView.clearFocus();
-            }
-        });
+        mSkipTextChange = true;
+        MenuItemCompat.collapseActionView(mSearchItem);
+        mSkipTextChange = false;
         return onQuerySubmit(query);
     }
 
@@ -306,18 +315,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        Log.e(TAG, "Got onQueryTextChange");
         View closeButton = mSearchView.findViewById(R.id.search_close_btn);
-        if (closeButton != null) {
-            closeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mSearchView.setQuery(null, false);
-                    mSearchView.setIconified(true);
-                    mSearchView.clearFocus();
-                }
-            });
+        if (!mSkipTextChange) {
+            onQueryChanged(newText);
         }
-        onQueryChanged(newText);
         return false;
     }
 
@@ -327,11 +329,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_STATE_INITIAL_STRING, mSearchView.getQuery().toString());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mInitialSearchString = savedInstanceState.getString(INSTANCE_STATE_INITIAL_STRING);
+        outState.putBoolean(INSTANCE_STATE_SEARCH_EXPANDED, mIsSearchExpanded);
     }
 }

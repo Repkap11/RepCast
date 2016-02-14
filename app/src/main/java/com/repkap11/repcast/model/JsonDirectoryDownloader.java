@@ -45,7 +45,6 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
                     //Log.e(TAG,"Name:"+dir.name+" Type:"+dir.memeType);
                 }
             }
-            //Thread.sleep(1000);
             return fileList;
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
