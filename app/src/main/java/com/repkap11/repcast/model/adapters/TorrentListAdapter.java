@@ -24,18 +24,17 @@ import com.repkap11.repcast.model.rest.JsonTorrentListDownloader;
  */
 public class TorrentListAdapter extends BaseAdapter implements View.OnClickListener {
     private static final String TAG = TorrentListAdapter.class.getSimpleName();
-    private final String mURL;
+    private final String mQuery64;
     private TorrentListFilter mFilter;
     private RepcastFragment mFragment;
     private JsonTorrent mTorrentList;
 
     public TorrentListAdapter(String query) {
-        String query64 = Base64.encodeToString(query.getBytes(), Base64.NO_WRAP);
-        mURL = "https://repkam09.com/dl/torsearch/" + query64;
+        mQuery64 = Base64.encodeToString(query.getBytes(), Base64.NO_WRAP);
         mTorrentList = new JsonTorrent();
         mFilter = new TorrentListFilter(mTorrentList, this);
         JsonTorrentListDownloader downloader = new JsonTorrentListDownloader(this);
-        downloader.execute(mURL);
+        downloader.execute(mQuery64);
     }
 
     public void updateContext(RepcastFragment fragment) {

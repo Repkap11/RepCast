@@ -25,8 +25,6 @@ public class JsonDirectory {
         };
         public static final String TYPE_FILE = "file";
         public static final String TYPE_DIR = "dir";
-        public static final String MIME_MP4 = "video/mp4";
-        public static final String MIME_MPEG = "audio/mpeg";
         public String name;
         public String type;
         public String path64;

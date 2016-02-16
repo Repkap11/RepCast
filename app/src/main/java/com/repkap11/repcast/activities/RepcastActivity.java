@@ -29,9 +29,10 @@ import com.repkap11.repcast.R;
 import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.fragments.SelectFileFragment;
 import com.repkap11.repcast.fragments.SelectTorrentFragment;
+import com.repkap11.repcast.model.adapters.RepcastPageAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
-import com.repkap11.repcast.model.adapters.RepcastPageAdapter;
+import com.repkap11.repcast.utils.Utils;
 
 import java.util.Arrays;
 import java.util.Stack;
@@ -204,11 +205,18 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     public void showFile(JsonDirectory.JsonFileDir dir) {
         Log.e(TAG, "Starting file:" + dir.name);
         Intent intent = new Intent();
-        intent.setClass(this, LocalPlayerActivity.class);
-        intent.putExtra("media", dir);
-        intent.putExtra("shouldStart", false);//Dont do this, it breaks the queue.
-        Log.e(TAG, "About to cast:" + dir.path);
-        startActivity(intent);
+        intent.setAction(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse(Utils.getUrlFromJsonDir(dir));
+        Log.e(TAG, "Uri:" + uri);
+        intent.setDataAndType(uri, dir.memeType);
+        intent.putExtra(Intent.EXTRA_TITLE, dir.name);
+        if (dir.memeType.equals("video/mp4") || dir.memeType.equals("audio/mpeg")) {
+            intent.setClass(this, LocalPlayerActivity.class);
+            startActivity(intent);
+        } else {
+            startActivity(Intent.createChooser(intent, "Select an App"));
+
+        }
     }
 
     @Override

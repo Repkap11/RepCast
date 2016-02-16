@@ -4,9 +4,10 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.repkap11.repcast.model.parcelables.JsonTorrent;
 import com.repkap11.repcast.model.adapters.TorrentListAdapter;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -25,7 +26,8 @@ public class JsonTorrentListDownloader extends AsyncTask<String, Void, JsonTorre
 
     @Override
     protected JsonTorrent doInBackground(String... params) {
-        String url = params[0];
+        String query64 = params[0];
+        String url = "https://repkam09.com/dl/torsearch/" + query64;
         Log.e(TAG,"URL:"+url);
         try {
             URLConnection c = new URL(url).openConnection();
@@ -37,6 +39,7 @@ public class JsonTorrentListDownloader extends AsyncTask<String, Void, JsonTorre
             c.setUseCaches(false);
 
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             JsonTorrent torrentList = objectMapper.readValue(c.getInputStream(), JsonTorrent.class);
             return torrentList;
         } catch (Exception e) {

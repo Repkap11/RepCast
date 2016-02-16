@@ -61,13 +61,17 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.VideoProvider;
 import com.repkap11.repcast.application.CastApplication;
-import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -127,64 +131,90 @@ public class LocalPlayerActivity extends AppCompatActivity {
         mCastManager.setCastControllerImmersive(false);
         setupControlsCallbacks();
         setupCastListener();
-        // see what we need to play and were
-        Bundle b = getIntent().getExtras();
-        if (null != b) {
-            JsonDirectory.JsonFileDir dir = getIntent().getParcelableExtra("media");
-            String path = Uri.encode(dir.path, "//");
-            String castPath = "http://repkam09.com//wbchromecast-repcast/whatbox/" + path;
-
-            MediaInfo.Builder builder = new MediaInfo.Builder(castPath);
-            builder.setStreamType(MediaInfo.STREAM_TYPE_BUFFERED);
-            builder.setContentType("mp4");
-            MediaMetadata metadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-            metadata.putString(MediaMetadata.KEY_TITLE, dir.name);
-            //metadata.putString(MediaMetadata.KEY_SUBTITLE, "Sub title Text");
-            builder.setMetadata(metadata);
-            JSONObject jsonObj = null;
-            try {
-                jsonObj = new JSONObject();
-                jsonObj.put(VideoProvider.KEY_DESCRIPTION, "");
-            } catch (JSONException e) {
-                Log.e(TAG, "Failed to add description to the json object", e);
-            }
-            MediaTrack.Builder trackBuilder = new MediaTrack.Builder(1,MediaTrack.TYPE_VIDEO);
-
-
-            //trackBuilder.setContentId(castPath);
-            Log.e(TAG, "Setting path String: " + castPath);
-            trackBuilder.setName(dir.name);
-            builder.setMediaTracks(Collections.singletonList(trackBuilder.build()));
-            builder.setCustomData(jsonObj);
-            mSelectedMedia = builder.build();
-            setupActionBar();
-            boolean shouldStartPlayback = b.getBoolean("shouldStart");
-            int startPosition = b.getInt("startPosition", 0);
-            mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
-            Log.e(TAG, "Setting url of the VideoView to: " + Uri.parse(mSelectedMedia.getContentId()));
-            if (shouldStartPlayback) {
-                // this will be the case only if we are coming from the
-                // CastControllerActivity by disconnecting from a device
-                mPlaybackState = PlaybackState.PLAYING;
-                updatePlaybackLocation(PlaybackLocation.LOCAL);
-                updatePlayButton(mPlaybackState);
-                if (startPosition > 0) {
-                    mVideoView.seekTo(startPosition);
-                }
-                mVideoView.start();
-                startControllersTimer();
-            } else {
-                // we should load the video but pause it
-                // and show the album art.
-                if (mCastManager.isConnected()) {
-                    updatePlaybackLocation(PlaybackLocation.REMOTE);
-                } else {
-                    updatePlaybackLocation(PlaybackLocation.LOCAL);
-                }
-                mPlaybackState = PlaybackState.IDLE;
-                updatePlayButton(mPlaybackState);
-            }
+        String castPath;
+        String mimeType = getIntent().getType();
+        String title = getIntent().getStringExtra(Intent.EXTRA_TITLE);
+        int trackType;
+        int mediaType;
+        if (mimeType.equals("video/mp4")) {
+            trackType = MediaTrack.TYPE_VIDEO;
+            mediaType = MediaMetadata.MEDIA_TYPE_MOVIE;
+        } else if (mimeType.equals("audio/mpeg")) {
+        } else {
+            trackType = MediaTrack.TYPE_UNKNOWN;
+            mediaType = MediaMetadata.MEDIA_TYPE_GENERIC;
         }
+        trackType = MediaTrack.TYPE_VIDEO;
+        mediaType = MediaMetadata.MEDIA_TYPE_MOVIE;
+        try {
+            URL url = new URI(getIntent().getDataString()).toURL();
+            castPath = url.toExternalForm();
+            if (title == null) {
+                title = new File(url.getPath()).getName();
+            }
+        } catch (MalformedURLException | URISyntaxException e) {
+            e.printStackTrace();
+            finish();
+            return;
+        }
+        Log.e(TAG, "Cast Path:" + castPath);
+
+        MediaInfo.Builder builder = new MediaInfo.Builder(castPath);
+        builder.setStreamType(MediaInfo.STREAM_TYPE_BUFFERED);
+        builder.setContentType(mimeType);
+        MediaMetadata metadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+        metadata.putString(MediaMetadata.KEY_TITLE, title);
+        //metadata.putString(MediaMetadata.KEY_SUBTITLE, "Sub title Text");
+        builder.setMetadata(metadata);
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject();
+            jsonObj.put(VideoProvider.KEY_DESCRIPTION, "");
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to add description to the json object", e);
+        }
+        MediaTrack.Builder trackBuilder = new MediaTrack.Builder(1, MediaTrack.TYPE_VIDEO);
+
+
+        //trackBuilder.setContentId(castPath);
+        Log.e(TAG, "Setting path String: " + castPath);
+        trackBuilder.setName(title);
+        builder.setMediaTracks(Collections.singletonList(trackBuilder.build()));
+        builder.setCustomData(jsonObj);
+        mSelectedMedia = builder.build();
+        setupActionBar();
+        Bundle b = getIntent().getExtras();
+        boolean shouldStartPlayback = false;
+        int startPosition = 0;
+        if (b != null) {
+            shouldStartPlayback = b.getBoolean("shouldStart", false);
+            startPosition = b.getInt("startPosition", 0);
+        }
+        mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
+        Log.e(TAG, "Setting url of the VideoView to: " + Uri.parse(mSelectedMedia.getContentId()));
+        if (shouldStartPlayback) {
+            // this will be the case only if we are coming from the
+            // CastControllerActivity by disconnecting from a device
+            mPlaybackState = PlaybackState.PLAYING;
+            updatePlaybackLocation(PlaybackLocation.LOCAL);
+            updatePlayButton(mPlaybackState);
+            if (startPosition > 0) {
+                mVideoView.seekTo(startPosition);
+            }
+            mVideoView.start();
+            startControllersTimer();
+        } else {
+            // we should load the video but pause it
+            // and show the album art.
+            if (mCastManager.isConnected()) {
+                updatePlaybackLocation(PlaybackLocation.REMOTE);
+            } else {
+                updatePlaybackLocation(PlaybackLocation.LOCAL);
+            }
+            mPlaybackState = PlaybackState.IDLE;
+            updatePlayButton(mPlaybackState);
+        }
+
         if (null != mTitleView) {
             updateMetadata(true);
         }
@@ -420,9 +450,10 @@ public class LocalPlayerActivity extends AppCompatActivity {
         } else {
             if (!Utils.isOrientationPortrait(this)) {
                 getSupportActionBar().hide();
+                hideSystemUI();
             }
             mControllers.setVisibility(View.INVISIBLE);
-            hideSystemUI();
+            ;
         }
         //onConfigurationChanged(getResources().getConfiguration());
     }

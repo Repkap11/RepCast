@@ -12,8 +12,8 @@ import android.widget.Toast;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
 import com.repkap11.repcast.fragments.RepcastFragment;
-import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.filters.FileListFilter;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.rest.JsonDirectoryDownloader;
 
 
@@ -22,17 +22,17 @@ import com.repkap11.repcast.model.rest.JsonDirectoryDownloader;
  */
 public class FileListAdapter extends BaseAdapter implements View.OnClickListener {
     private static final String TAG = FileListAdapter.class.getSimpleName();
-    private final String mURL;
+    private final String mPath64;
     private FileListFilter mFilter;
     private RepcastFragment mFragment;
     private JsonDirectory mFileList;
 
     public FileListAdapter(String path64) {
-        mURL = "https://repkam09.com/dl/dirget/" + path64;
+        mPath64 = path64;
         mFileList = new JsonDirectory();
         mFilter = new FileListFilter(mFileList,this);
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(mURL);
+        downloader.execute(mPath64);
     }
 
     public void updateContext(RepcastFragment fragment) {
@@ -53,39 +53,55 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         return mFileList.result.get(position);
     }
 
-    private static final long ICON_DIR = 0;
-    private static final long ICON_VIDEO = 1;
-    private static final long ICON_MPEG = 2;
+    private static final long ICON_DIR = -2;
+    private static final long ICON_UNKNOWN = -1;
+
+    public static class IconMimeMap {
+        public int mIconResource;
+        public String mMime;
+
+        public IconMimeMap(String mime, int iconResource) {
+            mMime = mime;
+            mIconResource = iconResource;
+        }
+    }
+
+    private static IconMimeMap[] MIME_ARRAY;
+
+    static {
+        MIME_ARRAY = new IconMimeMap[]{
+                new IconMimeMap("video/mp4", R.drawable.mp4),
+                new IconMimeMap("audio/mpeg", R.drawable.mp3),
+                new IconMimeMap("application/epub+zip", R.drawable.epub),
+                new IconMimeMap("image/jpeg", R.drawable.jpg),
+                new IconMimeMap("image/png", R.drawable.png),
+                new IconMimeMap("application/pdf", R.drawable.pdf),
+                new IconMimeMap("text/plain", R.drawable.txt),
+        };
+    }
 
     @Override
     public long getItemId(int position) {
         JsonDirectory.JsonFileDir dir = mFileList.result.get(position);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
             return ICON_DIR;
-        } else if (dir.memeType.equals(JsonDirectory.JsonFileDir.MIME_MP4)) {
-            return ICON_VIDEO;
-        } else if (dir.memeType.equals(JsonDirectory.JsonFileDir.MIME_MPEG)) {
-            return ICON_MPEG;
+        } else {
+            for (int i = 0; i < MIME_ARRAY.length; i++) {
+                if (MIME_ARRAY[i].mMime == dir.memeType) {
+                    return MIME_ARRAY[i].mIconResource;
+                }
+            }
         }
-        return -1;
+        return ICON_UNKNOWN;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder;
-        long itemID = getItemId(position);
+        int iconResource = (int) getItemId(position);
         JsonDirectory.JsonFileDir result = mFileList.result.get(position);
         if (convertView == null) {
-            int layout;
-            if (itemID == ICON_DIR) {
-                layout = R.layout.fragment_selectfile_list_element;
-            } else if (itemID == ICON_VIDEO) {
-                layout = R.layout.fragment_selectfile_list_element;
-            } else if (itemID == ICON_MPEG) {
-                layout = R.layout.fragment_selectfile_list_element;
-            } else {
-                throw new RuntimeException("Wrong ID");
-            }
+            int layout = R.layout.fragment_selectfile_list_element;
             convertView = LayoutInflater.from(mFragment.getActivity()).inflate(layout, parent, false);
             holder = new Holder();
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_name);
@@ -97,17 +113,14 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         }
         holder.mName.setText(result.name);
         holder.mIndex = position;
-        int iconResource;
-        if (itemID == ICON_DIR) {
-            iconResource = R.drawable.folder;
-        } else if (itemID == ICON_VIDEO) {
-            iconResource = R.drawable.mp4;
-        } else if (itemID == ICON_MPEG) {
-            iconResource = R.drawable.mpeg;
+        if (iconResource == ICON_DIR) {
+            holder.mIcon.setImageResource(R.drawable.folder);
+        } else if (iconResource == ICON_UNKNOWN) {
+            holder.mIcon.setImageResource(R.drawable.question_mark);
         } else {
-            throw new RuntimeException("Wrong ID");
+            holder.mIcon.setImageResource(iconResource);
         }
-        holder.mIcon.setImageResource(iconResource);
+
         return convertView;
     }
     public void updateFileList(JsonDirectory fileList) {

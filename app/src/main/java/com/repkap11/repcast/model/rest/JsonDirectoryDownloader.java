@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.repkap11.repcast.model.adapters.FileListAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
@@ -29,7 +30,8 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
 
     @Override
     protected JsonDirectory doInBackground(String... params) {
-        String url = params[0];
+        String path64 = params[0];
+        String url = "https://repkam09.com/dl/dirget_all/" + path64;
         try {
             URLConnection c = new URL(url).openConnection();
             String username = "guest";
@@ -40,11 +42,12 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
             c.setUseCaches(false);
 
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             JsonDirectory fileList = objectMapper.readValue(c.getInputStream(), JsonDirectory.class);
             for (JsonDirectory.JsonFileDir dir : fileList.result) {
                 if (!dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
                     dir.memeType = getMimeType(dir.path);
-                    //Log.e(TAG,"Name:"+dir.name+" Type:"+dir.memeType);
+                    Log.e(TAG, "Name:" + dir.name + " Type:" + dir.memeType);
                 }
             }
             return fileList;
@@ -64,19 +67,20 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
     }
 
     public static String getMimeType(String url) {
+        String type = null;
         try {
-            String type = null;
+
             String encoded = Uri.encode(url);
             encoded = URLEncoder.encode(encoded, "UTF-8");
             String extension = MimeTypeMap.getFileExtensionFromUrl(encoded);
             if (extension != null) {
                 type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
             }
-            return type;
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return null;
+        return type == null ? "application/octet-stream" : type;
     }
 }
 

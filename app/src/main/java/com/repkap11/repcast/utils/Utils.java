@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.net.Uri;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
@@ -39,6 +40,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConn
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.application.CastApplication;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.queue.QueueDataProvider;
 
 import java.io.IOException;
@@ -267,4 +269,8 @@ public class Utils {
         popup.show();
     }
 
+    public static String getUrlFromJsonDir(JsonDirectory.JsonFileDir dir) {
+        String path = Uri.encode(dir.path, "//");
+        return "http://repkam09.com//wbchromecast-repcast/whatbox/" + path;
+    }
 }
