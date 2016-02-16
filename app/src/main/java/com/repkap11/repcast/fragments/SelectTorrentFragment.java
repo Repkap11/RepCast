@@ -1,4 +1,4 @@
-package com.repkap11.repcast.activities.fragments;
+package com.repkap11.repcast.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
-import com.repkap11.repcast.model.JsonTorrent;
-import com.repkap11.repcast.model.TorrentListAdapter;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.model.adapters.TorrentListAdapter;
 
 
-public class SelectTorrentFragment extends com.repkap11.repcast.activities.fragments.RepcastFragment {
+public class SelectTorrentFragment extends RepcastFragment {
 
     private static final String TAG = SelectTorrentFragment.class.getSimpleName();
     private static final String INSTANCE_STATE_QUERY = "INSTANCE_STATE_QUERY";
@@ -30,7 +30,7 @@ public class SelectTorrentFragment extends com.repkap11.repcast.activities.fragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            if (com.repkap11.repcast.activities.fragments.RepcastFragment.DO_SAVE_STATE) {
+            if (RepcastFragment.DO_SAVE_STATE) {
                 if (mTorrent == null) {
                     mTorrent = savedInstanceState.getParcelable(INSTANCE_STATE_QUERY);
                 }
@@ -42,7 +42,7 @@ public class SelectTorrentFragment extends com.repkap11.repcast.activities.fragm
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_content, container, false);
-        setRetainInstance(com.repkap11.repcast.activities.fragments.RepcastFragment.DO_RETAIN_INSTANCE);
+        setRetainInstance(RepcastFragment.DO_RETAIN_INSTANCE);
         initProgressAndEmptyMessage(rootView);
         setListAdapter(mAdapter);
 
@@ -68,7 +68,7 @@ public class SelectTorrentFragment extends com.repkap11.repcast.activities.fragm
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (com.repkap11.repcast.activities.fragments.RepcastFragment.DO_SAVE_STATE) {
+        if (RepcastFragment.DO_SAVE_STATE) {
             outState.putParcelable(INSTANCE_STATE_QUERY, mTorrent);
         }
         super.onSaveInstanceState(outState);

@@ -61,7 +61,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.VideoProvider;
 import com.repkap11.repcast.application.CastApplication;
-import com.repkap11.repcast.model.JsonDirectory;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.queue.ui.QueueListViewActivity;
 import com.repkap11.repcast.utils.Utils;
 

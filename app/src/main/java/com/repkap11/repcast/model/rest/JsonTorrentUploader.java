@@ -1,4 +1,4 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.rest;
 
 import android.os.AsyncTask;
 import android.util.Base64;

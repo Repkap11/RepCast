@@ -1,4 +1,4 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,10 @@ import android.widget.Toast;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
-import com.repkap11.repcast.activities.fragments.RepcastFragment;
+import com.repkap11.repcast.fragments.RepcastFragment;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
+import com.repkap11.repcast.model.filters.FileListFilter;
+import com.repkap11.repcast.model.rest.JsonDirectoryDownloader;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.adapters;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
-import com.repkap11.repcast.activities.fragments.SelectFileFragment;
-import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
+import com.repkap11.repcast.fragments.RepcastFragment;
+import com.repkap11.repcast.fragments.SelectFileFragment;
+import com.repkap11.repcast.fragments.SelectTorrentFragment;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
 
 /**
  * Created by paul on 2/7/16.
@@ -56,7 +59,7 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        com.repkap11.repcast.activities.fragments.RepcastFragment fragObject = (com.repkap11.repcast.activities.fragments.RepcastFragment) object;
+        RepcastFragment fragObject = (RepcastFragment) object;
         int result;
         if (fragObject.getParceable() == mFragmentContent[TORRENT_INDEX]) {
             result = TORRENT_INDEX;
@@ -97,11 +100,11 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
         return mFragmentContent.length;
     }
 
-    SparseArray<com.repkap11.repcast.activities.fragments.RepcastFragment> registeredFragments = new SparseArray<>();
+    SparseArray<RepcastFragment> registeredFragments = new SparseArray<>();
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        com.repkap11.repcast.activities.fragments.RepcastFragment fragment = (com.repkap11.repcast.activities.fragments.RepcastFragment) super.instantiateItem(container, position);
+        RepcastFragment fragment = (RepcastFragment) super.instantiateItem(container, position);
         registeredFragments.put(position, fragment);
         return fragment;
     }
@@ -112,7 +115,7 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
         super.destroyItem(container, position, object);
     }
 
-    public com.repkap11.repcast.activities.fragments.RepcastFragment getRegisteredFragment(int position) {
+    public RepcastFragment getRegisteredFragment(int position) {
         return registeredFragments.get(position);
     }
 }

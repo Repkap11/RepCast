@@ -26,12 +26,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.activities.fragments.RepcastFragment;
-import com.repkap11.repcast.activities.fragments.SelectFileFragment;
-import com.repkap11.repcast.activities.fragments.SelectTorrentFragment;
-import com.repkap11.repcast.model.JsonDirectory;
-import com.repkap11.repcast.model.JsonTorrent;
-import com.repkap11.repcast.model.RepcastPageAdapter;
+import com.repkap11.repcast.fragments.RepcastFragment;
+import com.repkap11.repcast.fragments.SelectFileFragment;
+import com.repkap11.repcast.fragments.SelectTorrentFragment;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.model.adapters.RepcastPageAdapter;
 
 import java.util.Arrays;
 import java.util.Stack;

@@ -1,10 +1,12 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.rest;
 
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.model.adapters.TorrentListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;

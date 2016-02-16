@@ -1,4 +1,4 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.adapters;
 
 import android.util.Base64;
 import android.util.Log;
@@ -13,7 +13,10 @@ import android.widget.Toast;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
-import com.repkap11.repcast.activities.fragments.RepcastFragment;
+import com.repkap11.repcast.fragments.RepcastFragment;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.model.filters.TorrentListFilter;
+import com.repkap11.repcast.model.rest.JsonTorrentListDownloader;
 
 
 /**

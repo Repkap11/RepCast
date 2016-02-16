@@ -27,8 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.model.JsonTorrent;
-import com.repkap11.repcast.model.JsonTorrentUploader;
+import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.model.rest.JsonTorrentUploader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

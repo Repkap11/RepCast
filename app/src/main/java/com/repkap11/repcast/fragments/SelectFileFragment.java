@@ -1,4 +1,4 @@
-package com.repkap11.repcast.activities.fragments;
+package com.repkap11.repcast.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,11 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.model.FileListAdapter;
-import com.repkap11.repcast.model.JsonDirectory;
+import com.repkap11.repcast.model.adapters.FileListAdapter;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
 
 
-public class SelectFileFragment extends com.repkap11.repcast.activities.fragments.RepcastFragment {
+public class SelectFileFragment extends RepcastFragment {
 
     private static final String TAG = SelectFileFragment.class.getSimpleName();
     private static final String INSTANCE_STATE_DIR = "INSTANCE_STATE_DIR";
@@ -50,7 +50,7 @@ public class SelectFileFragment extends com.repkap11.repcast.activities.fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            if (com.repkap11.repcast.activities.fragments.RepcastFragment.DO_SAVE_STATE) {
+            if (RepcastFragment.DO_SAVE_STATE) {
                 if (mDirectory == null) {
                     mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
                 }
@@ -91,7 +91,7 @@ public class SelectFileFragment extends com.repkap11.repcast.activities.fragment
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (com.repkap11.repcast.activities.fragments.RepcastFragment.DO_SAVE_STATE) {
+        if (RepcastFragment.DO_SAVE_STATE) {
             outState.putParcelable(INSTANCE_STATE_DIR, mDirectory);
         }
         super.onSaveInstanceState(outState);

@@ -1,4 +1,4 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.parcelables;
 
 import android.os.Parcel;
 import android.os.Parcelable;

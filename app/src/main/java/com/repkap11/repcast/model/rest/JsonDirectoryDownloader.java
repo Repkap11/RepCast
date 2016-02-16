@@ -1,4 +1,4 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.rest;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -7,6 +7,8 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.repkap11.repcast.model.adapters.FileListAdapter;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;

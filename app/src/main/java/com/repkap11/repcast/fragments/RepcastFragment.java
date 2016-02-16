@@ -1,4 +1,4 @@
-package com.repkap11.repcast.activities.fragments;
+package com.repkap11.repcast.fragments;
 
 import android.os.Parcelable;
 import android.support.v4.app.ListFragment;

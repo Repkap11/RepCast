@@ -1,6 +1,9 @@
-package com.repkap11.repcast.model;
+package com.repkap11.repcast.model.filters;
 
 import android.widget.Filter;
+
+import com.repkap11.repcast.model.adapters.FileListAdapter;
+import com.repkap11.repcast.model.parcelables.JsonDirectory;
 
 
 /**
