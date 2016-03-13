@@ -246,20 +246,24 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume() was called");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         mCastManager = VideoCastManager.getInstance();
         if (null != mCastManager) {
             mCastManager.addVideoCastConsumer(mCastConsumer);
             mCastManager.incrementUiCounter();
         }
-
-        super.onResume();
     }
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         mCastManager.decrementUiCounter();
         mCastManager.removeVideoCastConsumer(mCastConsumer);
-        super.onPause();
+        super.onStop();
     }
 
     @Override
@@ -328,7 +332,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(INSTANCE_STATE_INITIAL_STRING, mSearchView.getQuery().toString());
-        outState.putBoolean(INSTANCE_STATE_SEARCH_EXPANDED, mIsSearchExpanded);
+        if (mSearchView != null) {
+            outState.putString(INSTANCE_STATE_INITIAL_STRING, mSearchView.getQuery().toString());
+            outState.putBoolean(INSTANCE_STATE_SEARCH_EXPANDED, mIsSearchExpanded);
+        }
     }
 }

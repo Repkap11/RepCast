@@ -1,0 +1,161 @@
+commit f8a28d8bcb890ab2359b47755588128ab3714818
+Author: Paul Repka <repkap11@gmail.com>
+Date:   Sat Mar 12 20:17:01 2016 -0500
+
+    Fixes for N.
+    
+    Signed-off-by: Paul Repka <repkap11@gmail.com>
+
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+index d45b94d..dd9615b 100644
+--- a/.idea/gradle.xml
++++ b/.idea/gradle.xml
+@@ -6,7 +6,7 @@
+         <option name="distributionType" value="LOCAL" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+         <option name="gradleHome" value="$APPLICATION_HOME_DIR$/gradle/gradle-2.4" />
+-        <option name="gradleJvm" value="1.7" />
++        <option name="gradleJvm" value="1.8" />
+         <option name="modules">
+           <set>
+             <option value="$PROJECT_DIR$" />
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+index c60d22d..7e40dfc 100644
+--- a/.idea/misc.xml
++++ b/.idea/misc.xml
+@@ -37,7 +37,7 @@
+     <ConfirmationsSetting value="0" id="Add" />
+     <ConfirmationsSetting value="0" id="Remove" />
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+diff --git a/app/app.iml b/app/app.iml
+index 8d0b0dc..fee3659 100644
+--- a/app/app.iml
++++ b/app/app.iml
+@@ -94,16 +94,16 @@
+     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+     <orderEntry type="library" exported="" name="android-query.0.25.10" level="project" />
+-    <orderEntry type="library" exported="" name="design-22.2.0" level="project" />
+     <orderEntry type="library" exported="" name="jackson-databind-2.3.2" level="project" />
+     <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
+-    <orderEntry type="library" exported="" name="jackson-annotations-2.3.0" level="project" />
+     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.1" level="project" />
+     <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
++    <orderEntry type="library" exported="" name="jackson-annotations-2.3.0" level="project" />
+     <orderEntry type="library" exported="" name="jackson-core-2.3.2" level="project" />
++    <orderEntry type="library" exported="" name="design-22.2.0" level="project" />
+     <orderEntry type="library" exported="" name="appcompat-v7-22.2.1" level="project" />
+-    <orderEntry type="module" module-name="cast-companion-library" exported="" />
+     <orderEntry type="module" module-name="ShowCaseLibrary" exported="" />
++    <orderEntry type="module" module-name="cast-companion-library" exported="" />
+     <orderEntry type="library" exported="" name="ShowCaseLibrary-unspecified" level="project" />
+   </component>
+ </module>
+\ No newline at end of file
+diff --git a/app/src/main/java/com/repkap11/repcast/activities/BaseActivity.java b/app/src/main/java/com/repkap11/repcast/activities/BaseActivity.java
+index 1291330..176ce22 100644
+--- a/app/src/main/java/com/repkap11/repcast/activities/BaseActivity.java
++++ b/app/src/main/java/com/repkap11/repcast/activities/BaseActivity.java
+@@ -246,20 +246,24 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
+     @Override
+     protected void onResume() {
+         Log.d(TAG, "onResume() was called");
++        super.onResume();
++    }
++
++    @Override
++    protected void onStart() {
++        super.onStart();
+         mCastManager = VideoCastManager.getInstance();
+         if (null != mCastManager) {
+             mCastManager.addVideoCastConsumer(mCastConsumer);
+             mCastManager.incrementUiCounter();
+         }
+-
+-        super.onResume();
+     }
+ 
+     @Override
+-    protected void onPause() {
++    protected void onStop() {
+         mCastManager.decrementUiCounter();
+         mCastManager.removeVideoCastConsumer(mCastConsumer);
+-        super.onPause();
++        super.onStop();
+     }
+ 
+     @Override
+@@ -328,7 +332,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
+     @Override
+     protected void onSaveInstanceState(Bundle outState) {
+         super.onSaveInstanceState(outState);
+-        outState.putString(INSTANCE_STATE_INITIAL_STRING, mSearchView.getQuery().toString());
+-        outState.putBoolean(INSTANCE_STATE_SEARCH_EXPANDED, mIsSearchExpanded);
++        if (mSearchView != null) {
++            outState.putString(INSTANCE_STATE_INITIAL_STRING, mSearchView.getQuery().toString());
++            outState.putBoolean(INSTANCE_STATE_SEARCH_EXPANDED, mIsSearchExpanded);
++        }
+     }
+ }
+diff --git a/app/src/main/java/com/repkap11/repcast/activities/LocalPlayerActivity.java b/app/src/main/java/com/repkap11/repcast/activities/LocalPlayerActivity.java
+index 13cf32c..372092c 100644
+--- a/app/src/main/java/com/repkap11/repcast/activities/LocalPlayerActivity.java
++++ b/app/src/main/java/com/repkap11/repcast/activities/LocalPlayerActivity.java
+@@ -483,6 +483,13 @@ public class LocalPlayerActivity extends AppCompatActivity {
+     protected void onPause() {
+         super.onPause();
+         Log.d(TAG, "onPause() was called");
++    }
++
++
++    @Override
++    protected void onStop() {
++        Log.d(TAG, "onStop() was called");
++        super.onStop();
+         if (mLocation == PlaybackLocation.LOCAL) {
+ 
+             if (null != mSeekbarTimer) {
+@@ -503,12 +510,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
+     }
+ 
+     @Override
+-    protected void onStop() {
+-        Log.d(TAG, "onStop() was called");
+-        super.onStop();
+-    }
+-
+-    @Override
+     protected void onDestroy() {
+         Log.d(TAG, "onDestroy() is called");
+         if (null != mCastManager) {
+@@ -523,12 +524,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
+     protected void onStart() {
+         Log.d(TAG, "onStart was called");
+         super.onStart();
+-    }
+-
+-    @Override
+-    protected void onResume() {
+-        Log.d(TAG, "onResume() was called");
+-        //hideSystemUI();
+         mCastManager = VideoCastManager.getInstance();
+         mCastManager.addVideoCastConsumer(mCastConsumer);
+         mCastManager.incrementUiCounter();
+@@ -538,6 +533,12 @@ public class LocalPlayerActivity extends AppCompatActivity {
+             updatePlaybackLocation(PlaybackLocation.LOCAL);
+         }
+         onConfigurationChanged(getResources().getConfiguration());
++    }
++
++    @Override
++    protected void onResume() {
++        Log.d(TAG, "onResume() was called");
++        //hideSystemUI();
+         super.onResume();
+     }
+ 

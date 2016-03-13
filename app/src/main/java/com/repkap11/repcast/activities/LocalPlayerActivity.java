@@ -483,6 +483,13 @@ public class LocalPlayerActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() was called");
+    }
+
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop() was called");
+        super.onStop();
         if (mLocation == PlaybackLocation.LOCAL) {
 
             if (null != mSeekbarTimer) {
@@ -503,12 +510,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        Log.d(TAG, "onStop() was called");
-        super.onStop();
-    }
-
-    @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy() is called");
         if (null != mCastManager) {
@@ -523,12 +524,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
     protected void onStart() {
         Log.d(TAG, "onStart was called");
         super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "onResume() was called");
-        //hideSystemUI();
         mCastManager = VideoCastManager.getInstance();
         mCastManager.addVideoCastConsumer(mCastConsumer);
         mCastManager.incrementUiCounter();
@@ -538,6 +533,12 @@ public class LocalPlayerActivity extends AppCompatActivity {
             updatePlaybackLocation(PlaybackLocation.LOCAL);
         }
         onConfigurationChanged(getResources().getConfiguration());
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume() was called");
+        //hideSystemUI();
         super.onResume();
     }
 
