@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.repkap11.repcast.R;
+import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.fragments.SelectFileFragment;
 import com.repkap11.repcast.fragments.SelectTorrentFragment;
@@ -42,6 +43,7 @@ import java.util.Stack;
 public class RepcastActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     private static final String TAG = RepcastActivity.class.getSimpleName();
+    public static final String CHANGELOG_MESSAGE = "Added a cange log, but you shouldnt see it yet";
     private static final String INSTANCE_STATE_BACK_STACK_TORRENTS = "INSTANCE_STATE_BACK_STACK_TORRENTS";
     private static final String INSTANCE_STATE_BACK_STACK_FILES = "INSTANCE_STATE_BACK_STACK_FILES";
     private ViewPager mViewPager;
@@ -50,6 +52,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utils.showUpdateDialogIfNecessary(this);
         setContentView(R.layout.activity_repcast);
         if (savedInstanceState == null) {
             mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), this, getApplicationContext());

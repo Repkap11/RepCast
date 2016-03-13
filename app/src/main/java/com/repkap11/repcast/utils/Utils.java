@@ -16,19 +16,26 @@
 
 package com.repkap11.repcast.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.net.Uri;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.PopupMenu;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -39,6 +46,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastEx
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.repkap11.repcast.R;
+import com.repkap11.repcast.activities.RepcastActivity;
 import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.queue.QueueDataProvider;
@@ -118,7 +126,7 @@ public class Utils {
      * {@link TransientNetworkDisconnectionException}, {@link NoConnectionException} and shows an
      * "Oops" dialog conveying certain messages to the user. The following resource IDs can be used
      * to control the messages that are shown:
-     * <p>
+     * <p/>
      * <ul>
      * <li><code>R.string.connection_lost_retry</code></li>
      * <li><code>R.string.connection_lost</code></li>
@@ -272,5 +280,37 @@ public class Utils {
     public static String getUrlFromJsonDir(JsonDirectory.JsonFileDir dir) {
         String path = Uri.encode(dir.path, "//");
         return "http://repkam09.com//wbchromecast-repcast/whatbox/" + path;
+    }
+
+    public static void showUpdateDialogIfNecessary(Activity activity) {
+        try {
+            SharedPreferences prefs = activity.getSharedPreferences("CHANGELOG", Context.MODE_PRIVATE);
+            int currentVersionCode = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
+            boolean hasShownPrevious = prefs.getBoolean("has-shown-prefs-" + (currentVersionCode -1), false);
+            boolean hasShownCurrent = prefs.getBoolean("has-shown-prefs-" + currentVersionCode, false);
+            Log.e(TAG, "hasShownPrevious:" + hasShownPrevious + " hasShownCurrent:" + hasShownCurrent);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("has-shown-prefs-" + currentVersionCode, true);
+            editor.putBoolean("has-shown-prefs-" + (currentVersionCode - 1), true);
+            if ((hasShownPrevious && !hasShownCurrent)) {
+                AlertDialog d = new AlertDialog.Builder(activity)
+                        .setTitle("Changelog: App Version "+currentVersionCode)
+                        .setMessage(RepcastActivity.CHANGELOG_MESSAGE)
+                        .setCancelable(false)
+                        .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                            }
+                        }).show();
+                //DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
+                //int width = metrics.widthPixels;
+                //int height = metrics.heightPixels;
+                //Log.e(TAG, "Width:" + width + " Height:" + height);
+                //d.getWindow().setLayout(width,height);
+            }
+            editor.apply();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 }
