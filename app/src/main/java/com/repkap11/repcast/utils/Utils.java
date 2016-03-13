@@ -288,7 +288,7 @@ public class Utils {
             int currentVersionCode = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
             boolean hasShownPrevious = prefs.getBoolean("has-shown-prefs-" + (currentVersionCode -1), false);
             boolean hasShownCurrent = prefs.getBoolean("has-shown-prefs-" + currentVersionCode, false);
-            Log.e(TAG, "hasShownPrevious:" + hasShownPrevious + " hasShownCurrent:" + hasShownCurrent);
+            //Log.e(TAG, "hasShownPrevious:" + hasShownPrevious + " hasShownCurrent:" + hasShownCurrent);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("has-shown-prefs-" + currentVersionCode, true);
             editor.putBoolean("has-shown-prefs-" + (currentVersionCode - 1), true);

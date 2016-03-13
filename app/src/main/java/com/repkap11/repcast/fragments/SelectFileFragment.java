@@ -17,8 +17,10 @@ public class SelectFileFragment extends RepcastFragment {
 
     private static final String TAG = SelectFileFragment.class.getSimpleName();
     private static final String INSTANCE_STATE_DIR = "INSTANCE_STATE_DIR";
+    private static final String INSTANCE_STATE_SCROLL_POS = "INSTANCE_STATE_SCROLL_POS";
     private FileListAdapter mAdapter;
     private JsonDirectory.JsonFileDir mDirectory;
+    private int mScrollPosition = 0;
 
 
     public static SelectFileFragment newInstance(JsonDirectory.JsonFileDir dir) {
@@ -27,6 +29,7 @@ public class SelectFileFragment extends RepcastFragment {
         Log.e(TAG, "Fragment Created");
         return fragment;
     }
+
     @Override
     public boolean onQuerySubmit(String query) {
         return false;
@@ -34,7 +37,7 @@ public class SelectFileFragment extends RepcastFragment {
 
     @Override
     public boolean onQueryChange(String string) {
-        if (mAdapter == null){
+        if (mAdapter == null) {
             return true;
         }
         setResultsEmptyString(string);
@@ -53,6 +56,7 @@ public class SelectFileFragment extends RepcastFragment {
             if (RepcastFragment.DO_SAVE_STATE) {
                 if (mDirectory == null) {
                     mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
+                    mScrollPosition = savedInstanceState.getInt(INSTANCE_STATE_SCROLL_POS);
                 }
             }
         }
@@ -70,7 +74,17 @@ public class SelectFileFragment extends RepcastFragment {
         setRetainInstance(DO_RETAIN_INSTANCE);
         initProgressAndEmptyMessage(rootView);
         setListAdapter(mAdapter);
+
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(TAG, "View Created:" + mScrollPosition);
+        super.onViewCreated(view, savedInstanceState);
+        if (mScrollPosition != 0) {
+            getListView().setSelection(mScrollPosition);
+        }
     }
 
     @Override
@@ -90,9 +104,18 @@ public class SelectFileFragment extends RepcastFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        Log.e(TAG,"onDestroyView");
+        mScrollPosition = getListView().getFirstVisiblePosition();
+        super.onDestroyView();
+
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         if (RepcastFragment.DO_SAVE_STATE) {
             outState.putParcelable(INSTANCE_STATE_DIR, mDirectory);
+            outState.putInt(INSTANCE_STATE_SCROLL_POS, getListView().getFirstVisiblePosition());
         }
         super.onSaveInstanceState(outState);
     }
