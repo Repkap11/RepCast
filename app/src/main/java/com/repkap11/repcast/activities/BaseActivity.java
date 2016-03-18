@@ -173,6 +173,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
                     if (!mSearchView.isIconified()) {
                         //return false;
                     }
+                    Log.e(TAG, "Setting InitialValue:" + mInitialSearchString);
+                    new Handler(getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSearchView.setQuery(mInitialSearchString, false);
+                        }
+                    });
                     mediaRouteMenuItem.setVisible(false);
                     mediaQueueItem.setVisible(false);
                     return true;
@@ -274,6 +281,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     public void showContent(Parcelable data) {
         if (mSearchView != null) {
+            mInitialSearchString = "";
             mSearchView.setQuery(null, false);
             mSearchView.setIconified(true);
         }
@@ -286,6 +294,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     public void onBackPressed() {
         Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
         if (!TextUtils.isEmpty(mSearchView.getQuery()) || !mSearchView.isIconified()) {
+            mInitialSearchString = "";
             mSearchView.setQuery(null, false);
             mSearchView.setIconified(true);
             return;
@@ -323,6 +332,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         View closeButton = mSearchView.findViewById(R.id.search_close_btn);
         if (!mSkipTextChange) {
             onQueryChanged(newText);
+            mInitialSearchString = newText;
         }
         return false;
     }
