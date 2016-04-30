@@ -295,7 +295,7 @@ public class Utils {
             if ((hasShownPrevious && !hasShownCurrent)) {
                 AlertDialog d = new AlertDialog.Builder(activity)
                         .setTitle("Changelog: App Version "+currentVersionCode)
-                        .setMessage(RepcastActivity.CHANGELOG_MESSAGE)
+                        .setMessage(activity.getResources().getString(R.string.changelog_message))
                         .setCancelable(false)
                         .setNegativeButton("Close", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {

@@ -77,6 +77,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
                 new IconMimeMap("image/png", R.drawable.png),
                 new IconMimeMap("application/pdf", R.drawable.pdf),
                 new IconMimeMap("text/plain", R.drawable.txt),
+                new IconMimeMap("video/x-matroska", R.drawable.mkv),
         };
     }
 

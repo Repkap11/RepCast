@@ -43,7 +43,6 @@ import java.util.Stack;
 public class RepcastActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     private static final String TAG = RepcastActivity.class.getSimpleName();
-    public static final String CHANGELOG_MESSAGE = "Added a cange log, but you shouldnt see it yet";
     private static final String INSTANCE_STATE_BACK_STACK_TORRENTS = "INSTANCE_STATE_BACK_STACK_TORRENTS";
     private static final String INSTANCE_STATE_BACK_STACK_FILES = "INSTANCE_STATE_BACK_STACK_FILES";
     private ViewPager mViewPager;
@@ -211,9 +210,12 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         intent.setAction(Intent.ACTION_VIEW);
         Uri uri = Uri.parse(Utils.getUrlFromJsonDir(dir));
         Log.e(TAG, "Uri:" + uri);
+        Log.e(TAG, "MemeType:"+dir.memeType);
         intent.setDataAndType(uri, dir.memeType);
         intent.putExtra(Intent.EXTRA_TITLE, dir.name);
-        if (dir.memeType.equals("video/mp4") || dir.memeType.equals("audio/mpeg")) {
+        if (dir.memeType.equals("video/mp4") ||
+                dir.memeType.equals("audio/mpeg") ||
+                dir.memeType.equals("video/x-matroska")) {
             intent.setClass(this, LocalPlayerActivity.class);
             startActivity(intent);
         } else {
