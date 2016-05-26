@@ -73,6 +73,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selecttorrent_list_element_name);
             holder.mSize = (TextView) convertView.findViewById(R.id.fragment_selecttorrent_list_element_size);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selecttorrent_list_element_icon);
+            holder.mSeeders = (TextView) convertView.findViewById(R.id.fragment_selecttorrent_list_element_seeders);
 
 
             convertView.setOnClickListener(this);
@@ -82,6 +83,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         }
         holder.mName.setText(result.name);
         holder.mSize.setText(holder.mSize.getResources().getText(R.string.torrent_size_prefix) + result.size);
+        holder.mSeeders.setText(holder.mSize.getResources().getText(R.string.torrent_seeders_prefix)+Integer.toString(result.seeders));
         holder.mIndex = position;
         int iconResource = R.drawable.torrent;
         holder.mIcon.setImageResource(iconResource);
@@ -122,5 +124,6 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         public ImageView mIcon;
         public int mIndex;
         public TextView mSize;
+        public TextView mSeeders;
     }
 }

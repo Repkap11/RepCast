@@ -98,6 +98,7 @@
     <string name="tab_file_title">Watch</string>
     <string name="add_torrent_initial_title">Search Torrents</string>
     <string name="torrent_size_prefix">Size: </string>
+    <string name="torrent_seeders_prefix">Seeders: </string>
     <string name="torrent_confirmation_yes">Yes</string>
     <string name="torrent_confirmation_no">No</string>
     <string name="torrent_confirmation_message">Add this to the Seedbox?</string>
@@ -106,5 +107,5 @@
     <string name="empty_message_files">Tap Search to Download Files</string>
     <string name="empty_message_torents">Folder Contains no Videos</string>
     <string name="no_results_for_prefix">"No Results for: "</string>
-    <string name="changelog_message">Added MKV casting support</string>
+    <string name="changelog_message">Added Number of seeders to torrent search result.</string>
 </resources>

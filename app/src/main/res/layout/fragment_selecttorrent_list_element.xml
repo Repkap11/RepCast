@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="4dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="4dp">
 
     <ImageView
         android:id="@+id/fragment_selecttorrent_list_element_icon"
@@ -11,17 +11,17 @@
 
 
     <TextView
-        android:paddingTop="4dp"
-        android:paddingRight="4dp"
-        android:paddingLeft="4dp"
-        android:layout_alignParentTop="true"
         android:id="@+id/fragment_selecttorrent_list_element_name"
         android:layout_width="match_parent"
-        android:gravity="center_vertical"
-        android:textSize="18sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/fragment_selecttorrent_list_element_icon"
+        android:gravity="center_vertical"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
 
-        android:layout_height="wrap_content" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/fragment_selecttorrent_list_element_size"
@@ -30,8 +30,19 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/fragment_selecttorrent_list_element_name"
-        android:paddingRight="1dp"
         android:paddingBottom="1dp"
+        android:paddingRight="1dp"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/fragment_selecttorrent_list_element_seeders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/fragment_selecttorrent_list_element_name"
+        android:layout_toRightOf="@id/fragment_selecttorrent_list_element_icon"
+        android:paddingBottom="1dp"
+        android:paddingRight="1dp"
         android:textSize="12sp" />
 
 </RelativeLayout>
