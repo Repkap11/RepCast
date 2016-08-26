@@ -33,6 +33,7 @@ import com.repkap11.repcast.fragments.SelectTorrentFragment;
 import com.repkap11.repcast.model.adapters.RepcastPageAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.model.rest.RepcastSyncChecker;
 import com.repkap11.repcast.utils.Utils;
 
 import java.util.Arrays;
@@ -206,9 +207,15 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     public void showFile(JsonDirectory.JsonFileDir dir) {
         Log.e(TAG, "Starting file:" + dir.name);
+        RepcastSyncChecker syncChecker = new RepcastSyncChecker(this, dir);
+        syncChecker.execute(dir.path);
+
+    }
+
+    public void showFileWithURL(JsonDirectory.JsonFileDir dir, String url) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.parse(Utils.getUrlFromJsonDir(dir));
+        Uri uri = Uri.parse(url);
         Log.e(TAG, "Uri:" + uri);
         Log.e(TAG, "MemeType:"+dir.memeType);
         intent.setDataAndType(uri, dir.memeType);

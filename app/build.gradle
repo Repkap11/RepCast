@@ -8,8 +8,8 @@ android {
         applicationId "com.repkap11.repcast"
         minSdkVersion 19
         targetSdkVersion 22
-        versionCode 12
-        versionName "12.0"
+        versionCode 14
+        versionName "14.0"
     }
     buildTypes {
         release {

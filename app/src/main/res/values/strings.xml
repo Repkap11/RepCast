@@ -107,5 +107,5 @@
     <string name="empty_message_files">Tap Search to Download Files</string>
     <string name="empty_message_torents">Folder Contains no Videos</string>
     <string name="no_results_for_prefix">"No Results for: "</string>
-    <string name="changelog_message">Made the icon square on all launchers.</string>
+    <string name="changelog_message">Added RepCache support for LAN playpack.</string>
 </resources>

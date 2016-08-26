@@ -277,11 +277,6 @@ public class Utils {
         popup.show();
     }
 
-    public static String getUrlFromJsonDir(JsonDirectory.JsonFileDir dir) {
-        String path = Uri.encode(dir.path, "//");
-        return "http://repkam09.com//wbchromecast-repcast/whatbox/" + path;
-    }
-
     public static void showUpdateDialogIfNecessary(Activity activity) {
         try {
             SharedPreferences prefs = activity.getSharedPreferences("CHANGELOG", Context.MODE_PRIVATE);
