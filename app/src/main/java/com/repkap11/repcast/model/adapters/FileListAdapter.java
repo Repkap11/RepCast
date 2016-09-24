@@ -32,7 +32,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         mFileList = new JsonDirectory();
         mFilter = new FileListFilter(mFileList,this);
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(fragment.getString(R.string.endpoint_dirget_all)+mPath64);
+        downloader.execute(fragment.getString(R.string.endpoint_dirget)+mPath64);
     }
 
     public void updateContext(RepcastFragment fragment) {
