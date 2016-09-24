@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
 import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.model.adapters.FileListAdapter;
@@ -29,9 +30,13 @@ public class RepcastSyncChecker extends AsyncTask<String, Void, Pair<Boolean,Str
     private static final String TAG = RepcastSyncChecker.class.getSimpleName();
     private final WeakReference<RepcastActivity> mActivityReference;
     private final JsonDirectory.JsonFileDir mDir;
+    private final String mWanPrefix;
+    private final String mLanPrefix;
 
     public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir) {
         mActivityReference = new WeakReference<>(activity);
+        mWanPrefix = activity.getString(R.string.endporint_wan);
+        mLanPrefix = activity.getString(R.string.endporint_lan);
         mDir = dir;
     }
 
@@ -39,8 +44,8 @@ public class RepcastSyncChecker extends AsyncTask<String, Void, Pair<Boolean,Str
     protected Pair<Boolean,String> doInBackground(String... params) {
         String path = params[0];
         path = Uri.encode(path, "//");
-        String lanurl = "http://192.168.1.3/wdnfs/Shared%20Videos/" + path;
-        String wanurl = "http://repkam09.com//wbchromecast-repcast/whatbox/" + path;
+        String lanurl = mLanPrefix + path;
+        String wanurl = mWanPrefix + path;
         try {
             HttpURLConnection c = (HttpURLConnection)(new URL(lanurl).openConnection());
             c.setUseCaches(false);

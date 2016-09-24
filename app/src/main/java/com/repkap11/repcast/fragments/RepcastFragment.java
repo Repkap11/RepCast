@@ -89,4 +89,7 @@ public abstract class RepcastFragment extends ListFragment {
         mEmptyMessage = null;
         super.onDestroyView();
     }
+
+    public void notifyNotRefreshing() {
+    }
 }

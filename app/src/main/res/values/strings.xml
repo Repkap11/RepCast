@@ -108,4 +108,10 @@
     <string name="empty_message_torents">Folder Contains no Videos</string>
     <string name="no_results_for_prefix">"No Results for: "</string>
     <string name="changelog_message">Added RepCache support for LAN playpack.</string>
+
+    <string name="endpoint_tor_add">https://repkam09.com/dl/toradd/</string>
+    <string name="endpoint_dirget_all">https://repkam09.com/dl/dirget_all/</string>
+    <string name="endporint_lan">http://192.168.1.3/wdnfs/Shared%20Videos/</string>
+    <string name="endporint_wan">http://repkam09.com//wbchromecast-repcast/whatbox/</string>
+    <string name="endpoint_torsearch">https://repkam09.com/dl/torsearch/</string>
 </resources>

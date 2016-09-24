@@ -129,7 +129,7 @@ public class TorrentConfirmationActivity extends BaseActivity {
 
     private void doStartUpload(String magnetLink) {
         String magnetLink64 = Base64.encodeToString(magnetLink.getBytes(), Base64.NO_WRAP);
-        String url = "https://repkam09.com/dl/toradd/" + magnetLink64;
+        String url = getString(R.string.endpoint_tor_add) + magnetLink64;
         JsonTorrentUploader uploader = new JsonTorrentUploader(this);
         uploader.execute(url);
     }

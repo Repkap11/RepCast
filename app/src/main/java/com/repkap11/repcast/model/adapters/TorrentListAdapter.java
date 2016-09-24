@@ -29,12 +29,12 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     private RepcastFragment mFragment;
     private JsonTorrent mTorrentList;
 
-    public TorrentListAdapter(String query) {
+    public TorrentListAdapter(String query, RepcastFragment fragment) {
         mQuery64 = Base64.encodeToString(query.getBytes(), Base64.NO_WRAP);
         mTorrentList = new JsonTorrent();
         mFilter = new TorrentListFilter(mTorrentList, this);
         JsonTorrentListDownloader downloader = new JsonTorrentListDownloader(this);
-        downloader.execute(mQuery64);
+        downloader.execute(fragment.getString(R.string.endpoint_torsearch) + mQuery64);
     }
 
     public void updateContext(RepcastFragment fragment) {
@@ -104,6 +104,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         if (mTorrentList == null) {
             Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read torrent data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
+        mFragment.notifyNotRefreshing();
         notifyDataSetChanged();
     }
 

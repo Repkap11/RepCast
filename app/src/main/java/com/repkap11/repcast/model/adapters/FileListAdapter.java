@@ -27,12 +27,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     private RepcastFragment mFragment;
     private JsonDirectory mFileList;
 
-    public FileListAdapter(String path64) {
+    public FileListAdapter(String path64, RepcastFragment fragment) {
         mPath64 = path64;
         mFileList = new JsonDirectory();
         mFilter = new FileListFilter(mFileList,this);
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(mPath64);
+        downloader.execute(fragment.getString(R.string.endpoint_dirget_all)+mPath64);
     }
 
     public void updateContext(RepcastFragment fragment) {
@@ -137,6 +137,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         if (mFileList == null) {
             Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
+        mFragment.notifyNotRefreshing();
         notifyDataSetChanged();
     }
 

@@ -99,7 +99,7 @@ public class SelectTorrentFragment extends RepcastFragment {
 
     public void searchForTorrentsWithName(String query) {
         mTorrent.name = query;
-        mAdapter = new TorrentListAdapter(query);
+        mAdapter = new TorrentListAdapter(query, this);
         setShouldProgressBeShown(true);
         RepcastActivity activity = (RepcastActivity) getActivity();
         mAdapter.updateContext(this);

@@ -30,8 +30,7 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
 
     @Override
     protected JsonDirectory doInBackground(String... params) {
-        String path64 = params[0];
-        String url = "https://repkam09.com/dl/dirget_all/" + path64;
+        String url = params[0];
         try {
             URLConnection c = new URL(url).openConnection();
             String username = "guest";
