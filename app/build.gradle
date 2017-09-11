@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.repkap11.repcast"
@@ -46,13 +46,13 @@ repositories {
     }
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7'
+    compile 'com.android.support:appcompat-v7:25.+'
     compile files('libs/android-query.0.25.10.jar')
     // to get around https://code.google.com/p/android/issues/detail?id=52962, we need to
     // depend on both debug and release versions of the library
     compile project(path: ':cast-companion-library')
     compile project(':ShowCaseLibrary')
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
-    compile 'com.android.support:recyclerview-v7:22.2.+'
-    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:recyclerview-v7:25.+'
+    compile 'com.android.support:design:25.+'
 }

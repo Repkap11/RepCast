@@ -36,7 +36,6 @@ public class CastPreferenceActivity extends PreferenceActivity
     public static final String VOLUME_SELECTION_KEY = "volume_target";
     private ListPreference mVolumeListPreference;
     private VideoCastManager mCastManager;
-
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
