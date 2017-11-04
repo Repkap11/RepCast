@@ -34,7 +34,6 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
         dir.type = JsonDirectory.JsonFileDir.TYPE_DIR;
         dir.name = activity.getString(R.string.app_name);
         dir.path = "IDGAF";
-        dir.path64 = "";
         dir.isRoot = true;
         mFragmentContent[FILE_INDEX] = dir;
         activity.addFragmentToABackStack(mFragmentContent[FILE_INDEX]);

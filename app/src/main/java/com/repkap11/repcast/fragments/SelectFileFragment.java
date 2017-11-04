@@ -61,7 +61,7 @@ public class SelectFileFragment extends RepcastFragment {
                 }
             }
         }
-        mAdapter = new FileListAdapter(mDirectory.path64, this);
+        mAdapter = new FileListAdapter("", this);
         setShouldProgressBeShown(true);
         if (getActivity() != null) {
             mAdapter.updateContext(this);

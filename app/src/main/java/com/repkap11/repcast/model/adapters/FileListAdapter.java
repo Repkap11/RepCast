@@ -45,12 +45,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         if (mFileList == null){
             return 0;
         }
-        return mFileList.result.size();
+        return mFileList.info.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mFileList.result.get(position);
+        return mFileList.info.get(position);
     }
 
     private static final long ICON_DIR = -2;
@@ -83,12 +83,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public long getItemId(int position) {
-        JsonDirectory.JsonFileDir dir = mFileList.result.get(position);
+        JsonDirectory.JsonFileDir dir = mFileList.info.get(position);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
             return ICON_DIR;
         } else {
             for (int i = 0; i < MIME_ARRAY.length; i++) {
-                if (MIME_ARRAY[i].mMime == dir.memeType) {
+                if (MIME_ARRAY[i].mMime.equals(dir.mimetype)) {
                     return MIME_ARRAY[i].mIconResource;
                 }
             }
@@ -100,7 +100,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder;
         int iconResource = (int) getItemId(position);
-        JsonDirectory.JsonFileDir result = mFileList.result.get(position);
+        JsonDirectory.JsonFileDir result = mFileList.info.get(position);
         if (convertView == null) {
             int layout = R.layout.fragment_selectfile_list_element;
             convertView = LayoutInflater.from(mFragment.getActivity()).inflate(layout, parent, false);
@@ -144,7 +144,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     @Override
     public void onClick(View v) {
         Holder h = (Holder) v.getTag();
-        JsonDirectory.JsonFileDir dir = mFileList.result.get(h.mIndex);
+        JsonDirectory.JsonFileDir dir = mFileList.info.get(h.mIndex);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
             ((RepcastActivity)mFragment.getActivity()).showContent(dir);
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {

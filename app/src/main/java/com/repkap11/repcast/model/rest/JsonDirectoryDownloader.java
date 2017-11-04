@@ -43,11 +43,11 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             JsonDirectory fileList = objectMapper.readValue(c.getInputStream(), JsonDirectory.class);
-            for (JsonDirectory.JsonFileDir dir : fileList.result) {
-                if (!dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-                    dir.memeType = getMimeType(dir.path);
-                    Log.e(TAG, "Name:" + dir.name + " Type:" + dir.memeType);
-                }
+            for (JsonDirectory.JsonFileDir dir : fileList.info) {
+                //if (!dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
+                    //dir.memeType = getMimeType(dir.path);
+                    Log.e(TAG, "Name:" + dir.name + " Type:" + dir.mimetype);
+                //}
             }
             return fileList;
         } catch (Exception e) {
@@ -65,21 +65,21 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
         super.onPostExecute(fileList);
     }
 
-    public static String getMimeType(String url) {
-        String type = null;
-        try {
-
-            String encoded = Uri.encode(url);
-            encoded = URLEncoder.encode(encoded, "UTF-8");
-            String extension = MimeTypeMap.getFileExtensionFromUrl(encoded);
-            if (extension != null) {
-                type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            }
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return type == null ? "application/octet-stream" : type;
-    }
+//    public static String getMimeType(String url) {
+//        String type = null;
+//        try {
+//
+//            String encoded = Uri.encode(url);
+//            encoded = URLEncoder.encode(encoded, "UTF-8");
+//            String extension = MimeTypeMap.getFileExtensionFromUrl(encoded);
+//            if (extension != null) {
+//                type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+//            }
+//
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//        return type == null ? "application/octet-stream" : type;
+//    }
 }
 

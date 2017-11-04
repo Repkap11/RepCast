@@ -208,7 +208,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     public void showFile(JsonDirectory.JsonFileDir dir) {
         Log.e(TAG, "Starting file:" + dir.name);
         RepcastSyncChecker syncChecker = new RepcastSyncChecker(this, dir);
-        syncChecker.execute(dir.path);
+        syncChecker.execute();
 
     }
 
@@ -217,12 +217,12 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         intent.setAction(Intent.ACTION_VIEW);
         Uri uri = Uri.parse(url);
         Log.e(TAG, "Uri:" + uri);
-        Log.e(TAG, "MemeType:"+dir.memeType);
-        intent.setDataAndType(uri, dir.memeType);
+        Log.e(TAG, "MimeType:"+dir.mimetype);
+        intent.setDataAndType(uri, dir.mimetype);
         intent.putExtra(Intent.EXTRA_TITLE, dir.name);
-        if (dir.memeType.equals("video/mp4") ||
-                dir.memeType.equals("audio/mpeg") ||
-                dir.memeType.equals("video/x-matroska")) {
+        if (dir.mimetype.equals("video/mp4") ||
+                dir.mimetype.equals("audio/mpeg") ||
+                dir.mimetype.equals("video/x-matroska")) {
             intent.setClass(this, LocalPlayerActivity.class);
             startActivity(intent);
         } else {

@@ -25,17 +25,17 @@ public class FileListFilter extends Filter {
         FilterResults results = new FilterResults();
         if (constraint == null || constraint.length() == 0) {
             results.values = mFiles;
-            results.count = mFiles.result.size();
+            results.count = mFiles.info.size();
         } else {
             JsonDirectory resultDir = new JsonDirectory();
 
-            for (JsonDirectory.JsonFileDir file : mFiles.result) {
+            for (JsonDirectory.JsonFileDir file : mFiles.info) {
                 if (file.name.toUpperCase().contains(constraint.toString().toUpperCase())) {
-                    resultDir.result.add(file);
+                    resultDir.info.add(file);
                 }
             }
             results.values = resultDir;
-            results.count = resultDir.result.size();
+            results.count = resultDir.info.size();
         }
         //Log.e(TAG,"Searching Returned "+results.count);
         return results;

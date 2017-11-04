@@ -26,7 +26,7 @@ import java.net.URLEncoder;
 /**
  * Created by paul on 9/10/15.
  */
-public class RepcastSyncChecker extends AsyncTask<String, Void, Pair<Boolean,String>> {
+public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean,String>> {
     private static final String TAG = RepcastSyncChecker.class.getSimpleName();
     private final WeakReference<RepcastActivity> mActivityReference;
     private final JsonDirectory.JsonFileDir mDir;
@@ -41,11 +41,10 @@ public class RepcastSyncChecker extends AsyncTask<String, Void, Pair<Boolean,Str
     }
 
     @Override
-    protected Pair<Boolean,String> doInBackground(String... params) {
-        String path = params[0];
-        path = Uri.encode(path, "//");
-        String lanurl = mLanPrefix + path;
-        String wanurl = mWanPrefix + path;
+    protected Pair<Boolean,String> doInBackground(Void... params) {
+        String wanurl = mDir.path;
+        String lanurl = mLanPrefix + Uri.encode(mDir.original, "//");
+        Log.e(TAG,"LAN:"+lanurl);
         try {
             HttpURLConnection c = (HttpURLConnection)(new URL(lanurl).openConnection());
             c.setUseCaches(false);
