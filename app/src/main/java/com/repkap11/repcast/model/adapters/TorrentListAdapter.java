@@ -104,7 +104,6 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
         if (mTorrentList == null) {
             Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read torrent data from Repkam09.com", Toast.LENGTH_SHORT).show();
         }
-        mFragment.notifyNotRefreshing();
         notifyDataSetChanged();
     }
 

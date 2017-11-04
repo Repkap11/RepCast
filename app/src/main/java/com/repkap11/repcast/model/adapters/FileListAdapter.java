@@ -22,17 +22,19 @@ import com.repkap11.repcast.model.rest.JsonDirectoryDownloader;
  */
 public class FileListAdapter extends BaseAdapter implements View.OnClickListener {
     private static final String TAG = FileListAdapter.class.getSimpleName();
-    private final String mPath64;
     private FileListFilter mFilter;
     private RepcastFragment mFragment;
     private JsonDirectory mFileList;
 
-    public FileListAdapter(String path64, RepcastFragment fragment) {
-        mPath64 = path64;
+    public FileListAdapter(RepcastFragment fragment) {
         mFileList = new JsonDirectory();
         mFilter = new FileListFilter(mFileList,this);
+        refreshContent(fragment);
+    }
+
+    public void refreshContent(RepcastFragment fragment) {
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(fragment.getString(R.string.endpoint_dirget)+mPath64);
+        downloader.execute(fragment.getString(R.string.endpoint_dirget));
     }
 
     public void updateContext(RepcastFragment fragment) {

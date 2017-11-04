@@ -2,6 +2,7 @@ package com.repkap11.repcast.fragments;
 
 import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +17,6 @@ public abstract class RepcastFragment extends ListFragment {
     protected static final boolean DO_SAVE_STATE = true;
     protected static final boolean DO_RETAIN_INSTANCE = true;
     private TextView mEmptyMessage;
-    private ProgressBar mProgress;
     private ViewSwitcher mSwitcherProgressEmpty;
     private boolean mShowProgress;
     private String mResultEmptyString;
@@ -42,7 +42,6 @@ public abstract class RepcastFragment extends ListFragment {
     protected void initProgressAndEmptyMessage(View rootView) {
         mSwitcherProgressEmpty = (ViewSwitcher) rootView.findViewById(R.id.fragment_repcast_list_switcher);
         mEmptyMessage = (TextView) rootView.findViewById(R.id.fragment_repcast_list_empty_message);
-        mProgress = (ProgressBar) rootView.findViewById(R.id.fragment_repcast_list_progress);
         setShouldProgressBeShown(mShowProgress);
     }
 
@@ -68,7 +67,9 @@ public abstract class RepcastFragment extends ListFragment {
 
     public void setShouldProgressBeShown(boolean showProgress) {
         mShowProgress = showProgress;
+        Log.e(TAG,"setShouldProgressBeShown:"+mShowProgress);
         if (mSwitcherProgressEmpty != null) {
+            Log.e(TAG,"Swapping child:"+mShowProgress);
             mSwitcherProgressEmpty.setDisplayedChild(mShowProgress ? 1 : 0);
         }
         setResultsEmptyString(mResultEmptyString);
@@ -76,6 +77,7 @@ public abstract class RepcastFragment extends ListFragment {
 
     @Override
     public void setListShown(boolean shown) {
+        Log.e(TAG,"List Shown:"+ shown);
         if (!shown) {
             setShouldProgressBeShown(mShowProgress);
         }
@@ -84,12 +86,12 @@ public abstract class RepcastFragment extends ListFragment {
 
     @Override
     public void onDestroyView() {
-        mProgress = null;
         mSwitcherProgressEmpty = null;
         mEmptyMessage = null;
         super.onDestroyView();
     }
 
     public void notifyNotRefreshing() {
+
     }
 }

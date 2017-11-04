@@ -14,7 +14,7 @@ import com.repkap11.repcast.model.adapters.FileListAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 
 
-public class SelectFileFragment extends RepcastFragment {
+public class SelectFileFragment extends RepcastFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = SelectFileFragment.class.getSimpleName();
     private static final String INSTANCE_STATE_DIR = "INSTANCE_STATE_DIR";
@@ -22,6 +22,7 @@ public class SelectFileFragment extends RepcastFragment {
     private FileListAdapter mAdapter;
     private JsonDirectory.JsonFileDir mDirectory;
     private int mScrollPosition = 0;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     public static SelectFileFragment newInstance(JsonDirectory.JsonFileDir dir) {
@@ -61,7 +62,7 @@ public class SelectFileFragment extends RepcastFragment {
                 }
             }
         }
-        mAdapter = new FileListAdapter("", this);
+        mAdapter = new FileListAdapter(this);
         setShouldProgressBeShown(true);
         if (getActivity() != null) {
             mAdapter.updateContext(this);
@@ -72,6 +73,12 @@ public class SelectFileFragment extends RepcastFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_content, container, false);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.fragment_repcast_swipe_refresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.primary,
+                R.color.primary_dark,
+                R.color.primary);
 
         setRetainInstance(DO_RETAIN_INSTANCE);
         initProgressAndEmptyMessage(rootView);
@@ -106,6 +113,14 @@ public class SelectFileFragment extends RepcastFragment {
     }
 
     @Override
+    public void notifyNotRefreshing() {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        super.notifyNotRefreshing();
+    }
+
+    @Override
     public void onDestroyView() {
         Log.e(TAG,"onDestroyView");
         mScrollPosition = getListView().getFirstVisiblePosition();
@@ -125,5 +140,14 @@ public class SelectFileFragment extends RepcastFragment {
     @Override
     public String getName() {
         return mDirectory.name;
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.e(TAG,"Refreshing!!!!");
+        if (mAdapter != null) {
+            setShouldProgressBeShown(true);
+            mAdapter.refreshContent(this);
+        }
     }
 }

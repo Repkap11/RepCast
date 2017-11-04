@@ -3,6 +3,7 @@ package com.repkap11.repcast.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,8 @@ public class SelectTorrentFragment extends RepcastFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_content, container, false);
+        SwipeRefreshLayout refresh = (SwipeRefreshLayout)rootView.findViewById(R.id.fragment_repcast_swipe_refresh);
+        refresh.setEnabled(false);
         setRetainInstance(RepcastFragment.DO_RETAIN_INSTANCE);
         initProgressAndEmptyMessage(rootView);
         setListAdapter(mAdapter);

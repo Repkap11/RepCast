@@ -43,12 +43,12 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             JsonDirectory fileList = objectMapper.readValue(c.getInputStream(), JsonDirectory.class);
-            for (JsonDirectory.JsonFileDir dir : fileList.info) {
+            //for (JsonDirectory.JsonFileDir dir : fileList.info) {
                 //if (!dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
                     //dir.memeType = getMimeType(dir.path);
-                    Log.e(TAG, "Name:" + dir.name + " Type:" + dir.mimetype);
+                    //Log.e(TAG, "Name:" + dir.name + " Type:" + dir.mimetype);
                 //}
-            }
+            //}
             return fileList;
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);

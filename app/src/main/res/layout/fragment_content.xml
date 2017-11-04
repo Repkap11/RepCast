@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/fragment_repcast_swipe_refresh"
     android:layout_height="match_parent">
 
-    <include layout="@layout/coordinator_scroll_fixer" />
-<!--
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/fragment_repcast_swipe_refresh"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        -->
 
-        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true"
-            android:orientation="vertical" />
-    <!--
-    </android.support.v4.widget.SwipeRefreshLayout>
-    -->
+        <include layout="@layout/coordinator_scroll_fixer" />
 
-    <include layout="@layout/fragment_repcast_list_empty_content" />
+            <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="true"
+                android:orientation="vertical" />
 
-</RelativeLayout>
+        <include layout="@layout/fragment_repcast_list_empty_content" />
+
+    </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
