@@ -122,17 +122,17 @@
 
         <service android:name="com.google.android.libraries.cast.companionlibrary.cast.reconnection.ReconnectionService" />
 
-        <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.car.application"-->
+            <!--android:resource="@xml/automotive_app_desc" />-->
 
-        <service
-            android:name=".auto.MusicService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
+        <!--<service-->
+            <!--android:name=".auto.MusicService"-->
+            <!--android:exported="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.media.browse.MediaBrowserService" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
     </application>
 
 </manifest>
