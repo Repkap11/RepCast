@@ -104,6 +104,8 @@
     <string name="torrent_confirmation_message">Add this to the Seedbox?</string>
     <string name="torrent_confirmation_upload_succeed">"Torrent download started"</string>
     <string name="torrent_confirmation_upload_failed">"Torrent download failed to start"</string>
+    <string name="youtube_confirmation_upload_succeed">"YouTube download started"</string>
+    <string name="youtube_confirmation_upload_failed">"YouTube download failed to start"</string>
     <string name="empty_message_files">Tap Search to Download Files</string>
     <string name="empty_message_torents">Folder Contains no Videos</string>
     <string name="no_results_for_prefix">"No Results for: "</string>
@@ -111,8 +113,10 @@
     <string name="changelog_message">Moved API endpoints to api.repkam09.com</string>
 
     <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd/</string>
+    <string name="endpoint_youtube_add">https://api.repkam09.com/repcast/youtube/</string>
     <string name="endpoint_dirget">https://api.repkam09.com/repcast/spaces/getfiles</string>
     <string name="endpoint_torsearch">https://api.repkam09.com/repcast/torsearch/</string>
+
 
     <string name="endporint_lan">http://192.168.1.3/wdnfs/Shared%20Videos/</string>
     <string name="endporint_wan">http://repkam09.com//wbchromecast-repcast/whatbox/</string>
