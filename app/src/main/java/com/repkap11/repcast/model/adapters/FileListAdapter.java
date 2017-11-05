@@ -1,5 +1,6 @@
 package com.repkap11.repcast.model.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,19 +23,23 @@ import com.repkap11.repcast.model.rest.JsonDirectoryDownloader;
  */
 public class FileListAdapter extends BaseAdapter implements View.OnClickListener {
     private static final String TAG = FileListAdapter.class.getSimpleName();
+    private final JsonDirectory.JsonFileDir mDir;
     private FileListFilter mFilter;
     private RepcastFragment mFragment;
     private JsonDirectory mFileList;
+    private boolean mAllowClicks = false;
 
-    public FileListAdapter(RepcastFragment fragment) {
+    public FileListAdapter(RepcastFragment fragment, JsonDirectory.JsonFileDir dir) {
         mFileList = new JsonDirectory();
         mFilter = new FileListFilter(mFileList,this);
+        mDir = dir;
         refreshContent(fragment);
     }
 
     public void refreshContent(RepcastFragment fragment) {
+        mAllowClicks = false;
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(fragment.getString(R.string.endpoint_dirget));
+        downloader.execute(fragment.getString(R.string.endpoint_dirget)+mDir.key);
     }
 
     public void updateContext(RepcastFragment fragment) {
@@ -126,9 +131,6 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
         return convertView;
     }
-    public void updateFileList(JsonDirectory fileList) {
-        updateFileList(fileList, false);
-    }
     public void updateFileList(JsonDirectory fileList, boolean isFiltered) {
         //Log.e(TAG, "File list changed on"+this);
         mFileList = fileList;
@@ -137,14 +139,20 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             mFragment.setShouldProgressBeShown(false);
         }
         if (mFileList == null) {
-            Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
+            if (mFragment.getActivity() != null) {
+                Toast.makeText(mFragment.getActivity().getApplicationContext(), "Unable to read file data from Repkam09.com", Toast.LENGTH_SHORT).show();
+            }
         }
-        mFragment.notifyNotRefreshing();
+        mAllowClicks = true;
+        mFragment.notifyNotRefreshing();//This is ued in the SelectFileFragment
         notifyDataSetChanged();
     }
 
     @Override
     public void onClick(View v) {
+        if (!mAllowClicks){
+            return;
+        }
         Holder h = (Holder) v.getTag();
         JsonDirectory.JsonFileDir dir = mFileList.info.get(h.mIndex);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {

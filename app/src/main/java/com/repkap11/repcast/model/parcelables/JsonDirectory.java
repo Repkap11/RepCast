@@ -29,8 +29,9 @@ public class JsonDirectory {
         public String type;
         public String path;
         public String original;
-        public String mimetype = null;
         public boolean isRoot = false;
+        public String mimetype = null;
+        public String key;
 
         public JsonFileDir() {
         }
@@ -43,6 +44,7 @@ public class JsonDirectory {
                 original = in.readString();
                 isRoot = in.readByte() != 0;
                 mimetype = in.readString();
+                key = in.readString();
 
             }
         }
@@ -60,6 +62,7 @@ public class JsonDirectory {
             dest.writeString(original);
             dest.writeByte((byte) (isRoot ? 1 : 0));
             dest.writeString(mimetype);
+            dest.writeString(key);
         }
     }
 }

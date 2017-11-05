@@ -114,7 +114,7 @@
 
     <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd/</string>
     <string name="endpoint_youtube_add">https://api.repkam09.com/repcast/youtube/</string>
-    <string name="endpoint_dirget">https://api.repkam09.com/repcast/spaces/getfiles</string>
+    <string name="endpoint_dirget">https://api.repkam09.com/repcast/spaces/getfiles/</string>
     <string name="endpoint_torsearch">https://api.repkam09.com/repcast/torsearch/</string>
 
 

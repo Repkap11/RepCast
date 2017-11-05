@@ -60,7 +60,7 @@ public class JsonDirectoryDownloader extends AsyncTask<String, Void, JsonDirecto
     protected void onPostExecute(JsonDirectory fileList) {
         FileListAdapter adapter = mAdapterReference.get();
         if (adapter != null) {
-            adapter.updateFileList(fileList);
+            adapter.updateFileList(fileList, false);
         }
         super.onPostExecute(fileList);
     }

@@ -67,9 +67,9 @@ public abstract class RepcastFragment extends ListFragment {
 
     public void setShouldProgressBeShown(boolean showProgress) {
         mShowProgress = showProgress;
-        Log.e(TAG,"setShouldProgressBeShown:"+mShowProgress);
+        //Log.e(TAG,"setShouldProgressBeShown:"+mShowProgress);
         if (mSwitcherProgressEmpty != null) {
-            Log.e(TAG,"Swapping child:"+mShowProgress);
+            //Log.e(TAG,"Swapping child:"+mShowProgress);
             mSwitcherProgressEmpty.setDisplayedChild(mShowProgress ? 1 : 0);
         }
         setResultsEmptyString(mResultEmptyString);
@@ -77,7 +77,7 @@ public abstract class RepcastFragment extends ListFragment {
 
     @Override
     public void setListShown(boolean shown) {
-        Log.e(TAG,"List Shown:"+ shown);
+        //Log.e(TAG,"List Shown:"+ shown);
         if (!shown) {
             setShouldProgressBeShown(mShowProgress);
         }
@@ -91,7 +91,5 @@ public abstract class RepcastFragment extends ListFragment {
         super.onDestroyView();
     }
 
-    public void notifyNotRefreshing() {
-
-    }
+    public void notifyNotRefreshing(){}
 }

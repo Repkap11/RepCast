@@ -62,7 +62,7 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
                 }
             }
         }
-        mAdapter = new FileListAdapter(this);
+        mAdapter = new FileListAdapter(this, mDirectory);
         setShouldProgressBeShown(true);
         if (getActivity() != null) {
             mAdapter.updateContext(this);
@@ -105,14 +105,6 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        if (mAdapter != null) {
-            //mAdapter.updateContext(null);
-        }
-    }
-
-    @Override
     public void notifyNotRefreshing() {
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(false);
@@ -144,7 +136,6 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
-        Log.e(TAG,"Refreshing!!!!");
         if (mAdapter != null) {
             setShouldProgressBeShown(true);
             mAdapter.refreshContent(this);
