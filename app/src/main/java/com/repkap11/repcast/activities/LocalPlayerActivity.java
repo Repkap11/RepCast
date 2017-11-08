@@ -721,6 +721,16 @@ public class LocalPlayerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onUserLeaveHint () {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (mLocation == PlaybackLocation.LOCAL) {
+                enterPictureInPictureMode();
+            }
+        }
+    }
+
+
     @SuppressLint("NewApi")
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
