@@ -16,13 +16,16 @@
 
 package com.repkap11.repcast.activities;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     private boolean mIsSearchExpanded = false;
     private MenuItem mSearchItem;
     private boolean mSkipTextChange = false;
+    private static final int REQUEST_CODE_ASK_FOR_WRITE_EXPERNAL_PERMISSION = 44;
 
     /*
      * (non-Javadoc)
@@ -147,6 +151,33 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         // setTitleBasedOnFragment();
     }
 
+
+    private void startUpdateAppProcedure() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_FOR_WRITE_EXPERNAL_PERMISSION);
+                return;
+            }
+        }
+        continueUpdateAppWithPermissions();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.e(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
+            //resume tasks needing this permission
+            continueUpdateAppWithPermissions();
+        } else {
+            Log.e(TAG, "Permissions not granted");
+        }
+    }
+
+    private void continueUpdateAppWithPermissions() {
+        new UpdateAppTask(getApplicationContext(), true).execute();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -157,8 +188,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         updateApplicationMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                UpdateAppTask task = new UpdateAppTask(getApplicationContext(), true);
-                task.execute();
+                //UpdateAppTask task = new UpdateAppTask(getApplicationContext(), true);
+                //task.execute();
+                startUpdateAppProcedure();
                 return true;
             }
         });

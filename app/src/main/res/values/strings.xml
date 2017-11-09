@@ -109,8 +109,12 @@
     <string name="empty_message_files">Tap Search to Download Files</string>
     <string name="empty_message_torents">Folder Contains no Videos</string>
     <string name="no_results_for_prefix">"No Results for: "</string>
+    <string name="update_app_task_signatures_dont_match">Signatures do not match, are you running a debug version of the app?</string>
+    <string name="update_app_task_no_update_avaliable">Already up to date with Repkam09.com</string>
+    <string name="update_app_task_you_are_newer">You have a newer version than the server. Lucky you.</string>
+    <string name="update_app_task_error_updating_burger">Error Updating RepCast</string>
 
-    <string name="changelog_message">Moved to RepCast backend v2. Added pull to refresh. Added YouTube downloading. Added Picture-in-Picture support on Android O</string>
+    <string name="changelog_message">Support dynamic permission model, and Chromebook app resizing.</string>
 
     <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd/</string>
     <string name="endpoint_youtube_add">https://api.repkam09.com/repcast/youtube/</string>

@@ -6,7 +6,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,7 +23,7 @@ import java.util.Arrays;
 /**
  * Created by paul on 9/20/15.
  */
-public class UpdateAppTask extends AsyncTask<Void, Void, String> {
+public class UpdateAppTask extends AsyncTask<Void, Void, Integer> {
     private static final String TAG = UpdateAppTask.class.getSimpleName();
     private final boolean mNotifyUserOfNoUpdate;
     private Context mContext;
@@ -33,7 +35,7 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... arg0) {
+    protected Integer doInBackground(Void... arg0) {
         File outputFile = null;
         try {
             URL url = new URL(REMOTE_URL);
@@ -68,26 +70,41 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
             PackageInfo newInfo = mContext.getPackageManager().getPackageArchiveInfo(outputFile.getAbsolutePath(), PackageManager.GET_SIGNATURES);
             PackageInfo oldPackageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), PackageManager.GET_SIGNATURES);
 
-            boolean sameSignature = Arrays.equals(newInfo.signatures[0].toByteArray(), oldPackageInfo.signatures[0].toByteArray());
-            if (!sameSignature) {
-                return "Signatures do not match, are you running a debug version of the app?";
+            boolean sameSignature = true;
+            if (oldPackageInfo.signatures.length != newInfo.signatures.length) {
+                sameSignature = false;
+            } else {
+                int numSigs = oldPackageInfo.signatures.length;
+                for (int i = 0; i < numSigs; i++) {
+                    sameSignature = sameSignature && Arrays.equals(newInfo.signatures[i].toByteArray(), oldPackageInfo.signatures[i].toByteArray());
+                }
             }
-
-
-
+            if (!sameSignature) {
+                return R.string.update_app_task_signatures_dont_match;
+            }
             if (newInfo.versionCode > oldPackageInfo.versionCode) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(outputFile), "application/vnd.android.package-archive");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-                mContext.startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Uri apkUri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", outputFile);
+                    //Uri apkUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", outputFile);
+                    Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    intent.setData(apkUri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    mContext.startActivity(intent);
+                } else {
+                    Uri apkUri = Uri.fromFile(outputFile);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
             } else {
                 outputFile.delete();
-                Log.e(TAG,"Not installing because apk is older or the same");
+                Log.e(TAG, "Not installing because apk is older or the same");
                 if (mNotifyUserOfNoUpdate) {
-                    if  (newInfo.versionCode == oldPackageInfo.versionCode){
-                        return "No update available from Repkam09.com";
+                    if (newInfo.versionCode == oldPackageInfo.versionCode) {
+                        return R.string.update_app_task_no_update_avaliable;
                     } else {
-                        return "You have a newer version than the server. Lucky you.";
+                        return R.string.update_app_task_you_are_newer;
                     }
 
                 } else {
@@ -95,22 +112,25 @@ public class UpdateAppTask extends AsyncTask<Void, Void, String> {
                 }
 
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e)
+
+        {
             if (outputFile != null) {
                 outputFile.delete();
             }
             e.printStackTrace();
-            return "RepCast Error Updating:" + e.getMessage();
+            return R.string.update_app_task_error_updating_burger;
 
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(String message) {
+    protected void onPostExecute(Integer message) {
         super.onPostExecute(message);
         if (message != null) {
-            Log.e(TAG, message);
+            Log.e(TAG, mContext.getResources().getString(message));
             Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
         }
     }

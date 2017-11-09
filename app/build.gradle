@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "com.repkap11.repcast"
         minSdkVersion 19
-        targetSdkVersion 22
-        versionCode 18
-        versionName "18.0"
+        targetSdkVersion 24
+        versionCode 19
+        versionName "19.0"
     }
     buildTypes {
         release {
