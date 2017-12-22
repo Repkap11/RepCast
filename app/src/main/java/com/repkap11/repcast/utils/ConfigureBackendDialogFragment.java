@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,14 @@ public class ConfigureBackendDialogFragment extends DialogFragment {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         View rootView = getActivity().getLayoutInflater().inflate(R.layout.configure_backend, null, false);
         final EditText edittext = rootView.findViewById(R.id.configure_backend_edit_text);
+        String hintText = Utils.getDefaultDirGetURL(this.getActivity());
+        edittext.setHint(hintText);
+        String currentText = Utils.getDirGetURL(this.getActivity());
+        if (hintText.equals(currentText)) {
+            //If the current backend is the default, don't show it in the dialog
+        } else {
+            edittext.setText(currentText);
+        }
         alert.setMessage(R.string.configure_backend_message);
         alert.setTitle(R.string.configure_backend_title);
         alert.setView(rootView);
@@ -33,16 +42,23 @@ public class ConfigureBackendDialogFragment extends DialogFragment {
                 //What ever you want to do with the value
                 //Editable YouEditTextValue = edittext.getText();
                 //OR
-                String YouEditTextValue = edittext.getText().toString();
-                Log.e(TAG, "YES");
-
+                String url = edittext.getText().toString();
+                if (url.equals("")) {
+                    url = edittext.getHint().toString();
+                }
+                Utils.setDirGetURL(ConfigureBackendDialogFragment.this.getActivity(), url);
+                Intent intent = getActivity().getIntent();
+                dialog.cancel();
+                getActivity().finish();
+                getActivity().startActivity(intent);
+                //Log.e(TAG, "YES:" + url);
             }
         });
 
         alert.setNegativeButton(R.string.configure_backend_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // what ever you want to do with No option.
-                Log.e(TAG, "NO");
+                //Log.e(TAG, "NO");
             }
         });
         AlertDialog dialog = alert.create();

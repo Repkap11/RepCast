@@ -309,11 +309,33 @@ public class Utils {
 
     }
 
-    static final boolean DAD_TEST = true;
+    private static final boolean DAD_TEST = true;
+    private static final String BACKEND_NAME = "BACKEND";
+    private static final String BACKEND_KEY = "backend_url";
+
+    public static String getDefaultDirGetURL(Context context) {
+        return context.getResources().getString(R.string.endpoint_dirget_default);
+    }
+
+    public static void setDirGetURL(Context context, String backend_url) {
+        SharedPreferences prefs = context.getSharedPreferences(BACKEND_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(BACKEND_KEY, backend_url);
+        editor.apply();
+    }
+
     public static String getDirGetURL(Context context) {
-        String default_endpoint = context.getResources().getString(R.string.endpoint_dirget_default);
-        //return default_endpoint;
-        return "https://api.repkam09.com/repcast/spaces/getfiles/";
+        SharedPreferences prefs = context.getSharedPreferences(BACKEND_NAME, Context.MODE_PRIVATE);
+        String backend_url = prefs.getString(BACKEND_KEY, null);
+        if (backend_url == null) {
+            //If the key is still the default (null), write the real default
+            backend_url = getDefaultDirGetURL(context);
+            //This is important if the default changes in the future, which it likely will
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(BACKEND_KEY, backend_url);
+            editor.apply();
+        }
+        return backend_url;
     }
 
     public static boolean backendSupportsFull(Context context) {
