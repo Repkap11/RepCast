@@ -24,6 +24,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.application.CastApplication;
@@ -70,6 +71,9 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
         completeOnCreate(savedInstanceState, true);
         tabLayout.setupWithViewPager(mViewPager);
+        if (!Utils.backendSupportsFull()) {
+            tabLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override

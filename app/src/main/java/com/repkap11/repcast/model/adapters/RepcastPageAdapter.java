@@ -16,6 +16,7 @@ import com.repkap11.repcast.fragments.SelectFileFragment;
 import com.repkap11.repcast.fragments.SelectTorrentFragment;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
+import com.repkap11.repcast.utils.Utils;
 
 /**
  * Created by paul on 2/7/16.
@@ -98,7 +99,11 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return mFragmentContent.length;
+        if (Utils.backendSupportsFull()){
+            return mFragmentContent.length;
+        } else{
+            return 1;
+        }
     }
 
     SparseArray<RepcastFragment> registeredFragments = new SparseArray<>();
