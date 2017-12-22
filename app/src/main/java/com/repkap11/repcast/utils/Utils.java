@@ -309,7 +309,7 @@ public class Utils {
 
     }
 
-    private static final boolean DAD_TEST = true;
+    private static final boolean DAD_TEST = false;
     private static final String BACKEND_NAME = "BACKEND";
     private static final String BACKEND_KEY = "backend_url";
 

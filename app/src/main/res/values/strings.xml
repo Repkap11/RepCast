@@ -114,8 +114,6 @@
     <string name="update_app_task_you_are_newer">You have a newer version than the server. Lucky you.</string>
     <string name="update_app_task_error_updating_burger">Error Updating RepCast</string>
 
-    <string name="changelog_message">Support dynamic permission model, and Chromebook app resizing.</string>
-
     <string name="endpoint_tor_add">https://api.repkam.com/repcast/toradd/</string>
     <string name="endpoint_youtube_add">https://api.repkam.com/repcast/youtube/</string>
     <string name="endpoint_dirget_default">https://api.repkam09.com/repcast/spaces/getfiles/</string>
@@ -132,5 +130,7 @@
     <string name="configure_backend_message">Leave blank for default</string>
     <string name="configure_backend_save">Save</string>
     <string name="configure_backend_cancel">Cancel</string>
+
+    <string name="changelog_message">Support custom backends for self hosting.</string>
 
 </resources>
