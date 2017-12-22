@@ -281,7 +281,7 @@ public class Utils {
         try {
             SharedPreferences prefs = activity.getSharedPreferences("CHANGELOG", Context.MODE_PRIVATE);
             int currentVersionCode = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionCode;
-            boolean hasShownPrevious = prefs.getBoolean("has-shown-prefs-" + (currentVersionCode -1), false);
+            boolean hasShownPrevious = prefs.getBoolean("has-shown-prefs-" + (currentVersionCode - 1), false);
             boolean hasShownCurrent = prefs.getBoolean("has-shown-prefs-" + currentVersionCode, false);
             //Log.e(TAG, "hasShownPrevious:" + hasShownPrevious + " hasShownCurrent:" + hasShownCurrent);
             SharedPreferences.Editor editor = prefs.edit();
@@ -289,7 +289,7 @@ public class Utils {
             editor.putBoolean("has-shown-prefs-" + (currentVersionCode - 1), true);
             if ((hasShownPrevious && !hasShownCurrent)) {
                 AlertDialog d = new AlertDialog.Builder(activity)
-                        .setTitle("Changelog: App Version "+currentVersionCode)
+                        .setTitle("Changelog: App Version " + currentVersionCode)
                         .setMessage(activity.getResources().getString(R.string.changelog_message))
                         .setCancelable(false)
                         .setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -309,12 +309,15 @@ public class Utils {
 
     }
 
-    public static String getDirGetURL(Context context){
+    static final boolean DAD_TEST = true;
+    public static String getDirGetURL(Context context) {
         String default_endpoint = context.getResources().getString(R.string.endpoint_dirget_default);
         //return default_endpoint;
         return "https://api.repkam09.com/repcast/spaces/getfiles/";
     }
-    public static boolean backendSupportsFull(){
-        return true;
+
+    public static boolean backendSupportsFull(Context context) {
+        String endpoint = getDirGetURL(context);
+        return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
     }
 }

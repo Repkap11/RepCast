@@ -99,7 +99,7 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        if (Utils.backendSupportsFull()){
+        if (Utils.backendSupportsFull(mApplicationContest)){
             return mFragmentContent.length;
         } else{
             return 1;

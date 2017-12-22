@@ -35,7 +35,7 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
 
     public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir) {
         mActivityReference = new WeakReference<>(activity);
-        if (Utils.backendSupportsFull()) {
+        if (Utils.backendSupportsFull(activity.getApplicationContext())) {
             mLanPrefix = activity.getString(R.string.endporint_lan);
         } else {
             mLanPrefix = null;

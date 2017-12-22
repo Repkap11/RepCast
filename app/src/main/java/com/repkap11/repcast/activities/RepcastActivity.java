@@ -71,7 +71,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
         completeOnCreate(savedInstanceState, true);
         tabLayout.setupWithViewPager(mViewPager);
-        if (!Utils.backendSupportsFull()) {
+        if (!Utils.backendSupportsFull(getApplicationContext())) {
             tabLayout.setVisibility(View.GONE);
         }
     }
