@@ -16,6 +16,7 @@ import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.model.filters.FileListFilter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.rest.JsonDirectoryDownloader;
+import com.repkap11.repcast.utils.Utils;
 
 
 /**
@@ -31,7 +32,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     public FileListAdapter(RepcastFragment fragment, JsonDirectory.JsonFileDir dir) {
         mFileList = new JsonDirectory();
-        mFilter = new FileListFilter(mFileList,this);
+        mFilter = new FileListFilter(mFileList, this);
         mDir = dir;
         refreshContent(fragment);
     }
@@ -39,7 +40,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     public void refreshContent(RepcastFragment fragment) {
         mAllowClicks = false;
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(fragment.getString(R.string.endpoint_dirget)+mDir.key);
+        downloader.execute(Utils.getDirGetURL(fragment.getContext()) + mDir.key);
     }
 
     public void updateContext(RepcastFragment fragment) {
@@ -49,7 +50,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public int getCount() {
-        if (mFileList == null){
+        if (mFileList == null) {
             return 0;
         }
         return mFileList.info.size();
@@ -131,11 +132,12 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
         return convertView;
     }
+
     public void updateFileList(JsonDirectory fileList, boolean isFiltered) {
         //Log.e(TAG, "File list changed on"+this);
         mFileList = fileList;
-        if (!isFiltered){
-            mFilter = new FileListFilter(mFileList,this);
+        if (!isFiltered) {
+            mFilter = new FileListFilter(mFileList, this);
             mFragment.setShouldProgressBeShown(false);
         }
         if (mFileList == null) {
@@ -150,15 +152,15 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        if (!mAllowClicks){
+        if (!mAllowClicks) {
             return;
         }
         Holder h = (Holder) v.getTag();
         JsonDirectory.JsonFileDir dir = mFileList.info.get(h.mIndex);
         if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-            ((RepcastActivity)mFragment.getActivity()).showContent(dir);
+            ((RepcastActivity) mFragment.getActivity()).showContent(dir);
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
-            ((RepcastActivity)mFragment.getActivity()).showFile(dir);
+            ((RepcastActivity) mFragment.getActivity()).showFile(dir);
         }
     }
 

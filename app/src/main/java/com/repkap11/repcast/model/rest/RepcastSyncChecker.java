@@ -15,6 +15,7 @@ import com.repkap11.repcast.activities.RepcastActivity;
 import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.model.adapters.FileListAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
+import com.repkap11.repcast.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -26,50 +27,54 @@ import java.net.URLEncoder;
 /**
  * Created by paul on 9/10/15.
  */
-public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean,String>> {
+public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, String>> {
     private static final String TAG = RepcastSyncChecker.class.getSimpleName();
     private final WeakReference<RepcastActivity> mActivityReference;
     private final JsonDirectory.JsonFileDir mDir;
-    private final String mWanPrefix;
     private final String mLanPrefix;
 
     public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir) {
         mActivityReference = new WeakReference<>(activity);
-        mWanPrefix = activity.getString(R.string.endporint_wan);
-        mLanPrefix = activity.getString(R.string.endporint_lan);
+        if (Utils.backendSupportsFull()) {
+            mLanPrefix = activity.getString(R.string.endporint_lan);
+        } else {
+            mLanPrefix = null;
+        }
         mDir = dir;
     }
 
     @Override
-    protected Pair<Boolean,String> doInBackground(Void... params) {
+    protected Pair<Boolean, String> doInBackground(Void... params) {
         String wanurl = mDir.path;
-        String lanurl = mLanPrefix + Uri.encode(mDir.original, "//");
-        Log.e(TAG,"LAN:"+lanurl);
-        try {
-            HttpURLConnection c = (HttpURLConnection)(new URL(lanurl).openConnection());
-            c.setUseCaches(false);
-            c.setRequestMethod("HEAD");
-            c.setConnectTimeout(200);
-            c.connect();
+        if (mLanPrefix != null) {
+            String lanurl = mLanPrefix + Uri.encode(mDir.original, "//");
+            Log.e(TAG, "LAN:" + lanurl);
+            try {
+                HttpURLConnection c = (HttpURLConnection) (new URL(lanurl).openConnection());
+                c.setUseCaches(false);
+                c.setRequestMethod("HEAD");
+                c.setConnectTimeout(200);
+                c.connect();
 
-            int code = c.getResponseCode();
-            Log.e(TAG,"Cache Code:"+code);
-            if (code == 200){
-                return new Pair<>(true, lanurl);
-            } else {
-                return new Pair<>(false, wanurl);
+                int code = c.getResponseCode();
+                Log.e(TAG, "Cache Code:" + code);
+                if (code == 200) {
+                    return new Pair<>(true, lanurl);
+                } else {
+                    return new Pair<>(false, wanurl);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
             }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
         }
         return new Pair<>(false, wanurl);
     }
 
     @Override
-    protected void onPostExecute(Pair<Boolean,String> pair) {
+    protected void onPostExecute(Pair<Boolean, String> pair) {
         RepcastActivity activity = mActivityReference.get();
         if (activity != null) {
-            if (pair.first){
+            if (pair.first) {
                 Toast.makeText(activity, "Playing from LAN", Toast.LENGTH_SHORT).show();
             }
             activity.showFileWithURL(mDir, pair.second);

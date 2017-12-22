@@ -116,16 +116,21 @@
 
     <string name="changelog_message">Support dynamic permission model, and Chromebook app resizing.</string>
 
-    <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd/</string>
-    <string name="endpoint_youtube_add">https://api.repkam09.com/repcast/youtube/</string>
-    <string name="endpoint_dirget">https://api.repkam09.com/repcast/spaces/getfiles/</string>
-    <string name="endpoint_torsearch">https://api.repkam09.com/repcast/torsearch/</string>
+    <string name="endpoint_tor_add">https://api.repkam.com/repcast/toradd/</string>
+    <string name="endpoint_youtube_add">https://api.repkam.com/repcast/youtube/</string>
+    <string name="endpoint_dirget_default">https://api.repkam09.com/repcast/spaces/getfiles/</string>
+    <string name="endpoint_torsearch">https://api.repkam.com/repcast/torsearch/</string>
 
 
     <string name="endporint_lan">http://192.168.1.3/wdnfs/Shared%20Videos/</string>
-    <string name="endporint_wan">http://repkam09.com//wbchromecast-repcast/whatbox/</string>
     <string name="label_pause">Pause</string>
     <string name="label_play">Play</string>
     <string name="error_no_metadata">Error no metadata</string>
+
+    <string name="configure_backend_label">Configure Backend</string>
+    <string name="configure_backend_title">URL of Backend</string>
+    <string name="configure_backend_message">Leave blank for default</string>
+    <string name="configure_backend_save">Save</string>
+    <string name="configure_backend_cancel">Cancel</string>
 
 </resources>

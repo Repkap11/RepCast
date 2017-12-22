@@ -308,4 +308,13 @@ public class Utils {
         }
 
     }
+
+    public static String getDirGetURL(Context context){
+        String default_endpoint = context.getResources().getString(R.string.endpoint_dirget_default);
+        //return default_endpoint;
+        return "https://api.repkam09.com/repcast/spaces/getfiles/";
+    }
+    public static boolean backendSupportsFull(){
+        return true;
+    }
 }

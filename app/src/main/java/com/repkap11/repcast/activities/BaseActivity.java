@@ -18,6 +18,7 @@ package com.repkap11.repcast.activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -26,13 +27,16 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteButton;
 import android.support.v7.media.MediaRouter.RouteInfo;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,6 +45,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -53,6 +58,7 @@ import com.repkap11.repcast.R;
 import com.repkap11.repcast.UpdateAppTask;
 import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.queue.ui.QueueListViewActivity;
+import com.repkap11.repcast.utils.ConfigureBackendDialogFragment;
 import com.repkap11.repcast.utils.Utils;
 
 public abstract class BaseActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener, SearchView.OnQueryTextListener {
@@ -194,6 +200,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
                 return true;
             }
         });
+        MenuItem configureBackendMenuItem = menu.findItem(R.id.configure_backend);
+        configureBackendMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                openBackendDialog();
+                return true;
+            }
+        });
         mSearchItem = menu.findItem(R.id.action_search);
         if (mSearchItem != null) {
             mSearchItem.setVisible(mIncludeSearch);
@@ -240,6 +254,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             mSearchView.setOnQueryTextListener(this);
         }
         return true;
+    }
+
+    private void openBackendDialog() {
+        new ConfigureBackendDialogFragment().show(getFragmentManager(), "BACKEND");
     }
 
     @Override
