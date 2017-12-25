@@ -16,7 +16,10 @@
 
 package com.repkap11.repcast.activities;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -35,6 +38,9 @@ import com.repkap11.repcast.model.adapters.RepcastPageAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
 import com.repkap11.repcast.model.rest.RepcastSyncChecker;
+import com.repkap11.repcast.utils.ConfigureBackendDialogFragment;
+import com.repkap11.repcast.utils.DownloadDialogFragment;
+import com.repkap11.repcast.utils.DownloadReceiver;
 import com.repkap11.repcast.utils.Utils;
 
 import java.util.Arrays;
@@ -213,6 +219,19 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Log.e(TAG, "Starting file:" + dir.name);
         RepcastSyncChecker syncChecker = new RepcastSyncChecker(this, dir);
         syncChecker.execute();
+    }
+
+    public void downloadFile(JsonDirectory.JsonFileDir dir) {
+    }
+
+    public void openDownloadDialog(JsonDirectory.JsonFileDir dir) {
+        Log.e(TAG, "Opening Dialog for file:" + dir.name);
+        DownloadDialogFragment dialog = new DownloadDialogFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(DownloadDialogFragment.ARG_DIR, dir);
+        dialog.setArguments(args);
+        dialog.show(getFragmentManager(), "DOWNLOAD");
+
 
     }
 
@@ -241,4 +260,5 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         outState.putParcelableArray(INSTANCE_STATE_BACK_STACK_TORRENTS, mBackTorrentFragments.toArray(new JsonTorrent.JsonTorrentResult[0]));
         super.onSaveInstanceState(outState);
     }
+
 }

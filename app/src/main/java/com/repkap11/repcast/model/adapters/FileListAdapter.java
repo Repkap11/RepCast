@@ -22,7 +22,7 @@ import com.repkap11.repcast.utils.Utils;
 /**
  * Created by paul on 9/10/15.
  */
-public class FileListAdapter extends BaseAdapter implements View.OnClickListener {
+public class FileListAdapter extends BaseAdapter implements View.OnClickListener, View.OnLongClickListener {
     private static final String TAG = FileListAdapter.class.getSimpleName();
     private final JsonDirectory.JsonFileDir mDir;
     private FileListFilter mFilter;
@@ -115,6 +115,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             holder = new Holder();
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_name);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selectfile_list_element_icon);
+            convertView.setOnLongClickListener(this);
             convertView.setOnClickListener(this);
             convertView.setTag(holder);
         } else {
@@ -162,6 +163,23 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
         } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
             ((RepcastActivity) mFragment.getActivity()).showFile(dir);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (!mAllowClicks) {
+            return false;
+        }
+        Holder h = (Holder) v.getTag();
+        JsonDirectory.JsonFileDir dir = mFileList.info.get(h.mIndex);
+        if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
+            return false;
+        } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
+            Log.e(TAG,"Long press");
+            ((RepcastActivity) mFragment.getActivity()).openDownloadDialog(dir);
+            return true;
+        }
+        return false;
     }
 
     public Filter getFilter() {

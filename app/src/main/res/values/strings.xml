@@ -131,6 +131,9 @@
     <string name="configure_backend_save">Save</string>
     <string name="configure_backend_cancel">Cancel</string>
 
-    <string name="changelog_message">Support custom backends for self hosting, and fix a bug with adding.</string>
+    <string name="changelog_message">Add Download Support with long press</string>
+    <string name="download_from_repcast_title">Download File</string>
+    <string name="download_from_repcast_yes">Download</string>
+    <string name="download_from_repcast_cancel">Cancel</string>
 
 </resources>

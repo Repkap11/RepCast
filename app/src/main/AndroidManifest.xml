@@ -158,6 +158,15 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <receiver
+            android:name=".utils.DownloadReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
+        <uses-permission android:name="android.permission.INTERNET" />
     </application>
 
 </manifest>
