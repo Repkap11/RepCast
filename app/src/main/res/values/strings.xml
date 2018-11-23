@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +14,9 @@
   limitations under the License.
   -->
 <resources>
+
+    <string name="changelog_message">Support quick swapping between the default and secondary backends.</string>
+
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>
     <string name="app_id">CB2D44C5</string>
@@ -125,13 +127,15 @@
     <string name="label_play">Play</string>
     <string name="error_no_metadata">Error no metadata</string>
 
-    <string name="configure_backend_label">Configure Backend</string>
-    <string name="configure_backend_title">URL of Backend</string>
+    <string name="configure_backend_label">Configure Secondary Backend</string>
+    <string name="configure_backend_title">URL of Secondary Backend</string>
     <string name="configure_backend_message">Leave blank for default</string>
+    <string name="swap_backend">Swap to %s Backend</string>
+    <string name="swap_backend_default">Default</string>
+    <string name="swap_backend_secondary">Secondary</string>
     <string name="configure_backend_save">Save</string>
     <string name="configure_backend_cancel">Cancel</string>
 
-    <string name="changelog_message">Fix crash on devices with Andorid Marshmellow or later which don\'t support picture in picture.</string>
     <string name="download_from_repcast_title">Download File</string>
     <string name="download_from_repcast_yes">Download</string>
     <string name="download_from_repcast_cancel">Cancel</string>

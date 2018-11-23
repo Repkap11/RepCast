@@ -41,6 +41,10 @@
         android:title="@string/configure_backend_label"
         app:showAsAction="never" />
     <item
+        android:id="@+id/swap_backend"
+        android:title="@string/swap_backend"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/update_app_menu_button"
         android:title="@string/update_application"
         app:showAsAction="never" />

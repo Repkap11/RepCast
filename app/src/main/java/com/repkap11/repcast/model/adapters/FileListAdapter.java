@@ -40,7 +40,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     public void refreshContent(RepcastFragment fragment) {
         mAllowClicks = false;
         JsonDirectoryDownloader downloader = new JsonDirectoryDownloader(this);
-        downloader.execute(Utils.getDirGetURL(fragment.getContext()) + mDir.key);
+        downloader.execute(Utils.getDirGetURL(fragment.getContext(), false) + mDir.key);
     }
 
     public void updateContext(RepcastFragment fragment) {

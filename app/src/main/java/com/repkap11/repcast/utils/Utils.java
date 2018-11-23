@@ -312,6 +312,7 @@ public class Utils {
     private static final boolean DAD_TEST = false;
     private static final String BACKEND_NAME = "BACKEND";
     private static final String BACKEND_KEY = "backend_url";
+    private static final String USE_DEFAULT_BACKEND_KEY = "use_default_backend";
 
     public static String getDefaultDirGetURL(Context context) {
         return context.getResources().getString(R.string.endpoint_dirget_default);
@@ -324,7 +325,27 @@ public class Utils {
         editor.apply();
     }
 
-    public static String getDirGetURL(Context context) {
+    public static boolean getUseDefaultBackend(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(BACKEND_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(USE_DEFAULT_BACKEND_KEY, true);
+    }
+
+    public static void setUseDefaultBackend(Context context, boolean useDefaultBackend) {
+        SharedPreferences prefs = context.getSharedPreferences(BACKEND_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(USE_DEFAULT_BACKEND_KEY, useDefaultBackend);
+        editor.apply();
+    }
+
+    public static void swapDefaultBackend(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(BACKEND_NAME, Context.MODE_PRIVATE);
+        boolean useDefaultBackend = prefs.getBoolean(USE_DEFAULT_BACKEND_KEY, true);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(USE_DEFAULT_BACKEND_KEY, !useDefaultBackend);
+        editor.apply();
+    }
+
+    public static String getDirGetURL(Context context, boolean forceSecondary) {
         SharedPreferences prefs = context.getSharedPreferences(BACKEND_NAME, Context.MODE_PRIVATE);
         String backend_url = prefs.getString(BACKEND_KEY, null);
         if (backend_url == null) {
@@ -335,11 +356,16 @@ public class Utils {
             editor.putString(BACKEND_KEY, backend_url);
             editor.apply();
         }
+        if (!forceSecondary) {
+            if (getUseDefaultBackend(context)) {
+                backend_url = getDefaultDirGetURL(context);
+            }
+        }
         return backend_url;
     }
 
     public static boolean backendSupportsFull(Context context) {
-        String endpoint = getDirGetURL(context);
+        String endpoint = getDirGetURL(context, false);
         return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
     }
 }

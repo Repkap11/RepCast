@@ -20,6 +20,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -208,6 +209,16 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
                 return true;
             }
         });
+        MenuItem swapBackendMenu = menu.findItem(R.id.swap_backend);
+        String string_resource = getResources().getString(Utils.getUseDefaultBackend(this) ? R.string.swap_backend_secondary : R.string.swap_backend_default);
+        swapBackendMenu.setTitle(getResources().getString(R.string.swap_backend, string_resource));
+        swapBackendMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                swapBackend();
+                return true;
+            }
+        });
         mSearchItem = menu.findItem(R.id.action_search);
         if (mSearchItem != null) {
             mSearchItem.setVisible(mIncludeSearch);
@@ -254,6 +265,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             mSearchView.setOnQueryTextListener(this);
         }
         return true;
+    }
+
+    private void swapBackend() {
+        Utils.swapDefaultBackend(this);
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     private void openBackendDialog() {

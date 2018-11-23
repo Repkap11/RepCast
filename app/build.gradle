@@ -8,7 +8,7 @@ android {
         applicationId "com.repkap11.repcast"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 23
+        versionCode 24
         versionName versionCode + ".0"
         setProperty("archivesBaseName","RepCast-" + versionCode)
     }
@@ -42,12 +42,12 @@ repositories {
 }
 dependencies {
     api 'com.android.support:appcompat-v7:26.+'
-    compile files('libs/android-query.0.25.10.jar')
+    api files('libs/android-query.0.25.10.jar')
     // to get around https://code.google.com/p/android/issues/detail?id=52962, we need to
     // depend on both debug and release versions of the library
-    compile project(path: ':cast-companion-library')
-    compile project(':ShowCaseLibrary')
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
-    compile 'com.android.support:recyclerview-v7:26.+'
-    compile 'com.android.support:design:26.+'
+    api project(path: ':cast-companion-library')
+    api project(':ShowCaseLibrary')
+    api 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+    api 'com.android.support:recyclerview-v7:26.+'
+    api 'com.android.support:design:26.+'
 }

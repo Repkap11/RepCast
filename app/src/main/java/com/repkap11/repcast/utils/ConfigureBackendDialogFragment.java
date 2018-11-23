@@ -28,7 +28,7 @@ public class ConfigureBackendDialogFragment extends DialogFragment {
         final EditText edittext = rootView.findViewById(R.id.configure_backend_edit_text);
         String hintText = Utils.getDefaultDirGetURL(this.getActivity());
         edittext.setHint(hintText);
-        String currentText = Utils.getDirGetURL(this.getActivity());
+        String currentText = Utils.getDirGetURL(this.getActivity(), true);
         if (hintText.equals(currentText)) {
             //If the current backend is the default, don't show it in the dialog
         } else {
@@ -44,9 +44,10 @@ public class ConfigureBackendDialogFragment extends DialogFragment {
                 //OR
                 String url = edittext.getText().toString();
                 if (url.equals("")) {
-                    url = edittext.getHint().toString();
+                    url = null;
                 }
                 Utils.setDirGetURL(ConfigureBackendDialogFragment.this.getActivity(), url);
+                Utils.setUseDefaultBackend(getActivity(),false);
                 Intent intent = getActivity().getIntent();
                 dialog.cancel();
                 getActivity().finish();
