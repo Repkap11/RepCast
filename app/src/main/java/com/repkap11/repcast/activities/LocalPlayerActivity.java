@@ -17,6 +17,7 @@ package com.repkap11.repcast.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.media.MediaPlayer;
@@ -725,7 +726,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
     public void onUserLeaveHint () {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (mLocation == PlaybackLocation.LOCAL) {
-                enterPictureInPictureMode();
+                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+                    enterPictureInPictureMode();
+                }
             }
         }
     }
