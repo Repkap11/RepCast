@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.0'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.repkap11.repcast"
         minSdkVersion 19
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 22
         versionName "22.0"
     }
@@ -15,12 +15,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def file = output.outputFile
-                    output.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionCode + ".apk"))
-                }
-            }
+//            applicationVariants.all { variant ->
+//                variant.outputs.each { output ->
+//                    def file = output.outputFile
+//                    output.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionCode + ".apk"))
+//                }
+//            }
         }
     }
     signingConfigs {
@@ -46,13 +46,13 @@ repositories {
     }
 }
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.+'
+    compile 'com.android.support:appcompat-v7:26.+'
     compile files('libs/android-query.0.25.10.jar')
     // to get around https://code.google.com/p/android/issues/detail?id=52962, we need to
     // depend on both debug and release versions of the library
     compile project(path: ':cast-companion-library')
     compile project(':ShowCaseLibrary')
     compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
-    compile 'com.android.support:recyclerview-v7:25.+'
-    compile 'com.android.support:design:25.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
+    compile 'com.android.support:design:26.+'
 }
