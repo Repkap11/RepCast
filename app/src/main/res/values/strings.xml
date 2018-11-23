@@ -131,7 +131,7 @@
     <string name="configure_backend_save">Save</string>
     <string name="configure_backend_cancel">Cancel</string>
 
-    <string name="changelog_message">Add Download Support with long press</string>
+    <string name="changelog_message">Fix crash on devices with Andorid Marshmellow or later which don\'t support picture in picture.</string>
     <string name="download_from_repcast_title">Download File</string>
     <string name="download_from_repcast_yes">Download</string>
     <string name="download_from_repcast_cancel">Cancel</string>
