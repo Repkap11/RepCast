@@ -33,4 +33,6 @@
     <color name="ccl_mini_upcoming_background">#03A9F4</color>
     <color name="ccl_mini_main_background">#FFFFFF</color>
     <color name="ccl_mini_upcoming_upnext_color">#eeff41</color>
+    <color name="ccl_under_software_buttons">#B6B6B6</color>
+
 </resources>

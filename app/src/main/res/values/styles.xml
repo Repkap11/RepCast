@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +15,17 @@
   -->
 <resources>
 
-    <style name="Theme.CastVideosTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlActivated">#FFffffff</item>
+    </style>
+
+    <style name="Theme.CastVideosTheme.Common" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Set AppCompat’s color theming attrs -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColorPrimary">@color/primary_text</item>
         <item name="android:textColorSecondary">@color/secondary_text</item>
-        <!-- The rest of your attributes -->
-        <!--item name="android:seekBarStyle">@style/YellowSeekBar</item-->
     </style>
 
     <style name="Theme.CastVideosDark" parent="Theme.AppCompat.Light.NoActionBar">
@@ -32,8 +33,12 @@
     </style>
 
     <style name="YellowSeekBar" parent="android:Widget.SeekBar">
-        <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
-        <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:progressDrawable">
+            @drawable/apptheme_scrubber_progress_horizontal_holo_light
+        </item>
+        <item name="android:indeterminateDrawable">
+            @drawable/apptheme_scrubber_progress_horizontal_holo_light
+        </item>
         <item name="android:minHeight">13dip</item>
         <item name="android:maxHeight">13dip</item>
         <item name="android:thumb">@drawable/apptheme_scrubber_control_selector_holo_light</item>

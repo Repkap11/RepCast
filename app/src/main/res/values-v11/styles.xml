@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +15,8 @@
   -->
 <resources>
 
+    <style name="Theme.CastVideosTheme" parent="Theme.CastVideosTheme.Common" />
+
     <style name="myRecyclerViewStyle">
         <!-- NOTE: clipChildren should be false on API level 11 or later -->
         <item name="android:clipChildren">false</item>
@@ -23,10 +24,5 @@
         <item name="android:scrollbarStyle">outsideOverlay</item>
         <item name="android:scrollbars">vertical</item>
     </style>
-
-    <style name="AppTheme.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="colorControlActivated">#FFffffff</item>
-    </style>
-
 
 </resources>

@@ -28,10 +28,19 @@ public class UpdateAppTask extends AsyncTask<Void, Void, Integer> {
     private final boolean mNotifyUserOfNoUpdate;
     private Context mContext;
     private static final String REMOTE_URL = "https://repkam09.com/dl/repcast/repcast.apk";
+    private Toast mToast;
 
     public UpdateAppTask(Context applicationContext, boolean notifyUserOfNoUpdate) {
         mContext = applicationContext;
         mNotifyUserOfNoUpdate = notifyUserOfNoUpdate;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mToast = Toast.makeText(mContext, R.string.update_app_task_starting_download, Toast.LENGTH_LONG);
+        mToast.show();
+
     }
 
     @Override
@@ -131,6 +140,7 @@ public class UpdateAppTask extends AsyncTask<Void, Void, Integer> {
         super.onPostExecute(message);
         if (message != null) {
             Log.e(TAG, mContext.getResources().getString(message));
+            mToast.cancel();
             Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
         }
     }

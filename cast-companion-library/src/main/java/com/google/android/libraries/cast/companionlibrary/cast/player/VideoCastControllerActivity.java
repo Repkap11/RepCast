@@ -32,8 +32,10 @@ import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 import com.google.android.libraries.cast.companionlibrary.widgets.MiniController;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -437,6 +439,14 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     public void setOnVideoCastControllerChangedListener(OnVideoCastControllerListener listener) {
         if (listener != null) {
             mListener = listener;
+        }
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setNavigationBarColor(Color.BLACK);
         }
     }
 

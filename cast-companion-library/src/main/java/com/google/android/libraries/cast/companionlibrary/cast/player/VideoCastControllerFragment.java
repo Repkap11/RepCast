@@ -40,6 +40,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -113,7 +114,7 @@ public class VideoCastControllerFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
         if (mCastManager.getPreferenceAccessor()
                 .getBooleanFromPreference(VideoCastManager.PREFS_KEY_IMMERSIVE_MODE, true)) {
-            setImmersive();
+            //setImmersive();
         }
         mCastConsumer = new MyCastConsumer();
         Bundle bundle = getArguments();

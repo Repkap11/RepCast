@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Support quick swapping between the default and secondary backends.</string>
+    <string name="changelog_message">Update to a new Google Cast framework, and add a shadow to the cast location dialog.</string>
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>
@@ -115,6 +115,7 @@
     <string name="update_app_task_no_update_avaliable">Already up to date with Repkam09.com</string>
     <string name="update_app_task_you_are_newer">You have a newer version than the server. Lucky you.</string>
     <string name="update_app_task_error_updating_burger">Error Updating RepCast</string>
+    <string name="update_app_task_starting_download">Starting RepCast Download</string>
 
     <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd/</string>
     <string name="endpoint_youtube_add">https://api.repkam09.com/repcast/youtube/</string>
