@@ -28,7 +28,7 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
     public static SelectFileFragment newInstance(JsonDirectory.JsonFileDir dir) {
         SelectFileFragment fragment = new SelectFileFragment();
         fragment.mDirectory = dir;
-        Log.e(TAG, "Fragment Created");
+        //Log.e(TAG, "Fragment Created");
         return fragment;
     }
 
@@ -89,7 +89,7 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.e(TAG, "View Created:" + mScrollPosition);
+        //Log.e(TAG, "View Created:" + mScrollPosition);
         super.onViewCreated(view, savedInstanceState);
         if (mScrollPosition != 0) {
             getListView().setSelection(mScrollPosition);
@@ -114,7 +114,7 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
 
     @Override
     public void onDestroyView() {
-        Log.e(TAG,"onDestroyView");
+        //Log.e(TAG,"onDestroyView");
         mScrollPosition = getListView().getFirstVisiblePosition();
         super.onDestroyView();
 

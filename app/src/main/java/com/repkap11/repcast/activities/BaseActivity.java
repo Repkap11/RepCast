@@ -88,7 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e(TAG, "Activity Created");
+        //Log.e(TAG, "Activity Created");
         super.onCreate(savedInstanceState);
         VideoCastManager.checkGooglePlayServices(this);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
@@ -173,11 +173,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
+            //Log.e(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
             //resume tasks needing this permission
             continueUpdateAppWithPermissions();
         } else {
-            Log.e(TAG, "Permissions not granted");
+            //Log.e(TAG, "Permissions not granted");
         }
     }
 
@@ -225,12 +225,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             MenuItemCompat.setOnActionExpandListener(mSearchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
-                    Log.d(TAG, "onMenuItemActionExpand() called with: " + "item = [" + item + "]");
+                    //Log.d(TAG, "onMenuItemActionExpand() called with: " + "item = [" + item + "]");
                     mIsSearchExpanded = true;
                     if (!mSearchView.isIconified()) {
                         //return false;
                     }
-                    Log.e(TAG, "Setting InitialValue:" + mInitialSearchString);
+                    //Log.e(TAG, "Setting InitialValue:" + mInitialSearchString);
                     new Handler(getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -244,7 +244,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
-                    Log.d(TAG, "onMenuItemActionCollapse() called with: " + "item = [" + item + "]");
+                    //Log.d(TAG, "onMenuItemActionCollapse() called with: " + "item = [" + item + "]");
                     mIsSearchExpanded = false;
                     mediaRouteMenuItem.setVisible(mCastManager.isAnyRouteAvailable());
                     mediaQueueItem.setVisible(mCastManager.isConnected());
@@ -255,7 +255,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             mSearchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
             mSearchView.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
             if (mIsSearchExpanded) {
-                Log.e(TAG, "Expanding Search 1");
+                //Log.e(TAG, "Expanding Search 1");
                 MenuItemCompat.expandActionView(mSearchItem);
                 mSearchView.setQuery(mInitialSearchString, false);
             }
@@ -282,7 +282,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_show_queue).setVisible(mCastManager.isConnected());
         if (mIsSearchExpanded) {
-            Log.e(TAG, "Expanding Search 2");
+            //Log.e(TAG, "Expanding Search 2");
             //mSearchView.setIconified(false);
             //mSearchView.clearFocus();
         }
@@ -305,7 +305,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     private void showFtu() {
         Menu menu = mToolbar.getMenu();
         View view = menu.findItem(R.id.media_route_menu_item).getActionView();
-        if (view != null && view instanceof MediaRouteButton) {
+        if (view instanceof MediaRouteButton) {
             new ShowcaseView.Builder(this)
                     .setTarget(new ViewTarget(view))
                     .setContentTitle(R.string.touch_to_cast)
@@ -360,7 +360,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     @Override
     public void onBackPressed() {
-        Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
+        //Log.e(TAG, "Back stack count:" + getSupportFragmentManager().getBackStackEntryCount());
         if (!TextUtils.isEmpty(mSearchView.getQuery()) || !mSearchView.isIconified()) {
             mInitialSearchString = "";
             mSearchView.setQuery(null, false);
@@ -396,7 +396,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.e(TAG, "Got onQueryTextChange");
+        //Log.e(TAG, "Got onQueryTextChange");
         View closeButton = mSearchView.findViewById(R.id.search_close_btn);
         if (!mSkipTextChange) {
             onQueryChanged(newText);
