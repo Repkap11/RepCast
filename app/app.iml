@@ -139,8 +139,8 @@
     <orderEntry type="library" name="Gradle: com.android.support:support-compat-26.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base-16.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:recyclerview-v7-26.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast-16.1.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast-framework-16.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast-16.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast-framework-16.1.2" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: artifacts:ShowCaseLibrary" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-vector-drawable-26.1.0" level="project" />

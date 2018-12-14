@@ -34,17 +34,19 @@ import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.NotificationCompat;
 
 /**
  * A service to provide status bar Notifications when we are casting. For JB+ versions, notification
@@ -74,10 +76,24 @@ public class VideoCastNotificationService extends Service {
     private VideoCastConsumerImpl mConsumer;
     private FetchBitmapTask mBitmapDecoderTask;
     private int mDimensionInPixels;
+    private String REPCAST_CHANNEL_ID = "REPCAST_CHANNEL_ID";
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.notification_channel_id);
+            String Description = getString(R.string.notification_description);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel mChannel = new NotificationChannel(REPCAST_CHANNEL_ID, name, importance);
+            mChannel.setDescription(Description);
+            mChannel.enableVibration(false);
+            mChannel.enableLights(false);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+
         mDimensionInPixels = Utils.convertDpToPixel(VideoCastNotificationService.this,
                 getResources().getDimension(R.dimen.ccl_notification_image_size));
         mCastManager = VideoCastManager.getInstance();
@@ -302,25 +318,24 @@ public class VideoCastNotificationService extends Service {
         }
         int pauseOrPlayTextResourceId = isPlaying ? R.string.ccl_pause : R.string.ccl_play;
 
-        NotificationCompat.Builder builder
-                = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_stat_action_notification)
+        android.support.v4.app.NotificationCompat.Builder builder;
+        builder = new android.support.v4.app.NotificationCompat.Builder(this, REPCAST_CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.ic_stat_action_notification)
                 .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE))
                 .setContentText(castingTo)
                 .setContentIntent(contentPendingIntent)
-                .setLargeIcon(bitmap)
-                .addAction(isPlaying ? pauseOrStopResourceId
-                                : R.drawable.ic_notification_play_48dp,
-                        getString(pauseOrPlayTextResourceId), playbackPendingIntent)
-                .addAction(R.drawable.ic_notification_disconnect_24dp,
-                        getString(R.string.ccl_disconnect),
-                        stopPendingIntent)
-                .setStyle(new NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0, 1)
-                        .setMediaSession(mCastManager.getMediaSessionCompatToken()))
+                .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
+                .addAction(isPlaying ? pauseOrStopResourceId : R.drawable.ic_notification_play_48dp, getString(pauseOrPlayTextResourceId), playbackPendingIntent)
+                .addAction(R.drawable.ic_notification_disconnect_24dp, getString(R.string.ccl_disconnect), stopPendingIntent)
+                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0, 1)
+                .setMediaSession(mCastManager.getMediaSessionCompatToken()))
                 .setOngoing(true)
-                .setShowWhen(false)
-                .setVisibility(Notification.VISIBILITY_PUBLIC);
+                .setShowWhen(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
 
 
         mNotification = builder.build();
