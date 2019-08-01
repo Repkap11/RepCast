@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Removed adding. Just message Mark to add new files</string>\
+    <string name="changelog_message">Added auth key for better server verification</string>\
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>

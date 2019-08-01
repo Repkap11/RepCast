@@ -33,6 +33,7 @@ public class JsonYouTubeUploader extends AsyncTask<String, Void, Integer> {
             String userPassword = username + ":" + password;
             String encoding = Base64.encodeToString(userPassword.getBytes(), Base64.NO_WRAP);
             c.setRequestProperty("Authorization", "Basic " + encoding);
+            c.setRequestProperty("repka-repcast-token",Base64.encodeToString("repka-repcast-token".getBytes(), Base64.NO_WRAP) );
             c.setUseCaches(false);
 
             //ObjectMapper objectMapper = new ObjectMapper();
