@@ -113,7 +113,9 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             int layout = R.layout.fragment_selectfile_list_element;
             convertView = LayoutInflater.from(mFragment.getActivity()).inflate(layout, parent, false);
             holder = new Holder();
+
             holder.mName = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_name);
+            holder.mDate = (TextView) convertView.findViewById(R.id.fragment_selectfile_list_element_date);
             holder.mIcon = (ImageView) convertView.findViewById(R.id.fragment_selectfile_list_element_icon);
             convertView.setOnLongClickListener(this);
             convertView.setOnClickListener(this);
@@ -122,6 +124,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             holder = (Holder) convertView.getTag();
         }
         holder.mName.setText(result.name);
+        holder.mDate.setText(result.date);
         holder.mIndex = position;
         if (iconResource == ICON_DIR) {
             holder.mIcon.setImageResource(R.drawable.folder);
@@ -189,6 +192,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
     public class Holder {
         public TextView mName;
         public ImageView mIcon;
+        public TextView mDate;
         public int mIndex;
     }
 }

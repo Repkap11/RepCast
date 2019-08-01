@@ -365,7 +365,8 @@ public class Utils {
     }
 
     public static boolean backendSupportsFull(Context context) {
-        String endpoint = getDirGetURL(context, false);
-        return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
+        return false;
+//        String endpoint = getDirGetURL(context, false);
+//        return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
     }
 }

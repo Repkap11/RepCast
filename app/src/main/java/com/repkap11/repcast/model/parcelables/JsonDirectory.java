@@ -29,6 +29,7 @@ public class JsonDirectory {
         public String type;
         public String path;
         public String original;
+        public String date;
         public boolean isRoot = false;
         public String mimetype = null;
         public String key;
@@ -41,6 +42,7 @@ public class JsonDirectory {
                 name = in.readString();
                 type = in.readString();
                 path = in.readString();
+                date = in.readString();
                 original = in.readString();
                 isRoot = in.readByte() != 0;
                 mimetype = in.readString();
@@ -59,6 +61,7 @@ public class JsonDirectory {
             dest.writeString(name);
             dest.writeString(type);
             dest.writeString(path);
+            dest.writeString(date);
             dest.writeString(original);
             dest.writeByte((byte) (isRoot ? 1 : 0));
             dest.writeString(mimetype);
