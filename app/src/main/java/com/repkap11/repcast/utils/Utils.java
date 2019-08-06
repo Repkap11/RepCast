@@ -370,4 +370,9 @@ public class Utils {
         //String endpoint = getDirGetURL(context, false);
         //return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
     }
+
+    public static boolean backendSupportsLocalCast(Context context) {
+        String endpoint = getDirGetURL(context, false);
+        return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
+    }
 }
