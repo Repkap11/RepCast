@@ -83,8 +83,8 @@ public class QueueListAdapter
         };
         setHasStableIds(true);
         sWhiteColor = context.getResources().getColor(R.color.white);
-        sGreyColor = context.getResources().getColor(android.R.color.secondary_text_light);
-        sBlackColor = context.getResources().getColor(R.color.black);
+        sGreyColor = context.getResources().getColor(R.color.secondary_text);
+        sBlackColor = context.getResources().getColor(R.color.primary_text);
         sYellowColor = context.getResources().getColor(R.color.ccl_mini_upcoming_upnext_color);
     }
 

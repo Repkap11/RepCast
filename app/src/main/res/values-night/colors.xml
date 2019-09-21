@@ -14,6 +14,10 @@
   limitations under the License.
   -->
 <resources>
+    <color name="bg_item_normal_state">#ff101010</color>
+    <color name="bg_item_normal_pressed_state">#ff202020</color>
+
+
     <color name="primary">#BE2602</color>
     <color name="primary_dark">#791900</color>
     <color name="accent">@color/primary</color>

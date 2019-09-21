@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Fix local cast being turned off a fully supported backends.</string>\
+    <string name="changelog_message">Add dark theme based on system setting</string>\
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>
