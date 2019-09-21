@@ -87,7 +87,7 @@
             android:launchMode="singleTask"
             android:parentActivityName=".activities.RepcastActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.CastVideosDark">
+            android:theme="@style/AppTheme.ActionBarTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.RepcastActivity" />

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright 2015 Google Inc. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,9 @@
   limitations under the License.
   -->
 <resources>
-    <!-- Dialog -->
-    <style name="CCLCastDialog" parent="android:Theme.Material.Dialog">
-        <item name="android:windowTitleStyle">@style/CCLCastDialogWindowTitle</item>
-        <item name="android:navigationBarColor">@android:color/black</item>
-
-    </style>
+    <color name="primary">#BE2602</color>
+    <color name="primary_dark">#791900</color>
+    <color name="accent">@color/primary</color>
+    <color name="primary_text">#f0f0f0</color>
+    <color name="secondary_text">#dddd</color>
 </resources>
