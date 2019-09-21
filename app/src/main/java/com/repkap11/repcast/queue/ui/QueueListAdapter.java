@@ -50,8 +50,8 @@ public class QueueListAdapter
     private final VideoCastManager mCastManager;
     private static final int sPlayResource = R.drawable.ic_play_arrow_grey600_48dp;
     private static final int sPauseResource = R.drawable.ic_pause_grey600_48dp;
-    private static final int sDragHandlerDarkResource = R.drawable.ic_drag_updown_grey_24dp;
-    private static final int sDragHandlerLightResource = R.drawable.ic_drag_updown_white_24dp;
+    private static final int sDragHandlerDarkResource = R.drawable.ic_drag_handle;
+    private static final int sDragHandlerLightResource = R.drawable.ic_drag_handle;
     private static int sWhiteColor;
     private static int sBlackColor;
     private static int sYellowColor;

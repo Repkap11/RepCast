@@ -61,4 +61,6 @@
     <color name="accent">@color/primary</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
+    <color name="primary_background">#ffffff</color>
+
 </resources>

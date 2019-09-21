@@ -772,7 +772,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             }
             updateMetadata(true);
-            mContainer.setBackgroundColor(getResources().getColor(R.color.white));
+            mContainer.setBackgroundColor(getResources().getColor(R.color.primary_background));
         }
     }
 

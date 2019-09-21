@@ -19,4 +19,6 @@
     <color name="accent">@color/primary</color>
     <color name="primary_text">#f0f0f0</color>
     <color name="secondary_text">#dddd</color>
+    <color name="primary_background">#202020</color>
+
 </resources>
