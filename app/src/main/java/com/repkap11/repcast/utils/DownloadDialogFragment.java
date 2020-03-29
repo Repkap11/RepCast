@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,8 +45,16 @@ public class DownloadDialogFragment extends DialogFragment {
                 downloadFile(dir);
             }
         });
-
-        alert.setNegativeButton(R.string.download_from_repcast_cancel, new DialogInterface.OnClickListener() {
+        alert.setNegativeButton(R.string.download_from_repcast_copy_url, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                JsonDirectory.JsonFileDir dir = getArguments().getParcelable(ARG_DIR);
+                Log.e(TAG, "Path copied to clipboard:" + dir.name + ":" + dir.path);
+                ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(null, dir.path);
+                clipboard.setPrimaryClip(clip);
+           }
+        });
+        alert.setNeutralButton(R.string.download_from_repcast_cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // what ever you want to do with No option.
                 Log.e(TAG, "NO");
