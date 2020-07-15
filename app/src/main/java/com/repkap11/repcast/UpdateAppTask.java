@@ -50,7 +50,6 @@ public class UpdateAppTask extends AsyncTask<Void, Void, Integer> {
             URL url = new URL(REMOTE_URL);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
             c.setRequestMethod("GET");
-            c.setDoOutput(true);
             String username = "guest";
             String password = "guest";
             String userPassword = username + ":" + password;
