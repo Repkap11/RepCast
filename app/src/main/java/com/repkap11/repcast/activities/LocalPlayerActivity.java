@@ -146,16 +146,16 @@ public class LocalPlayerActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra(Intent.EXTRA_TITLE);
         int trackType;
         int mediaType;
-        if (mimeType.equals("video/mp4")) {
+        if (mimeType.startsWith("video")) {
             trackType = MediaTrack.TYPE_VIDEO;
             mediaType = MediaMetadata.MEDIA_TYPE_MOVIE;
-        } else if (mimeType.equals("audio/mpeg")) {
+        } else if (mimeType.startsWith("audio")) {
+            trackType = MediaTrack.TYPE_AUDIO;
+            mediaType = MediaMetadata.MEDIA_TYPE_MUSIC_TRACK;
         } else {
             trackType = MediaTrack.TYPE_UNKNOWN;
             mediaType = MediaMetadata.MEDIA_TYPE_GENERIC;
         }
-        trackType = MediaTrack.TYPE_VIDEO;
-        mediaType = MediaMetadata.MEDIA_TYPE_MOVIE;
         try {
             URL url = new URI(getIntent().getDataString()).toURL();
             castPath = url.toExternalForm();
@@ -172,7 +172,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         MediaInfo.Builder builder = new MediaInfo.Builder(castPath);
         builder.setStreamType(MediaInfo.STREAM_TYPE_BUFFERED);
         builder.setContentType(mimeType);
-        MediaMetadata metadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+        MediaMetadata metadata = new MediaMetadata(mediaType);
         metadata.putString(MediaMetadata.KEY_TITLE, title);
         //metadata.putString(MediaMetadata.KEY_SUBTITLE, "Sub title Text");
         builder.setMetadata(metadata);
