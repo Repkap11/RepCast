@@ -32,8 +32,10 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
     private final WeakReference<RepcastActivity> mActivityReference;
     private final JsonDirectory.JsonFileDir mDir;
     private final String mLanPrefix;
+    private final boolean mForceShare;
 
-    public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir) {
+    public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir, boolean forceShare) {
+        mForceShare = forceShare;
         mActivityReference = new WeakReference<>(activity);
         if (Utils.backendSupportsLocalCast(activity.getApplicationContext())) {
             mLanPrefix = activity.getString(R.string.endporint_lan);
@@ -77,7 +79,8 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
             if (pair.first) {
                 Toast.makeText(activity, "Playing from LAN", Toast.LENGTH_SHORT).show();
             }
-            activity.showFileWithURL(mDir, pair.second);
+            activity.showFileWithURL(mDir, pair.second, mForceShare);
+
         }
         super.onPostExecute(pair);
     }

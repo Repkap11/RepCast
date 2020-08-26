@@ -16,11 +16,15 @@
 
 package com.repkap11.repcast.activities;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
@@ -28,6 +32,9 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.webkit.URLUtil;
+import android.widget.Toast;
 
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.application.CastApplication;
@@ -55,6 +62,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     private static final String INSTANCE_STATE_BACK_STACK_FILES = "INSTANCE_STATE_BACK_STACK_FILES";
     private ViewPager mViewPager;
     private RepcastPageAdapter mPagerAdapter;
+    private JsonDirectory.JsonFileDir mPendingPermissionDownload = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +149,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Log.e(TAG, "Handleing back press");
         //Return to the FILE_INDEX fragment
         int currentFragmentIndex = mViewPager.getCurrentItem();
-        if (currentFragmentIndex == RepcastPageAdapter.TORRENT_INDEX){
+        if (currentFragmentIndex == RepcastPageAdapter.TORRENT_INDEX) {
             mViewPager.setCurrentItem(RepcastPageAdapter.FILE_INDEX);
             return true;
         }
@@ -215,13 +223,10 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     }
 
-    public void showFile(JsonDirectory.JsonFileDir dir) {
+    public void showFile(JsonDirectory.JsonFileDir dir, boolean forceShare) {
         Log.e(TAG, "Starting file:" + dir.name);
-        RepcastSyncChecker syncChecker = new RepcastSyncChecker(this, dir);
+        RepcastSyncChecker syncChecker = new RepcastSyncChecker(this, dir, forceShare);
         syncChecker.execute();
-    }
-
-    public void downloadFile(JsonDirectory.JsonFileDir dir) {
     }
 
     public void openDownloadDialog(JsonDirectory.JsonFileDir dir) {
@@ -235,17 +240,17 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     }
 
-    public void showFileWithURL(JsonDirectory.JsonFileDir dir, String url) {
+    public void showFileWithURL(JsonDirectory.JsonFileDir dir, String url, boolean forceShare) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         Uri uri = Uri.parse(url);
         Log.e(TAG, "Uri:" + uri);
-        Log.e(TAG, "MimeType:"+dir.mimetype);
+        Log.e(TAG, "MimeType:" + dir.mimetype);
         intent.setDataAndType(uri, dir.mimetype);
         intent.putExtra(Intent.EXTRA_TITLE, dir.name);
-        if (dir.mimetype.equals("video/mp4") ||
+        if ((!forceShare) && (dir.mimetype.equals("video/mp4") ||
                 dir.mimetype.equals("audio/mpeg") ||
-                dir.mimetype.equals("video/x-matroska")) {
+                dir.mimetype.equals("video/x-matroska"))) {
             intent.setClass(this, LocalPlayerActivity.class);
             startActivity(intent);
         } else {
@@ -261,4 +266,68 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         super.onSaveInstanceState(outState);
     }
 
+
+    public boolean haveStoragePermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.e("Permission error", "You have permission");
+                return true;
+            } else {
+
+                Log.e("Permission error", "You have asked for permission");
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //you dont need to worry about these stuff below api level 23
+            Log.e("Permission error", "You already have the permission");
+            return true;
+        }
+    }
+
+
+    public void downloadFile(JsonDirectory.JsonFileDir dir) {
+
+        if (!haveStoragePermission()) {
+            mPendingPermissionDownload = dir;
+            return;
+        }
+
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(dir.path));
+
+        // only download via WIFI
+        request.setAllowedOverMetered(false);
+        request.setDescription(getResources().getString(R.string.app_name));
+        request.setTitle(dir.name);
+
+        // we just want to download silently
+        request.setVisibleInDownloadsUi(true);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.allowScanningByMediaScanner();
+        request.setDestinationInExternalPublicDir("/RepCast", dir.name);
+
+        // enqueue this request
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        long downloadID = downloadManager.enqueue(request);
+        Toast.makeText(this, R.string.download_from_repcast_downloading, Toast.LENGTH_SHORT).show();
+
+        //IntentFilter downloadCompleteIntentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        //downloadCompleteIntentFilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
+        //downloadCompleteIntentFilter.addAction(DownloadManager.ACTION_VIEW_DOWNLOADS);
+        //BroadcastReceiver receiver = new DownloadReceiver();
+        //getActivity().registerReceiver(receiver, downloadCompleteIntentFilter);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (mPendingPermissionDownload != null)
+                downloadFile(mPendingPermissionDownload);
+            mPendingPermissionDownload = null;
+        }
+    }
 }

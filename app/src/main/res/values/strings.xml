@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Fix that videos were playing with the audio player (also self update)</string>
+    <string name="changelog_message">Better support downloading files, and allow videos to be played in other video players.</string>
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>
@@ -137,9 +137,11 @@
     <string name="configure_backend_save">Save</string>
     <string name="configure_backend_cancel">Cancel</string>
 
-    <string name="download_from_repcast_title">Download File</string>
+    <string name="download_from_repcast_downloading">Downloading…</string>
     <string name="download_from_repcast_yes">Download</string>
     <string name="download_from_repcast_copy_url">Copy URL</string>
+    <string name="download_from_repcast_force_share">Open With</string>
     <string name="download_from_repcast_cancel">Cancel</string>
+    <string name="download_from_copied_to_clipboard">URL Copied to Clipboard</string>
 
 </resources>
