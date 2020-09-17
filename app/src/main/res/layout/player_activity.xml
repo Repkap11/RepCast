@@ -62,13 +62,23 @@
             android:scaleType="fitXY"
             android:visibility="gone" />
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="50dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_av_pause_dark" />
+
         <ImageButton
             android:id="@+id/play_circle"
             android:src="@drawable/ic_play_circle_white_80dp"
             android:layout_centerInParent="true"
+            android:padding="50dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
 
     </RelativeLayout>
 
@@ -94,15 +104,8 @@
         <RelativeLayout
             android:id="@+id/control_bar"
             android:layout_width="fill_parent"
-            android:layout_height="45dp"
+            android:layout_height="55dp"
             android:layout_alignParentBottom="true" >
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/ic_av_pause_dark" />
 
             <TextView
                 android:id="@+id/startText"
@@ -129,7 +132,7 @@
             <SeekBar
                 android:id="@+id/seekBar1"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"

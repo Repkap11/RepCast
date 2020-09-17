@@ -431,7 +431,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private void restartTrickplayTimer() {
         stopTrickplayTimer();
         mSeekbarTimer = new Timer();
-        mSeekbarTimer.scheduleAtFixedRate(new UpdateSeekbarTask(), 100, 1000);
+        mSeekbarTimer.scheduleAtFixedRate(new UpdateSeekbarTask(), 100, 1500);
         Log.d(TAG, "Restarted TrickPlay Timer");
     }
 
@@ -449,7 +449,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             return;
         }
         mControllersTimer = new Timer();
-        mControllersTimer.schedule(new HideControllersTask(), 2000);
+        mControllersTimer.schedule(new HideControllersTask().setDoHide(false), 1500);
     }
 
     // should be called from the main thread
@@ -457,12 +457,16 @@ public class LocalPlayerActivity extends AppCompatActivity {
         if (show) {
             getSupportActionBar().show();
             mControllers.setVisibility(View.VISIBLE);
+            mPlayPause.setVisibility(View.VISIBLE);
+
         } else {
             if (!Utils.isOrientationPortrait(this)) {
                 getSupportActionBar().hide();
                 hideSystemUI();
             }
             mControllers.setVisibility(View.INVISIBLE);
+            mPlayPause.setVisibility(View.INVISIBLE);
+
             ;
         }
         //onConfigurationChanged(getResources().getConfiguration());
@@ -553,14 +557,19 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private class HideControllersTask extends TimerTask {
+        private boolean mHide = false;
 
+        public HideControllersTask setDoHide(boolean hide){
+            mHide = hide;
+            return this;
+        }
         @Override
         public void run() {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    updateControllersVisibility(false);
-                    mControllersVisible = false;
+                    updateControllersVisibility(mHide);
+                    mControllersVisible = mHide;
                 }
             });
 
@@ -700,11 +709,13 @@ public class LocalPlayerActivity extends AppCompatActivity {
         Log.d(TAG, "Controls: PlayBackState: " + state);
         boolean isConnected = mCastManager.isConnected() || mCastManager.isConnecting();
         mControllers.setVisibility(isConnected ? View.GONE : View.VISIBLE);
-        mPlayCircle.setVisibility(isConnected ? View.GONE : View.VISIBLE);
+        mPlayPause.setVisibility(isConnected ? View.GONE : View.VISIBLE);
         switch (state) {
             case PLAYING:
                 mLoading.setVisibility(View.INVISIBLE);
                 mPlayPause.setVisibility(View.VISIBLE);
+//                mPlayPause.setAlpha(0.0f);
+//                mPlayPause.setAlpha(1.0f);
                 mPlayPause.setImageDrawable(
                         getResources().getDrawable(R.drawable.ic_av_pause_dark));
                 mPlayCircle.setVisibility(isConnected ? View.VISIBLE : View.GONE);
@@ -714,16 +725,22 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 mControllers.setVisibility(View.GONE);
                 mCoverArt.setVisibility(View.VISIBLE);
                 mVideoView.setVisibility(View.INVISIBLE);
+                mPlayPause.setVisibility(View.INVISIBLE);
+//                mPlayPause.setAlpha(1.0f);
                 break;
             case PAUSED:
                 mLoading.setVisibility(View.INVISIBLE);
-                mPlayPause.setVisibility(View.VISIBLE);
                 mPlayPause.setImageDrawable(
                         getResources().getDrawable(R.drawable.ic_av_play_dark));
                 mPlayCircle.setVisibility(isConnected ? View.VISIBLE : View.GONE);
+
+                mPlayPause.setVisibility(View.VISIBLE);
+//                mPlayPause.setAlpha(1.0f);
+
                 break;
             case BUFFERING:
                 mPlayPause.setVisibility(View.INVISIBLE);
+//                mPlayPause.setAlpha(1.0f);
                 mLoading.setVisibility(View.VISIBLE);
                 break;
             default:
@@ -853,10 +870,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
         mStartText = (TextView) findViewById(R.id.startText);
         mEndText = (TextView) findViewById(R.id.endText);
         mSeekbar = (SeekBar) findViewById(R.id.seekBar1);
-        // mVolBar = (SeekBar) findViewById(R.id.seekBar2);
         mPlayPause = (ImageView) findViewById(R.id.imageView2);
         mLoading = (ProgressBar) findViewById(R.id.progressBar1);
-        // mVolumeMute = (ImageView) findViewById(R.id.imageView2);
         mControllers = findViewById(R.id.controllers);
         mContainer = findViewById(R.id.container);
         mCoverArt = (ImageView) findViewById(R.id.coverArtView);

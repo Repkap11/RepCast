@@ -84,4 +84,9 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
+    <style name="tallerBarStyle">
+        <item name="android:minHeight">8dip</item>
+        <item name="android:maxHeight">20dip</item>
+    </style>
+
 </resources>
