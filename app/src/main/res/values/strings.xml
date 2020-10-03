@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Better support downloading files, and allow videos to be played in other video players.</string>
+    <string name="changelog_message">Change play/pause button behavior, and support local playback of non-standard aspect ratio video.</string>
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>

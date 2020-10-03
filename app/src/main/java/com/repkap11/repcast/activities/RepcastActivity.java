@@ -240,7 +240,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     }
 
-    public void showFileWithURL(JsonDirectory.JsonFileDir dir, String url, boolean forceShare) {
+    public void showFileWithURL(JsonDirectory.JsonFileDir dir, String url, boolean forceShare, boolean isVideo, float aspectRatio) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         Uri uri = Uri.parse(url);
@@ -248,9 +248,9 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Log.e(TAG, "MimeType:" + dir.mimetype);
         intent.setDataAndType(uri, dir.mimetype);
         intent.putExtra(Intent.EXTRA_TITLE, dir.name);
-        if ((!forceShare) && (dir.mimetype.equals("video/mp4") ||
-                dir.mimetype.equals("audio/mpeg") ||
-                dir.mimetype.equals("video/x-matroska"))) {
+
+        if ((!forceShare) && (isVideo)) {
+            intent.putExtra(LocalPlayerActivity.EXTRA_ASPECT_RATIO, aspectRatio);
             intent.setClass(this, LocalPlayerActivity.class);
             startActivity(intent);
         } else {

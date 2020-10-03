@@ -98,7 +98,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private PlaybackLocation mLocation;
     private PlaybackState mPlaybackState;
     private final Handler mHandler = new Handler();
-    private final float mAspectRatio = 72f / 128;
+    private float mAspectRatio = 72f / 128;
     private AQuery mAquery;
     private MediaInfo mSelectedMedia;
     private boolean mControllersVisible;
@@ -107,6 +107,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private VideoCastConsumerImpl mCastConsumer;
     private TextView mAuthorView;
     private ImageButton mPlayCircle;
+
+    public static final String EXTRA_ASPECT_RATIO = "EXTRA_ASPECT_RATIO";
 
     /*
      * indicates whether we are doing a local or a remote playback
@@ -144,6 +146,10 @@ public class LocalPlayerActivity extends AppCompatActivity {
         String castPath;
         String mimeType = getIntent().getType();
         String title = getIntent().getStringExtra(Intent.EXTRA_TITLE);
+        mAspectRatio = getIntent().getFloatExtra(EXTRA_ASPECT_RATIO, mAspectRatio);
+//        Log.e(TAG, "Paul Playing with aspect ratio:"+mAspectRatio);
+
+
         int trackType;
         int mediaType;
         if (mimeType.startsWith("video")) {
@@ -626,6 +632,16 @@ public class LocalPlayerActivity extends AppCompatActivity {
                         .formatMillis(mDuration));
                 mSeekbar.setMax(mDuration);
                 restartTrickplayTimer();
+
+                mp.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                    @Override
+                    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+//                        Log.d(TAG, "Paul Buffered to " + percent);
+//                        if (percent<mSeekbar.getMax()) {
+                            mSeekbar.setSecondaryProgress(percent*mSeekbar.getMax() / 100);
+//                        }
+                    }
+                });
             }
         });
 
@@ -794,18 +810,45 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void updateMetadata(boolean visible) {
-        Point displaySize;
-        if (!visible) {
+        Point displaySize = Utils.getDisplaySize(this);
+        int displayX;
+        int displayY;
+//        if (visible) {
+            displayX = displaySize.x;
+            displayY = displaySize.y;
+//        } else {
+//            displayX = displaySize.y;
+//            displayY = displaySize.x;
+//        }
+        int scaleX = (int) (displayY / mAspectRatio);
+        int scaleY = (int) (displayX * mAspectRatio);
+
+        int outX;
+        int outY;
+        if (scaleX > displayX){
+            outX = displayX;
+            outY = (int)(outX / mAspectRatio);
+        } else {
+            if (scaleY > displayY){
+                outY = displayY;
+                outX = (int)(outY * mAspectRatio);
+            } else {
+                outY = displayY;
+                outX = displayX;
+            }
+        }
+
+//        Log.e(TAG,"Paul using "+ outX+":"+outY);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(outX, outY);
+        if (!visible) {//landscape
             mDescriptionView.setVisibility(View.GONE);
             mTitleView.setVisibility(View.GONE);
             mAuthorView.setVisibility(View.GONE);
-            displaySize = Utils.getDisplaySize(this);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(displaySize.x,
-                    displaySize.y + getSupportActionBar().getHeight());
             lp.addRule(RelativeLayout.CENTER_IN_PARENT);
             mVideoView.setLayoutParams(lp);
             mVideoView.invalidate();
-        } else {
+        } else {//portrate
             MediaMetadata mm = mSelectedMedia.getMetadata();
             mDescriptionView.setText(mSelectedMedia.getCustomData().optString(
                     VideoProvider.KEY_DESCRIPTION));
@@ -814,12 +857,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
             mDescriptionView.setVisibility(View.VISIBLE);
             mTitleView.setVisibility(View.VISIBLE);
             mAuthorView.setVisibility(View.VISIBLE);
-            displaySize = Utils.getDisplaySize(this);
-            RelativeLayout.LayoutParams lp = new
-                    RelativeLayout.LayoutParams(displaySize.x,
-                    (int) (displaySize.x * mAspectRatio));
+
             lp.addRule(RelativeLayout.BELOW, R.id.toolbar);
-            //lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//            lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             mVideoView.setLayoutParams(lp);
             mVideoView.invalidate();
         }

@@ -1,5 +1,6 @@
 package com.repkap11.repcast.model.rest;
 
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -23,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 /**
  * Created by paul on 9/10/15.
@@ -33,6 +35,8 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
     private final JsonDirectory.JsonFileDir mDir;
     private final String mLanPrefix;
     private final boolean mForceShare;
+    private boolean mIsVideo = false;
+    private float mAspectRatio = 0;
 
     public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir, boolean forceShare) {
         mForceShare = forceShare;
@@ -61,15 +65,34 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
                 int code = c.getResponseCode();
                 Log.e(TAG, "Cache Code:" + code);
                 if (code == 200) {
+                    doAspectRatio(lanurl);
                     return new Pair<>(true, lanurl);
                 } else {
+                    doAspectRatio(wanurl);
                     return new Pair<>(false, wanurl);
                 }
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
             }
         }
+        doAspectRatio(wanurl);
         return new Pair<>(false, wanurl);
+    }
+
+    void doAspectRatio(String url){
+        mIsVideo = mDir.mimetype.equals("video/mp4") || mDir.mimetype.equals("audio/mpeg") || mDir.mimetype.equals("video/x-matroska");
+        if (mIsVideo){
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+
+            mmr.setDataSource(url,new HashMap<String, String>( ));
+            float width = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+            float height = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+            mAspectRatio = width/height;
+            Log.e(TAG, "Paul Got aspect ratio:"+mAspectRatio);
+        } else {
+            mAspectRatio = 1;
+        }
+
     }
 
     @Override
@@ -79,8 +102,7 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
             if (pair.first) {
                 Toast.makeText(activity, "Playing from LAN", Toast.LENGTH_SHORT).show();
             }
-            activity.showFileWithURL(mDir, pair.second, mForceShare);
-
+            activity.showFileWithURL(mDir, pair.second, mForceShare, mIsVideo, mAspectRatio);
         }
         super.onPostExecute(pair);
     }
