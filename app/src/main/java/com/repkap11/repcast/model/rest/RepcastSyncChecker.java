@@ -36,6 +36,7 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
     private final String mLanPrefix;
     private final boolean mForceShare;
     private boolean mIsVideo = false;
+    private boolean mIsAudio = false;
     private float mAspectRatio = 0;
 
     public RepcastSyncChecker(RepcastActivity activity, JsonDirectory.JsonFileDir dir, boolean forceShare) {
@@ -80,7 +81,8 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
     }
 
     void doAspectRatio(String url){
-        mIsVideo = mDir.mimetype.equals("video/mp4") || mDir.mimetype.equals("audio/mpeg") || mDir.mimetype.equals("video/x-matroska");
+        mIsVideo = mDir.mimetype.equals("video/mp4") || mDir.mimetype.equals("video/x-matroska");
+        mIsAudio = mDir.mimetype.equals("audio/mpeg");
         if (mIsVideo){
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
@@ -89,7 +91,9 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
             float height = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
             mAspectRatio = width/height;
             Log.e(TAG, "Paul Got aspect ratio:"+mAspectRatio);
-        } else {
+        } if (mIsAudio){
+            mAspectRatio = (16.0f/9.0f);
+        }else {
             mAspectRatio = 1;
         }
 
@@ -102,7 +106,7 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
             if (pair.first) {
                 Toast.makeText(activity, "Playing from LAN", Toast.LENGTH_SHORT).show();
             }
-            activity.showFileWithURL(mDir, pair.second, mForceShare, mIsVideo, mAspectRatio);
+            activity.showFileWithURL(mDir, pair.second, mForceShare, mIsVideo, mIsAudio, mAspectRatio);
         }
         super.onPostExecute(pair);
     }

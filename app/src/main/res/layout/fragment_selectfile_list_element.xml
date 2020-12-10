@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/fragment_selectfile_list_element_icon"
+        android:layout_toLeftOf="@id/fragment_selectfile_list_element_quick_add_to_queue"
         android:gravity="center_vertical"
         android:padding="4dp"
         android:textSize="18sp" />
@@ -23,9 +24,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_selectfile_list_element_name"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:paddingRight="1dp"
         android:paddingBottom="1dp"
+        android:layout_toRightOf="@id/fragment_selectfile_list_element_icon"
         android:textSize="12sp" />
+    <ImageButton
+        android:layout_marginBottom="1dp"
+        android:id="@+id/fragment_selectfile_list_element_quick_add_to_queue"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:src="@drawable/ic_quick_add_to_queue"/>
 </RelativeLayout>

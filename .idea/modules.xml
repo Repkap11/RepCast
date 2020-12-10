@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RepCast.iml" filepath="$PROJECT_DIR$/RepCast.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ShowCaseLibrary/ShowCaseLibrary.iml" filepath="$PROJECT_DIR$/ShowCaseLibrary/ShowCaseLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cast-companion-library/cast-companion-library.iml" filepath="$PROJECT_DIR$/cast-companion-library/cast-companion-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ShowCaseLibrary/RepCast.ShowCaseLibrary.iml" filepath="$PROJECT_DIR$/.idea/modules/ShowCaseLibrary/RepCast.ShowCaseLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/RepCast.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/RepCast.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cast-companion-library/RepCast.cast-companion-library.iml" filepath="$PROJECT_DIR$/.idea/modules/cast-companion-library/RepCast.cast-companion-library.iml" />
     </modules>
   </component>
 </project>

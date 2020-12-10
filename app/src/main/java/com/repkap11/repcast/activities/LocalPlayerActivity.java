@@ -811,30 +811,25 @@ public class LocalPlayerActivity extends AppCompatActivity {
 
     private void updateMetadata(boolean visible) {
         Point displaySize = Utils.getDisplaySize(this);
-        int displayX;
-        int displayY;
-//        if (visible) {
-            displayX = displaySize.x;
-            displayY = displaySize.y;
-//        } else {
-//            displayX = displaySize.y;
-//            displayY = displaySize.x;
-//        }
-        int scaleX = (int) (displayY / mAspectRatio);
-        int scaleY = (int) (displayX * mAspectRatio);
-
         int outX;
         int outY;
-        if (scaleX > displayX){
-            outX = displayX;
-            outY = (int)(outX / mAspectRatio);
+        if (mAspectRatio == 0){
+            outX = 0;
+            outY = 0;
         } else {
-            if (scaleY > displayY){
-                outY = displayY;
-                outX = (int)(outY * mAspectRatio);
+            int scaleX = (int) (displaySize.y / mAspectRatio);
+            int scaleY = (int) (displaySize.x * mAspectRatio);
+            if (scaleX > displaySize.x) {
+                outX = displaySize.x;
+                outY = (int) (outX / mAspectRatio);
             } else {
-                outY = displayY;
-                outX = displayX;
+                if (scaleY > displaySize.y) {
+                    outY = displaySize.y;
+                    outX = (int) (outY * mAspectRatio);
+                } else {
+                    outY = displaySize.y;
+                    outX = displaySize.x;
+                }
             }
         }
 

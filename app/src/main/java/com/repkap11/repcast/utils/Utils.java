@@ -59,6 +59,10 @@ import java.io.IOException;
 public class Utils {
 
     private static final String TAG = "Utils";
+    private static final boolean DAD_TEST = false;
+    private static final String BACKEND_NAME = "BACKEND";
+    private static final String BACKEND_KEY = "backend_url";
+    private static final String USE_DEFAULT_BACKEND_KEY = "use_default_backend";
 
     /*
      * Making sure public utility methods remain static
@@ -206,77 +210,75 @@ public class Utils {
         PopupMenu.OnMenuItemClickListener clickListener = new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                QueueDataProvider provider = QueueDataProvider.getInstance();
-                MediaQueueItem queueItem = new MediaQueueItem.Builder(mediaInfo).setAutoplay(
-                        true).setPreloadTime(CastApplication.PRELOAD_TIME_S).build();
-                MediaQueueItem[] newItemArray = new MediaQueueItem[]{queueItem};
-                String toastMessage = null;
-                try {
-                    if (provider.isQueueDetached() && provider.getCount() > 0) {
-                        int i = menuItem.getItemId();
-                        if (i == R.id.action_play_now || i == R.id.action_add_to_queue) {
-                            MediaQueueItem[] items = com.google.android.libraries.cast
-                                    .companionlibrary.utils.Utils
-                                    .rebuildQueueAndAppend(provider.getItems(), queueItem);
-                            // temporary castManager.queueLoad(items, provider.getCount(),
-                            // temporary        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
-                            ((CastApplication) context.getApplicationContext())
-                                    .loadQueue(items, provider.getCount());
-
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        if (provider.getCount() == 0) {
-                            // temporary castManager.queueLoad(newItemArray, 0,
-                            // temporary        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
-                            ((CastApplication) context.getApplicationContext())
-                                    .loadQueue(newItemArray, 0);
-                        } else {
-                            int currentId = provider.getCurrentItemId();
-                            int i = menuItem.getItemId();
-                            if (i == R.id.action_play_now) {
-                                castManager.queueInsertBeforeCurrentAndPlay(queueItem,
-                                        currentId, null);
-
-                            } else if (i == R.id.action_play_next) {
-                                int currentPosition = provider.getPositionByItemId(currentId);
-                                if (currentPosition == provider.getCount() - 1) {
-                                    //we are adding to the end of queue
-                                    castManager.queueAppendItem(queueItem, null);
-                                } else {
-                                    int nextItemId = provider.getItem(currentPosition + 1)
-                                            .getItemId();
-                                    castManager.queueInsertItems(newItemArray, nextItemId,
-                                            null);
-                                }
-                                toastMessage = context.getString(
-                                        R.string.queue_item_added_to_play_next);
-
-                            } else if (i == R.id.action_add_to_queue) {
-                                castManager.queueAppendItem(queueItem, null);
-                                toastMessage = context.getString(
-                                        R.string.queue_item_added_to_queue);
-
-                            } else {
-                                return false;
-                            }
-                        }
-                    }
-                } catch (NoConnectionException |
-                        TransientNetworkDisconnectionException e) {
-                    Log.e(TAG, "Failed to add item to queue or play remotely", e);
-                }
-                if (toastMessage != null) {
-                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
-                }
-                return true;
+                return doProcessButtons(context, menuItem.getItemId(), mediaInfo);
             }
         };
         popup.setOnMenuItemClickListener(clickListener);
         popup.show();
     }
 
+
+    public static boolean doProcessButtons(Context context, int i, final MediaInfo mediaInfo){
+        final VideoCastManager castManager = VideoCastManager.getInstance();
+        QueueDataProvider provider = QueueDataProvider.getInstance();
+        MediaQueueItem queueItem = new MediaQueueItem.Builder(mediaInfo).setAutoplay(
+                true).setPreloadTime(CastApplication.PRELOAD_TIME_S).build();
+        MediaQueueItem[] newItemArray = new MediaQueueItem[]{queueItem};
+        String toastMessage = null;
+        try {
+            if (provider.isQueueDetached() && provider.getCount() > 0) {
+//                int i = menuItem.getItemId();
+                if (i == R.id.action_play_now || i == R.id.action_add_to_queue) {
+                    MediaQueueItem[] items = com.google.android.libraries.cast.companionlibrary.utils.Utils.rebuildQueueAndAppend(provider.getItems(), queueItem);
+                    // temporary castManager.queueLoad(items, provider.getCount(),
+                    // temporary        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
+                    ((CastApplication) context.getApplicationContext()).loadQueue(items, provider.getCount());
+
+                } else {
+                    return false;
+                }
+            } else {
+                if (provider.getCount() == 0) {
+                    // temporary castManager.queueLoad(newItemArray, 0,
+                    // temporary        MediaStatus.REPEAT_MODE_REPEAT_OFF, null);
+                    ((CastApplication) context.getApplicationContext()).loadQueue(newItemArray, 0);
+                } else {
+                    int currentId = provider.getCurrentItemId();
+//                    int i = menuItem.getItemId();
+                    if (i == R.id.action_play_now) {
+                        castManager.queueInsertBeforeCurrentAndPlay(queueItem, currentId, null);
+
+                    } else if (i == R.id.action_play_next) {
+                        int currentPosition = provider.getPositionByItemId(currentId);
+                        if (currentPosition == provider.getCount() - 1) {
+                            //we are adding to the end of queue
+                            castManager.queueAppendItem(queueItem, null);
+                        } else {
+                            int nextItemId = provider.getItem(currentPosition + 1).getItemId();
+                            castManager.queueInsertItems(newItemArray, nextItemId, null);
+                        }
+                        toastMessage = context.getString(
+                                R.string.queue_item_added_to_play_next);
+
+                    } else if (i == R.id.action_add_to_queue) {
+                        castManager.queueAppendItem(queueItem, null);
+                        toastMessage = context.getString(
+                                R.string.queue_item_added_to_queue);
+
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } catch (NoConnectionException |
+                TransientNetworkDisconnectionException e) {
+            Log.e(TAG, "Failed to add item to queue or play remotely", e);
+        }
+        if (toastMessage != null) {
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
     public static void showUpdateDialogIfNecessary(Activity activity) {
         try {
             SharedPreferences prefs = activity.getSharedPreferences("CHANGELOG", Context.MODE_PRIVATE);
@@ -308,11 +310,6 @@ public class Utils {
         }
 
     }
-
-    private static final boolean DAD_TEST = false;
-    private static final String BACKEND_NAME = "BACKEND";
-    private static final String BACKEND_KEY = "backend_url";
-    private static final String USE_DEFAULT_BACKEND_KEY = "use_default_backend";
 
     public static String getDefaultDirGetURL(Context context) {
         return context.getResources().getString(R.string.endpoint_dirget_default);
