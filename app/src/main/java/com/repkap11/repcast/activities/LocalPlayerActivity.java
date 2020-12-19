@@ -109,6 +109,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private ImageButton mPlayCircle;
 
     public static final String EXTRA_ASPECT_RATIO = "EXTRA_ASPECT_RATIO";
+    private boolean mVisable = true;
 
     /*
      * indicates whether we are doing a local or a remote playback
@@ -668,6 +669,17 @@ public class LocalPlayerActivity extends AppCompatActivity {
             }
         });
 
+        mVideoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
+
+                mediaPlayer.getVideoHeight();
+                mAspectRatio = ((float)mediaPlayer.getVideoWidth() / ((float)mediaPlayer.getVideoHeight()));
+                updateMetadata(mVisable);
+                return false;
+            }
+        });
+
         mSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             @Override
@@ -810,6 +822,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void updateMetadata(boolean visible) {
+        mVisable = visible;
         Point displaySize = Utils.getDisplaySize(this);
         int outX;
         int outY;

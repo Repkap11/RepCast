@@ -19,6 +19,7 @@ package com.repkap11.repcast.activities;
 import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -248,13 +249,23 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Log.e(TAG, "MimeType:" + dir.mimetype);
         intent.setDataAndType(uri, dir.mimetype);
         intent.putExtra(Intent.EXTRA_TITLE, dir.name);
+        intent.putExtra(Intent.EXTRA_REFERRER_NAME, "Paul");
 
         if ((!forceShare) && (isVideo || isAudio)) {
             intent.putExtra(LocalPlayerActivity.EXTRA_ASPECT_RATIO, aspectRatio);
             intent.setClass(this, LocalPlayerActivity.class);
             startActivity(intent);
         }else {
-            startActivity(Intent.createChooser(intent, "Select an App"));
+            ComponentName cn = intent.resolveActivity(getPackageManager());
+            if (cn != null) {
+                if (forceShare) {
+                    startActivity(Intent.createChooser(intent, "Select an App"));
+                } else {
+                    startActivity(intent);
+                }
+            } else {
+                Toast.makeText(this, "No apps can open this file type.", Toast.LENGTH_SHORT).show();
+            }
 
         }
     }

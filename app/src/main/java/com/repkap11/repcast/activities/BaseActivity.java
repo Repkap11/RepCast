@@ -359,7 +359,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         if (mSearchView != null) {
             mInitialSearchString = "";
             mSearchView.setQuery(null, false);
-            mSearchView.setIconified(true);
+            mSearchItem.collapseActionView();
         }
         doShowContent(data);
     }

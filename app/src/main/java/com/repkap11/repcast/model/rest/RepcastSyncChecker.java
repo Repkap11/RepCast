@@ -84,16 +84,17 @@ public class RepcastSyncChecker extends AsyncTask<Void, Void, Pair<Boolean, Stri
         mIsVideo = mDir.mimetype.equals("video/mp4") || mDir.mimetype.equals("video/x-matroska");
         mIsAudio = mDir.mimetype.equals("audio/mpeg");
         if (mIsVideo){
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-
-            mmr.setDataSource(url,new HashMap<String, String>( ));
-            float width = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            float height = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-            mAspectRatio = width/height;
-            Log.e(TAG, "Paul Got aspect ratio:"+mAspectRatio);
-        } if (mIsAudio){
+//            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+//
+//            mmr.setDataSource(url,new HashMap<String, String>( ));
+//            float width = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
+//            float height = Float.parseFloat(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+//            mAspectRatio = width/height;
+//            Log.e(TAG, "Paul Got aspect ratio:"+mAspectRatio);
             mAspectRatio = (16.0f/9.0f);
-        }else {
+        } else if (mIsAudio){
+            mAspectRatio = (16.0f/9.0f);
+        } else {
             mAspectRatio = 1;
         }
 
