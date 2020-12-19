@@ -17,6 +17,7 @@ package com.repkap11.repcast.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -110,6 +111,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
 
     public static final String EXTRA_ASPECT_RATIO = "EXTRA_ASPECT_RATIO";
     private boolean mVisable = true;
+    private int mOrientation;
+    private ImageButton mRotatePlayer;
 
     /*
      * indicates whether we are doing a local or a remote playback
@@ -149,7 +152,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra(Intent.EXTRA_TITLE);
         mAspectRatio = getIntent().getFloatExtra(EXTRA_ASPECT_RATIO, mAspectRatio);
 //        Log.e(TAG, "Paul Playing with aspect ratio:"+mAspectRatio);
-
 
         int trackType;
         int mediaType;
@@ -742,10 +744,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             case PLAYING:
                 mLoading.setVisibility(View.INVISIBLE);
                 mPlayPause.setVisibility(View.VISIBLE);
-//                mPlayPause.setAlpha(0.0f);
-//                mPlayPause.setAlpha(1.0f);
-                mPlayPause.setImageDrawable(
-                        getResources().getDrawable(R.drawable.ic_av_pause_dark));
+                mPlayPause.setImageDrawable(getResources().getDrawable(R.drawable.ic_av_pause_dark));
                 mPlayCircle.setVisibility(isConnected ? View.VISIBLE : View.GONE);
                 break;
             case IDLE:
@@ -754,7 +753,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 mCoverArt.setVisibility(View.VISIBLE);
                 mVideoView.setVisibility(View.INVISIBLE);
                 mPlayPause.setVisibility(View.INVISIBLE);
-//                mPlayPause.setAlpha(1.0f);
                 break;
             case PAUSED:
                 mLoading.setVisibility(View.INVISIBLE);
@@ -763,12 +761,9 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 mPlayCircle.setVisibility(isConnected ? View.VISIBLE : View.GONE);
 
                 mPlayPause.setVisibility(View.VISIBLE);
-//                mPlayPause.setAlpha(1.0f);
-
                 break;
             case BUFFERING:
                 mPlayPause.setVisibility(View.INVISIBLE);
-//                mPlayPause.setAlpha(1.0f);
                 mLoading.setVisibility(View.VISIBLE);
                 break;
             default:
@@ -792,6 +787,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        mOrientation = newConfig.orientation;
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getSupportActionBar().hide();
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -909,6 +905,11 @@ public class LocalPlayerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void toggleRotation() {
+        int newOrientation = mOrientation == Configuration.ORIENTATION_LANDSCAPE ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
+        this.setRequestedOrientation(newOrientation);
+    }
+
     private void loadViews() {
         mVideoView = (VideoView) findViewById(R.id.videoView1);
         mTitleView = (TextView) findViewById(R.id.textView1);
@@ -929,6 +930,13 @@ public class LocalPlayerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 togglePlayback();
+            }
+        });
+        mRotatePlayer = (ImageButton) findViewById(R.id.rotate_player);
+        mRotatePlayer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleRotation();
             }
         });
     }
