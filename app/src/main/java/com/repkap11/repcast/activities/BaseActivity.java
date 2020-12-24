@@ -356,6 +356,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     }
 
     public void showContent(Parcelable data, int currentPosition) {
+        Log.e(TAG, "Paul showContent: index:"+currentPosition);
         if (mSearchView != null) {
             mInitialSearchString = "";
             mSearchView.setQuery(null, false);

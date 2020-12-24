@@ -41,14 +41,14 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
         RepcastActivity.BackStackData fileData = new RepcastActivity.BackStackData();
         fileData.data = dir;
         mFragmentContent[FILE_INDEX] = fileData;
-        activity.addFragmentToABackStack(mFragmentContent[FILE_INDEX]);
+        activity.addFragmentToABackStack(mFragmentContent[FILE_INDEX],0);
 
         JsonTorrent.JsonTorrentResult torrent = new JsonTorrent.JsonTorrentResult();
         torrent.name = activity.getString(R.string.add_torrent_initial_title);
         RepcastActivity.BackStackData torentData = new RepcastActivity.BackStackData();
         torentData.data = torrent;
         mFragmentContent[TORRENT_INDEX] = torentData;
-        activity.addFragmentToABackStack(mFragmentContent[TORRENT_INDEX]);
+        activity.addFragmentToABackStack(mFragmentContent[TORRENT_INDEX],0);
     }
 
     public RepcastPageAdapter(FragmentManager fm, Context applicationContext, JsonDirectory.JsonFileDir dir, JsonTorrent.JsonTorrentResult torrent) {

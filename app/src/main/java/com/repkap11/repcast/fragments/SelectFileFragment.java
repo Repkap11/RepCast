@@ -30,6 +30,8 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
         SelectFileFragment fragment = new SelectFileFragment();
         fragment.mDirectory = (JsonDirectory.JsonFileDir)data.data;
         fragment.mScrollPosition = data.scrollPosition;
+        Log.e(TAG, "Paul SelectFileFragment: index:"+fragment.mScrollPosition);
+
         //Log.e(TAG, "Fragment Created");
         return fragment;
     }
@@ -60,7 +62,7 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
             if (RepcastFragment.DO_SAVE_STATE) {
                 if (mDirectory == null) {
                     mDirectory = savedInstanceState.getParcelable(INSTANCE_STATE_DIR);
-                    mScrollPosition = savedInstanceState.getInt(INSTANCE_STATE_SCROLL_POS);
+//                    mScrollPosition = savedInstanceState.getInt(INSTANCE_STATE_SCROLL_POS);
                 }
             }
         }

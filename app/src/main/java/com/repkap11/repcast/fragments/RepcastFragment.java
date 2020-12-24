@@ -16,6 +16,7 @@ public abstract class RepcastFragment extends ListFragment {
     private static final String TAG = RepcastFragment.class.getSimpleName();
     protected static final boolean DO_SAVE_STATE = true;
     protected static final boolean DO_RETAIN_INSTANCE = true;
+    public boolean isFiltered;
     private TextView mEmptyMessage;
     private ViewSwitcher mSwitcherProgressEmpty;
     private boolean mShowProgress;

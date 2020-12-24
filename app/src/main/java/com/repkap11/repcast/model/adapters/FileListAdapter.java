@@ -199,6 +199,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
             }
         }
         mAllowClicks = true;
+        mFragment.isFiltered = isFiltered;
         mFragment.notifyNotRefreshing();//This is ued in the SelectFileFragment
         notifyDataSetChanged();
     }
@@ -275,7 +276,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 //            }
         } else {
             if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-                ((RepcastActivity) mFragment.getActivity()).showContent(dir, h.mIndex);
+                ((RepcastActivity) mFragment.getActivity()).showContent(dir, mFragment.isFiltered ? 0 : h.mIndex);
             } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
                 ((RepcastActivity) mFragment.getActivity()).showFile(dir, false);
             }
