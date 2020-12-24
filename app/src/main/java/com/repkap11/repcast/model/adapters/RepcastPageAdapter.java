@@ -23,7 +23,7 @@ import com.repkap11.repcast.utils.Utils;
  */
 public class RepcastPageAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = RepcastPageAdapter.class.getSimpleName();
-    private final Parcelable[] mFragmentContent = new Parcelable[2];
+    private final RepcastActivity.BackStackData[] mFragmentContent = new RepcastActivity.BackStackData[2];
     private final Context mApplicationContest;
     public static final int TORRENT_INDEX = 1;
     public static final int FILE_INDEX = 0;
@@ -38,23 +38,31 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
         dir.path = "IDGAF";
         dir.key = "";
         dir.isRoot = true;
-        mFragmentContent[FILE_INDEX] = dir;
+        RepcastActivity.BackStackData fileData = new RepcastActivity.BackStackData();
+        fileData.data = dir;
+        mFragmentContent[FILE_INDEX] = fileData;
         activity.addFragmentToABackStack(mFragmentContent[FILE_INDEX]);
 
         JsonTorrent.JsonTorrentResult torrent = new JsonTorrent.JsonTorrentResult();
         torrent.name = activity.getString(R.string.add_torrent_initial_title);
-        mFragmentContent[TORRENT_INDEX] = torrent;
+        RepcastActivity.BackStackData torentData = new RepcastActivity.BackStackData();
+        torentData.data = torrent;
+        mFragmentContent[TORRENT_INDEX] = torentData;
         activity.addFragmentToABackStack(mFragmentContent[TORRENT_INDEX]);
     }
 
     public RepcastPageAdapter(FragmentManager fm, Context applicationContext, JsonDirectory.JsonFileDir dir, JsonTorrent.JsonTorrentResult torrent) {
         super(fm);
         mApplicationContest = applicationContext;
-        mFragmentContent[FILE_INDEX] = dir;
-        mFragmentContent[TORRENT_INDEX] = torrent;
+        RepcastActivity.BackStackData fileData = new RepcastActivity.BackStackData();
+        RepcastActivity.BackStackData torentData = new RepcastActivity.BackStackData();
+        fileData.data = dir;
+        torentData.data = torrent;
+        mFragmentContent[FILE_INDEX] = fileData;
+        mFragmentContent[TORRENT_INDEX] = torentData;
     }
 
-    public void updatePageAtIndex(int index, Parcelable data) {
+    public void updatePageAtIndex(int index, RepcastActivity.BackStackData data) {
         mFragmentContent[index] = data;
         notifyDataSetChanged();
     }
@@ -78,9 +86,9 @@ public class RepcastPageAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         //Log.d(TAG, "getItem() called with: " + "position = [" + position + "]");
         if (position == FILE_INDEX) {
-            return SelectFileFragment.newInstance((JsonDirectory.JsonFileDir) mFragmentContent[FILE_INDEX]);
+            return SelectFileFragment.newInstance(mFragmentContent[FILE_INDEX]);
         } else if (position == TORRENT_INDEX) {
-            return SelectTorrentFragment.newInstance((JsonTorrent.JsonTorrentResult) mFragmentContent[TORRENT_INDEX]);
+            return SelectTorrentFragment.newInstance(mFragmentContent[TORRENT_INDEX]);
         }
         return null;
     }

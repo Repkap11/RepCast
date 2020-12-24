@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.repkap11.repcast.R;
+import com.repkap11.repcast.activities.RepcastActivity;
 import com.repkap11.repcast.model.adapters.FileListAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 
@@ -25,9 +26,10 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
 
-    public static SelectFileFragment newInstance(JsonDirectory.JsonFileDir dir) {
+    public static SelectFileFragment newInstance(RepcastActivity.BackStackData data) {
         SelectFileFragment fragment = new SelectFileFragment();
-        fragment.mDirectory = dir;
+        fragment.mDirectory = (JsonDirectory.JsonFileDir)data.data;
+        fragment.mScrollPosition = data.scrollPosition;
         //Log.e(TAG, "Fragment Created");
         return fragment;
     }

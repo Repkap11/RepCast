@@ -156,7 +156,7 @@ public class TorrentConfirmationActivity extends BaseActivity {
     }
 
     @Override
-    protected void doShowContent(Parcelable data) {
+    protected void doShowContent(Parcelable data, int scrollPosition) {
 
     }
 

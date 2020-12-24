@@ -275,7 +275,7 @@ public class FileListAdapter extends BaseAdapter implements View.OnClickListener
 //            }
         } else {
             if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_DIR)) {
-                ((RepcastActivity) mFragment.getActivity()).showContent(dir);
+                ((RepcastActivity) mFragment.getActivity()).showContent(dir, h.mIndex);
             } else if (dir.type.equals(JsonDirectory.JsonFileDir.TYPE_FILE)) {
                 ((RepcastActivity) mFragment.getActivity()).showFile(dir, false);
             }

@@ -355,16 +355,16 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         super.onDestroy();
     }
 
-    public void showContent(Parcelable data) {
+    public void showContent(Parcelable data, int currentPosition) {
         if (mSearchView != null) {
             mInitialSearchString = "";
             mSearchView.setQuery(null, false);
             mSearchItem.collapseActionView();
         }
-        doShowContent(data);
+        doShowContent(data, currentPosition);
     }
 
-    protected abstract void doShowContent(Parcelable data);
+    protected abstract void doShowContent(Parcelable data, int currentPosition);
 
     @Override
     public void onBackPressed() {

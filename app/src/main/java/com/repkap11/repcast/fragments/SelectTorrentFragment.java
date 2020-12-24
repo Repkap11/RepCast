@@ -22,9 +22,9 @@ public class SelectTorrentFragment extends RepcastFragment {
     private TorrentListAdapter mAdapter;
     private JsonTorrent.JsonTorrentResult mTorrent;
 
-    public static SelectTorrentFragment newInstance(JsonTorrent.JsonTorrentResult dir) {
+    public static SelectTorrentFragment newInstance(RepcastActivity.BackStackData data) {
         SelectTorrentFragment fragment = new SelectTorrentFragment();
-        fragment.mTorrent = dir;
+        fragment.mTorrent = (JsonTorrent.JsonTorrentResult) data.data;
         Log.e(TAG, "Fragment Created");
         return fragment;
     }

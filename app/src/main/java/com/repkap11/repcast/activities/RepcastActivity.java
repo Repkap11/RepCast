@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -44,7 +45,9 @@ import com.repkap11.repcast.model.rest.RepcastSyncChecker;
 import com.repkap11.repcast.utils.DownloadDialogFragment;
 import com.repkap11.repcast.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 ;
@@ -64,8 +67,10 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         Utils.showUpdateDialogIfNecessary(this);
         setContentView(R.layout.activity_repcast);
         if (savedInstanceState == null) {
+            Log.i(TAG, "onCreate: New instance");
             mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), this, getApplicationContext());
         } else {
+            Log.i(TAG, "onCreate: Restoring instance");
             mBackSelectFileFragments.addAll(Arrays.asList(savedInstanceState.getParcelableArray(INSTANCE_STATE_BACK_STACK_FILES)));
             mBackTorrentFragments.addAll(Arrays.asList(savedInstanceState.getParcelableArray(INSTANCE_STATE_BACK_STACK_TORRENTS)));
             mPagerAdapter = new RepcastPageAdapter(getSupportFragmentManager(), getApplicationContext(), (JsonDirectory.JsonFileDir) mBackSelectFileFragments.peek(), (JsonTorrent.JsonTorrentResult) mBackTorrentFragments.peek());
@@ -84,8 +89,44 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         }
     }
 
+    public static class BackStackData implements Parcelable {
+        public static final Parcelable.Creator<BackStackData> CREATOR = new Parcelable.Creator<BackStackData>() {
+            public BackStackData createFromParcel(Parcel in) {
+                return new BackStackData(in);
+            }
+
+            @Override
+            public BackStackData[] newArray(int size) {
+                return new BackStackData[size];
+            }
+        };
+        public int scrollPosition;
+        public Parcelable data;
+
+        public BackStackData() {
+        }
+
+        public BackStackData(Parcel in) {
+            if (in != null) {
+                scrollPosition = in.readInt();
+                data = in.readParcelable(Parcel.class.getClassLoader());
+            }
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(scrollPosition);
+            dest.writeParcelable(data, flags);
+        }
+    }
+
     @Override
-    protected void doShowContent(Parcelable data) {
+    protected void doShowContent(Parcelable data, int curentScrollPosition) {
         int pageIndex = -1;
         if (data instanceof JsonDirectory.JsonFileDir) {
             Log.e(TAG, "Showing File data of:" + ((JsonDirectory.JsonFileDir) data).name);
@@ -97,24 +138,27 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         if (pageIndex == -1) {
             Log.e(TAG, "Unexpected data type. Class:" + data.getClass() + " String:" + data);
         }
-        mPagerAdapter.updatePageAtIndex(pageIndex, data);
-        addFragmentToABackStack(data);
+        BackStackData d = new BackStackData();
+        d.data = data;
+        d.scrollPosition = curentScrollPosition;
+        mPagerAdapter.updatePageAtIndex(pageIndex, d);
+        addFragmentToABackStack(d);
         setTitleBasedOnFragment();
     }
 
     Stack<Parcelable> mBackSelectFileFragments = new Stack<>();
     Stack<Parcelable> mBackTorrentFragments = new Stack<>();
 
-    public void addFragmentToABackStack(Parcelable newFragmentData) {
-        if (newFragmentData instanceof JsonDirectory.JsonFileDir) {
+    public void addFragmentToABackStack(BackStackData newFragmentData) {
+        if (newFragmentData.data instanceof JsonDirectory.JsonFileDir) {
             mBackSelectFileFragments.add(newFragmentData);
-        } else if (newFragmentData instanceof JsonTorrent.JsonTorrentResult) {
+        } else if (newFragmentData.data instanceof JsonTorrent.JsonTorrentResult) {
             mBackTorrentFragments.add(newFragmentData);
         }
     }
 
-    public Parcelable removeFragmentFromABackStack(Class<? extends RepcastFragment> targetClass) {
-        Parcelable oldFragmentData = null;
+    public BackStackData removeFragmentFromABackStack(Class<? extends RepcastFragment> targetClass) {
+        BackStackData oldFragmentData = null;
         if (targetClass.equals(SelectFileFragment.class)) {
             if (mBackSelectFileFragments.empty()) {
                 return null;
@@ -123,7 +167,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
             if (mBackSelectFileFragments.empty()) {
                 return null;
             }
-            oldFragmentData = mBackSelectFileFragments.peek();
+            oldFragmentData = (BackStackData) mBackSelectFileFragments.peek();
         } else if (targetClass.equals(SelectTorrentFragment.class)) {
             if (mBackTorrentFragments.empty()) {
                 return null;
@@ -132,7 +176,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
             if (mBackTorrentFragments.empty()) {
                 return null;
             }
-            oldFragmentData = mBackTorrentFragments.peek();
+            oldFragmentData =  (BackStackData)mBackTorrentFragments.peek();
         }
         return oldFragmentData;
 
@@ -154,7 +198,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
             return true;
         }
         RepcastFragment currentFragment = mPagerAdapter.getRegisteredFragment(currentFragmentIndex);
-        Parcelable previousFragmentData = removeFragmentFromABackStack(currentFragment.getClass());
+        BackStackData previousFragmentData = removeFragmentFromABackStack(currentFragment.getClass());
         if (previousFragmentData == null) {
             return false;
         }

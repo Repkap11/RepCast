@@ -121,7 +121,7 @@ public class YouTubeConfirmationActivity extends BaseActivity {
     }
 
     @Override
-    protected void doShowContent(Parcelable data) {
+    protected void doShowContent(Parcelable data, int currentScrollPosition) {
 
     }
 
