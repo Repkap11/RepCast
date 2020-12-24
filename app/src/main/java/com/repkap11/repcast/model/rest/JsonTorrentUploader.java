@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.common.util.IOUtils;
 import com.repkap11.repcast.activities.TorrentConfirmationActivity;
@@ -26,7 +27,7 @@ import java.net.URL;
 /**
  * Created by paul on 9/10/15.
  */
-public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
+public class JsonTorrentUploader extends AsyncTask< Pair<String, byte[]>, Void, Integer> {
     private static final String TAG = JsonTorrentUploader.class.getSimpleName();
     private final WeakReference<TorrentConfirmationActivity> mActivityReference;
 
@@ -56,9 +57,9 @@ public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
     }
 
     @Override
-    protected Integer doInBackground(String... params) {
-        String url = params[0];
-        String torrentContent = params[1];
+    protected Integer doInBackground(Pair<String, byte[]>... params) {
+        String url = params[0].first;
+        byte[] torrentContent = params[0].second;
         Log.e(TAG, "Url:" + url);
         try {
             HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
@@ -72,7 +73,7 @@ public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
             c.setRequestMethod("POST");
             c.setRequestProperty("Content-Type","application/x-bittorrent");
             c.setDoOutput(true);
-            c.getOutputStream().write(torrentContent.getBytes());
+            c.getOutputStream().write(torrentContent);
 
             int resultCode = c.getResponseCode();
 
@@ -82,7 +83,7 @@ public class JsonTorrentUploader extends AsyncTask<String, Void, Integer> {
             } else {
                 error = "";
             }
-            Log.e(TAG, "Returning Result:" + resultCode + " Error:" + error);
+            Log.e(TAG, "Returning Result:" + resultCode + " length:"+torrentContent.length+ " Error:" + error);
             return resultCode;
         } catch (ProtocolException e) {
             e.printStackTrace();

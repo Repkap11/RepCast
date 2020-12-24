@@ -22,17 +22,20 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.IOUtils;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
 import com.repkap11.repcast.model.rest.JsonMagnetUploader;
 import com.repkap11.repcast.model.rest.JsonTorrentUploader;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -49,7 +52,7 @@ public class TorrentConfirmationActivity extends BaseActivity {
     private static final String TAG = TorrentConfirmationActivity.class.getSimpleName();
     private TextView mTextViewTitle;
     private TextView mTextViewSize;
-    private String mTorrentContent;
+    private byte[] mTorrentContent;
 
 
     private String convertStreamToString(InputStream is) {
@@ -82,7 +85,7 @@ public class TorrentConfirmationActivity extends BaseActivity {
             bytes /= 1000;
             ci.next();
         }
-        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
+        return String.format("%.1f%cB", bytes / 1000.0, ci.current());
     }
 
     @Override
@@ -102,18 +105,23 @@ public class TorrentConfirmationActivity extends BaseActivity {
 
         try {
             InputStream torrentFileContent = getContentResolver().openInputStream(uri);
-            mTorrentContent = convertStreamToString(torrentFileContent);
-            Log.i(TAG, "onCreate: "+ mTorrentContent);
-            String[] split = mTorrentContent.split(":name")[1].split(":");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            IOUtils.copyStream(torrentFileContent, baos);
+            mTorrentContent = baos.toByteArray();
+            Log.i(TAG, "onCreate: "+ mTorrentContent.length);
+            String sillyTorrentContent = new String(mTorrentContent);
+            String[] split = sillyTorrentContent.split(":name")[1].split(":");
             int name_length = Integer.parseInt(split[0]);
             displayName = split[1].substring(0,name_length);
 
-            String[] split2 = mTorrentContent.split(":infod6")[1].split(":");
+            String[] split2 = sillyTorrentContent.split(":infod6")[1].split(":");
             long sizeL = Long.parseLong(split2[1].substring("lengthi".length(), split2[1].length()-"e4".length()));
             size = humanReadableByteCountSI(sizeL);
 
         } catch (FileNotFoundException e) {
             Log.e(TAG, "onCreate: failed");
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         if (mTorrentContent == null){
@@ -140,9 +148,9 @@ public class TorrentConfirmationActivity extends BaseActivity {
         mTextViewSize = (TextView) findViewById(R.id.activity_torrent_confirmation_size);
 
         mTextViewTitle.setText(displayName);
-//        if (torrent != null) {
+        if (size != null) {
             mTextViewSize.setText(getResources().getString(R.string.torrent_size_prefix)+" "+size);
-//        }
+        }
         completeOnCreate(savedInstanceState, false);
 
     }
@@ -172,12 +180,11 @@ public class TorrentConfirmationActivity extends BaseActivity {
 
     }
 
-    private void doStartUpload(String torrentContent) {
+    private void doStartUpload(byte[] torrentContent) {
         String strings[] = new String[2];
-        strings[0] = getString(R.string.endpoint_tor_add);
-        strings[1] = torrentContent;
+        Pair<String, byte[]> p = new Pair<>( getString(R.string.endpoint_tor_add), torrentContent);
         JsonTorrentUploader uploader = new JsonTorrentUploader(this);
-        uploader.execute(strings);
+        uploader.execute(p);
     }
 
     public void torrentUploadComplete(Integer resultCode) {
