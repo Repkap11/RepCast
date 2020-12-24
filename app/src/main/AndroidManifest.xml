@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TorrentConfirmationActivity"
+            android:name=".activities.MagnetConfirmationActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -63,6 +63,18 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="magnet" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.TorrentConfirmationActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:mimeType="application/x-bittorrent"/>
             </intent-filter>
         </activity>
 

@@ -111,7 +111,7 @@ public class TorrentListAdapter extends BaseAdapter implements View.OnClickListe
     public void onClick(View v) {
         Holder h = (Holder) v.getTag();
         JsonTorrent.JsonTorrentResult element = mTorrentList.torrents.get(h.mIndex);
-        ((RepcastActivity) mFragment.getActivity()).uploadTorrent(element);
+        ((RepcastActivity) mFragment.getActivity()).uploadMagnet(element);
     }
 
     public Filter getFilter() {

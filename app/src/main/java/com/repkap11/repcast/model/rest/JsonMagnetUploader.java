@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-import com.repkap11.repcast.activities.YouTubeConfirmationActivity;
+import com.repkap11.repcast.activities.MagnetConfirmationActivity;
 
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
@@ -13,11 +13,11 @@ import java.net.URL;
 /**
  * Created by paul on 9/10/15.
  */
-public class JsonYouTubeUploader extends AsyncTask<String, Void, Integer> {
-    private static final String TAG = YouTubeConfirmationActivity.class.getSimpleName();
-    private final WeakReference<YouTubeConfirmationActivity> mActivityReference;
+public class JsonMagnetUploader extends AsyncTask<String, Void, Integer> {
+    private static final String TAG = JsonMagnetUploader.class.getSimpleName();
+    private final WeakReference<MagnetConfirmationActivity> mActivityReference;
 
-    public JsonYouTubeUploader(YouTubeConfirmationActivity activity) {
+    public JsonMagnetUploader(MagnetConfirmationActivity activity) {
         mActivityReference = new WeakReference<>(activity);
     }
 
@@ -49,9 +49,9 @@ public class JsonYouTubeUploader extends AsyncTask<String, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer resultCode) {
-        YouTubeConfirmationActivity activity = mActivityReference.get();
+        MagnetConfirmationActivity activity = mActivityReference.get();
         if (activity != null) {
-            activity.youtubeUploadComplete(resultCode);
+            activity.magnetUploadComplete(resultCode);
         }
         super.onPostExecute(resultCode);
     }

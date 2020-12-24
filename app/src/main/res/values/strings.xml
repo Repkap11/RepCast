@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">George\'s Christmas present (and some bug fixes).</string>
+    <string name="changelog_message">Allow torrent files to be added.</string>
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>
@@ -99,7 +99,7 @@
     <string name="tab_torrent_title">Add</string>
     <string name="tab_file_title">Watch</string>
     <string name="add_torrent_initial_title">Search Torrents</string>
-    <string name="torrent_size_prefix">Size: </string>
+    <string name="torrent_size_prefix">Size:</string>
     <string name="torrent_seeders_prefix">Seeders: </string>
     <string name="torrent_confirmation_yes">Yes</string>
     <string name="torrent_confirmation_no">No</string>
@@ -117,7 +117,7 @@
     <string name="update_app_task_error_updating_burger">Error Updating RepCast</string>
     <string name="update_app_task_starting_download">Starting RepCast Download</string>
 
-    <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd/</string>
+    <string name="endpoint_tor_add">https://api.repkam09.com/repcast/toradd</string>
     <string name="endpoint_youtube_add">https://api.repkam09.com/repcast/youtube/</string>
     <string name="endpoint_dirget_default">https://api.repkam09.com/repcast/spaces/getfiles/</string>
     <string name="endpoint_torsearch">https://api.repkam09.com/repcast/torsearch/</string>e

@@ -17,7 +17,6 @@
 package com.repkap11.repcast.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Base64;
@@ -30,60 +29,18 @@ import android.widget.Toast;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
 import com.repkap11.repcast.model.rest.JsonMagnetUploader;
-import com.repkap11.repcast.model.rest.JsonTorrentUploader;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
 
-public class TorrentConfirmationActivity extends BaseActivity {
+public class MagnetConfirmationActivity extends BaseActivity {
 
-    private static final String TAG = TorrentConfirmationActivity.class.getSimpleName();
+    private static final String TAG = MagnetConfirmationActivity.class.getSimpleName();
     private TextView mTextViewTitle;
+    public static final String EXTRA_MAGNET_RESULT = "com.repkap11.repcast.extra_torrent_result";
     private TextView mTextViewSize;
-    private String mTorrentContent;
-
-
-    private String convertStreamToString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append('\n');
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
-    }
-
-    public String humanReadableByteCountSI(long bytes) {
-        if (-1000 < bytes && bytes < 1000) {
-            return bytes + " B";
-        }
-        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
-        while (bytes <= -999_950 || bytes >= 999_950) {
-            bytes /= 1000;
-            ci.next();
-        }
-        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
-    }
+    private String mMagnetLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,37 +52,35 @@ public class TorrentConfirmationActivity extends BaseActivity {
             return;
         }
         String displayName = null;
-        String size = null;
-
-        Uri uri = startingIntent.getData();
-        Log.e(TAG, "onCreate: Uri:"+ uri );
-
-        try {
-            InputStream torrentFileContent = getContentResolver().openInputStream(uri);
-            mTorrentContent = convertStreamToString(torrentFileContent);
-            Log.i(TAG, "onCreate: "+ mTorrentContent);
-            String[] split = mTorrentContent.split(":name")[1].split(":");
-            int name_length = Integer.parseInt(split[0]);
-            displayName = split[1].substring(0,name_length);
-
-            String[] split2 = mTorrentContent.split(":infod6")[1].split(":");
-            long sizeL = Long.parseLong(split2[1].substring("lengthi".length(), split2[1].length()-"e4".length()));
-            size = humanReadableByteCountSI(sizeL);
-
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "onCreate: failed");
-            e.printStackTrace();
+        JsonTorrent.JsonTorrentResult torrent = startingIntent.getParcelableExtra(EXTRA_MAGNET_RESULT);
+        if (torrent == null) {
+            mMagnetLink = startingIntent.getDataString();
+            String dataString;
+            try {
+                dataString = URLDecoder.decode(mMagnetLink, Charset.defaultCharset().name());
+            } catch (UnsupportedEncodingException e) {
+                Log.e(TAG, "Default charset not supported");
+                finish();
+                return;
+            }
+            String[] split = dataString.split("&");
+            for (String string : split) {
+                String[] split2 = string.split("=");
+                if (split2[0].equals("dn")) {
+                    displayName = split2[1];
+                }
+            }
+        } else {
+            displayName = torrent.name;
+            mMagnetLink = torrent.magnetLink;
         }
-        if (mTorrentContent == null){
-            Log.e(TAG, "onCreate: Failed to read torrent file");
-            finish();
-        }
+
 
         setContentView(R.layout.activity_torrent_confirmation);
         ((Button) findViewById(R.id.activity_torrent_confirmation_yes)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doStartUpload(mTorrentContent);
+                doStartUpload(mMagnetLink);
             }
         });
         ((Button) findViewById(R.id.activity_torrent_confirmation_no)).setOnClickListener(new View.OnClickListener() {
@@ -140,9 +95,9 @@ public class TorrentConfirmationActivity extends BaseActivity {
         mTextViewSize = (TextView) findViewById(R.id.activity_torrent_confirmation_size);
 
         mTextViewTitle.setText(displayName);
-//        if (torrent != null) {
-            mTextViewSize.setText(getResources().getString(R.string.torrent_size_prefix)+" "+size);
-//        }
+        if (torrent != null) {
+            mTextViewSize.setText(getResources().getString(R.string.torrent_size_prefix)+" "+torrent.size);
+        }
         completeOnCreate(savedInstanceState, false);
 
     }
@@ -172,15 +127,14 @@ public class TorrentConfirmationActivity extends BaseActivity {
 
     }
 
-    private void doStartUpload(String torrentContent) {
-        String strings[] = new String[2];
-        strings[0] = getString(R.string.endpoint_tor_add);
-        strings[1] = torrentContent;
-        JsonTorrentUploader uploader = new JsonTorrentUploader(this);
-        uploader.execute(strings);
+    private void doStartUpload(String magnetLink) {
+        String magnetLink64 = Base64.encodeToString(magnetLink.getBytes(), Base64.NO_WRAP);
+        String url = getString(R.string.endpoint_tor_add) +"/"+ magnetLink64;
+        JsonMagnetUploader uploader = new JsonMagnetUploader(this);
+        uploader.execute(url);
     }
 
-    public void torrentUploadComplete(Integer resultCode) {
+    public void magnetUploadComplete(Integer resultCode) {
         String message;
         if (resultCode == 200) {
             message = getResources().getString(R.string.torrent_confirmation_upload_succeed);

@@ -365,7 +365,7 @@ public class Utils {
         return false;
         //This is all you need to do to put back the tab for add.
         //String endpoint = getDirGetURL(context, false);
-        //return !DAD_TEST && endpoint.toLowerCase().contains("api.repkam09.com");
+//        return !DAD_TEST;
     }
 
     public static boolean backendSupportsLocalCast(Context context) {

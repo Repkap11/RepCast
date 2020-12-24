@@ -18,11 +18,9 @@ package com.repkap11.repcast.activities;
 
 import android.Manifest;
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -33,12 +31,9 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
-import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import com.repkap11.repcast.R;
-import com.repkap11.repcast.application.CastApplication;
 import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.fragments.SelectFileFragment;
 import com.repkap11.repcast.fragments.SelectTorrentFragment;
@@ -46,9 +41,7 @@ import com.repkap11.repcast.model.adapters.RepcastPageAdapter;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 import com.repkap11.repcast.model.parcelables.JsonTorrent;
 import com.repkap11.repcast.model.rest.RepcastSyncChecker;
-import com.repkap11.repcast.utils.ConfigureBackendDialogFragment;
 import com.repkap11.repcast.utils.DownloadDialogFragment;
-import com.repkap11.repcast.utils.DownloadReceiver;
 import com.repkap11.repcast.utils.Utils;
 
 import java.util.Arrays;
@@ -211,14 +204,14 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
 
     }
 
-    public void uploadTorrent(JsonTorrent.JsonTorrentResult element) {
+    public void uploadMagnet(JsonTorrent.JsonTorrentResult element) {
         Log.e(TAG, "Should start download of torrent " + element.name);
 
 
         Intent intent = new Intent();
-        intent.setClass(this, TorrentConfirmationActivity.class);
+        intent.setClass(this, MagnetConfirmationActivity.class);
         intent.setData(Uri.parse(element.magnetLink));
-        intent.putExtra(TorrentConfirmationActivity.EXTRA_TORRENT_RESULT, element);
+        intent.putExtra(MagnetConfirmationActivity.EXTRA_MAGNET_RESULT, element);
         Log.e(TAG, "About to download:" + element.name);
         startActivity(intent);
 
