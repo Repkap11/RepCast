@@ -45,9 +45,6 @@ public class FileListFilter extends Filter {
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
         boolean filtered = results.count != mFiles.info.size();
-//        if (!filtered){
-        Log.e(TAG, "publishResults: filtered:"+filtered);
-//        } else {}
         // Now we have to inform the adapter about the new list filtered
         //if (results.count == 0) {
         //    mFileListAdapter.notifyDataSetInvalidated();

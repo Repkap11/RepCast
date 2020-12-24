@@ -60,6 +60,8 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     private ViewPager mViewPager;
     private RepcastPageAdapter mPagerAdapter;
     private JsonDirectory.JsonFileDir mPendingPermissionDownload = null;
+    Stack<Parcelable> mBackSelectFileFragments = new Stack<>();
+    Stack<Parcelable> mBackTorrentFragments = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +80,14 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setCurrentItem(RepcastPageAdapter.FILE_INDEX);
         mViewPager.addOnPageChangeListener(this);
-
-
-        completeOnCreate(savedInstanceState, true);
         tabLayout.setupWithViewPager(mViewPager);
+        mViewPager.setCurrentItem(RepcastPageAdapter.FILE_INDEX);
         if (!Utils.backendSupportsFull(getApplicationContext())) {
             tabLayout.setVisibility(View.GONE);
         }
+        completeOnCreate(savedInstanceState, true);
+
     }
 
     public static class BackStackData implements Parcelable {
@@ -129,7 +130,7 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     protected void doShowContent(Parcelable data, int curentScrollPosition) {
         int pageIndex = -1;
         if (data instanceof JsonDirectory.JsonFileDir) {
-            Log.e(TAG, "Showing File data of:" + ((JsonDirectory.JsonFileDir) data).name);
+//            Log.e(TAG, "Showing File data of:" + ((JsonDirectory.JsonFileDir) data).name);
             pageIndex = RepcastPageAdapter.FILE_INDEX;
         }
         if (data instanceof JsonTorrent.JsonTorrentResult) {
@@ -145,9 +146,6 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         addFragmentToABackStack(d, curentScrollPosition);
         setTitleBasedOnFragment();
     }
-
-    Stack<Parcelable> mBackSelectFileFragments = new Stack<>();
-    Stack<Parcelable> mBackTorrentFragments = new Stack<>();
 
     public void addFragmentToABackStack(BackStackData newFragmentData, int curentScrollPosition) {
         if (newFragmentData.data instanceof JsonDirectory.JsonFileDir) {
@@ -217,10 +215,15 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
     @Override
     public void setTitleBasedOnFragment() {
         RepcastFragment frag = mPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
-        if (frag != null) {
-            String name = frag.getName();
-            getSupportActionBar().setTitle(name);
+        String name;
+        if (frag == null) {
+            name = ((JsonDirectory.JsonFileDir)((BackStackData)mBackSelectFileFragments.peek()).data).name;
+        } else {
+            name = frag.getName();
         }
+//        Log.e(TAG, "setTitleBasedOnFragment: Did set to:"+ name);
+        getSupportActionBar().setTitle(name);
+
 
     }
 

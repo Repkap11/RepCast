@@ -8,7 +8,7 @@ android {
         applicationId "com.repkap11.repcast"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 40
+        versionCode 41
         versionName versionCode + ".0"
         setProperty("archivesBaseName","RepCast-" + versionCode)
     }

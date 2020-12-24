@@ -163,7 +163,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         //
-        // setTitleBasedOnFragment();
+         setTitleBasedOnFragment();
     }
 
 
@@ -356,7 +356,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     }
 
     public void showContent(Parcelable data, int currentPosition) {
-        Log.e(TAG, "Paul showContent: index:"+currentPosition);
+//        Log.e(TAG, "Paul showContent: index:"+currentPosition);
         if (mSearchView != null) {
             mInitialSearchString = "";
             mSearchView.setQuery(null, false);

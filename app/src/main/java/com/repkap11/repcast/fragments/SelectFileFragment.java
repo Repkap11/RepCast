@@ -30,7 +30,7 @@ public class SelectFileFragment extends RepcastFragment implements SwipeRefreshL
         SelectFileFragment fragment = new SelectFileFragment();
         fragment.mDirectory = (JsonDirectory.JsonFileDir)data.data;
         fragment.mScrollPosition = data.scrollPosition;
-        Log.e(TAG, "Paul SelectFileFragment: index:"+fragment.mScrollPosition);
+//        Log.e(TAG, "Paul SelectFileFragment: index:"+fragment.mScrollPosition);
 
         //Log.e(TAG, "Fragment Created");
         return fragment;
