@@ -211,7 +211,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         }
         mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
         Log.e(TAG, "Setting url of the VideoView to: " + Uri.parse(mSelectedMedia.getContentId()));
-        if (shouldStartPlayback) {
+        if (shouldStartPlayback || !(mCastManager.isConnecting() || mCastManager.isConnected())) {
             // this will be the case only if we are coming from the
             // CastControllerActivity by disconnecting from a device
             mPlaybackState = PlaybackState.PLAYING;
