@@ -56,6 +56,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.ViewCompat;
 
 import com.androidquery.AQuery;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.ui.PlayerControlView;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.video.VideoDecoderGLSurfaceView;
+import com.google.android.exoplayer2.video.VideoDecoderInputBuffer;
+import com.google.android.exoplayer2.video.VideoListener;
 import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
@@ -83,7 +98,7 @@ import java.util.TimerTask;
 public class LocalPlayerActivity extends AppCompatActivity {
 
     private static final String TAG = "LocalPlayerActivity";
-    private VideoView mVideoView;
+    private PlayerView mVideoView;
     private TextView mTitleView;
     private TextView mDescriptionView;
     private TextView mStartText;
@@ -114,6 +129,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     private boolean mVisable = true;
     private int mOrientation;
     private ImageButton mRotatePlayer;
+    private SimpleExoPlayer mPlayer;
 
     /*
      * indicates whether we are doing a local or a remote playback
@@ -146,8 +162,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
         loadViews();
         mCastManager = VideoCastManager.getInstance();
         mCastManager.setCastControllerImmersive(false);
-        setupControlsCallbacks();
-        setupCastListener();
         String castPath;
         String mimeType = getIntent().getType();
         String title = getIntent().getStringExtra(Intent.EXTRA_TITLE);
@@ -210,18 +224,44 @@ public class LocalPlayerActivity extends AppCompatActivity {
             shouldStartPlayback = b.getBoolean("shouldStart", false);
             startPosition = b.getInt("startPosition", 0);
         }
-        mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
+        VideoDecoderInputBuffer ib = new VideoDecoderInputBuffer(VideoDecoderInputBuffer.BUFFER_REPLACEMENT_MODE_NORMAL);
+
+        SimpleExoPlayer player  = new SimpleExoPlayer.Builder(getApplicationContext()).build();
+        player.setRepeatMode(Player.REPEAT_MODE_OFF);
+
+        MediaSource mediaSource = new ProgressiveMediaSource.Factory(new DefaultDataSourceFactory(this)).createMediaSource(MediaItem.fromUri(Uri.parse(mSelectedMedia.getContentId())));
+        mPlayer = new SimpleExoPlayer.Builder(getApplicationContext()).build();
+        mPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
+        mPlayer.setMediaSource(mediaSource);
+        mPlayer.prepare();
+        mVideoView.setUseController(false);
+//        mVideoView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
+//            @Override
+//            public void onVisibilityChange(int visibility) {
+////                mVideoView.setUseController(false);
+////                mPlayer.play();
+//            }
+//        });
+        mVideoView.setPlayer(mPlayer);
+//        mVideoView.setUseController(false);
+//        mVideoView.setControllerAutoShow(false);
+
+        setupControlsCallbacks();
+
+
+//        mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
         Log.e(TAG, "Setting url of the VideoView to: " + Uri.parse(mSelectedMedia.getContentId()));
         if (shouldStartPlayback || !(mCastManager.isConnecting() || mCastManager.isConnected())) {
+//        if (shouldStartPlayback) {
             // this will be the case only if we are coming from the
             // CastControllerActivity by disconnecting from a device
             mPlaybackState = PlaybackState.PLAYING;
             updatePlaybackLocation(PlaybackLocation.LOCAL);
             updatePlayButton(mPlaybackState);
             if (startPosition > 0) {
-                mVideoView.seekTo(startPosition);
+                mPlayer.seekTo(startPosition);
             }
-            mVideoView.start();
+            mPlayer.play();
             startControllersTimer();
         } else {
             // we should load the video but pause it
@@ -238,6 +278,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
         if (null != mTitleView) {
             updateMetadata(true);
         }
+        setupCastListener();
     }
 
     private void setupCastListener() {
@@ -249,7 +290,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 if (null != mSelectedMedia) {
 
                     if (mPlaybackState == PlaybackState.PLAYING) {
-                        mVideoView.pause();
+                        mPlayer.pause();
                         try {
                             loadRemoteMedia(mSeekbar.getProgress(), true);
                             finish();
@@ -335,8 +376,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
         startControllersTimer();
         switch (mLocation) {
             case LOCAL:
-                mVideoView.seekTo(position);
-                mVideoView.start();
+                mPlayer.seekTo(position);
+                mPlayer.play();
                 break;
             case REMOTE:
                 mPlaybackState = PlaybackState.BUFFERING;
@@ -359,7 +400,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             case PAUSED:
                 switch (mLocation) {
                     case LOCAL:
-                        mVideoView.start();
+                        mPlayer.play();
                         if (!mCastManager.isConnecting()) {
                             Log.d(TAG, "Playing locally...");
                             mCastManager.clearPersistedConnectionInfo(
@@ -387,15 +428,15 @@ public class LocalPlayerActivity extends AppCompatActivity {
 
             case PLAYING:
                 mPlaybackState = PlaybackState.PAUSED;
-                mVideoView.pause();
+                mPlayer.pause();
                 break;
 
             case IDLE:
                 switch (mLocation) {
                     case LOCAL:
-                        mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
-                        mVideoView.seekTo(0);
-                        mVideoView.start();
+//                        mVideoView.setVideoURI(Uri.parse(mSelectedMedia.getContentId()));
+                        mPlayer.seekTo(0);
+                        mPlayer.play();
                         mPlaybackState = PlaybackState.PLAYING;
                         restartTrickplayTimer();
                         updatePlaybackLocation(PlaybackLocation.LOCAL);
@@ -525,7 +566,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             }
             // since we are playing locally, we need to stop the playback of
             // video (if user is not watching, pause it!)
-            mVideoView.pause();
+            mPlayer.pause();
             mPlaybackState = PlaybackState.PAUSED;
             updatePlayButton(PlaybackState.PAUSED);
         }
@@ -595,7 +636,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (mLocation == PlaybackLocation.LOCAL) {
-                        int currentPos = mVideoView.getCurrentPosition();
+                        int currentPos = (int)mPlayer.getCurrentPosition();
                         updateSeekbar(currentPos, mDuration);
                     }
                 }
@@ -604,59 +645,42 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void setupControlsCallbacks() {
-        mVideoView.setOnErrorListener(new OnErrorListener() {
-
+        mPlayer.addListener(new Player.EventListener() {
             @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                Log.e(TAG, "OnErrorListener.onError(): VideoView encountered an " +
-                        "error, what: " + what + ", extra: " + extra);
+            public void onPlayerError(ExoPlaybackException error) {
+                Log.e(TAG, "ExoPlaybackException:"+ error.toString());
                 String msg;
-                if (extra == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
-                    msg = getString(R.string.video_error_media_load_timeout);
-                } else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
-                    msg = getString(R.string.video_error_server_unaccessible);
-                } else {
+//                if (error. == MediaPlayer.MEDIA_ERROR_TIMED_OUT) {
+//                    msg = getString(R.string.video_error_media_load_timeout);
+//                } else if (what == MediaPlayer.MEDIA_ERROR_SERVER_DIED) {
+//                    msg = getString(R.string.video_error_server_unaccessible);
+//                } else {
                     msg = getString(R.string.video_error_unknown_error);
-                }
+//                }
                 Utils.showErrorDialog(LocalPlayerActivity.this, msg);
-                mVideoView.stopPlayback();
+                mPlayer.stop();
                 mPlaybackState = PlaybackState.IDLE;
                 updatePlayButton(mPlaybackState);
-                return true;
             }
         });
-
-        mVideoView.setOnPreparedListener(new OnPreparedListener() {
+        mPlayer.addVideoListener(new VideoListener() {
+            @Override
+            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+                mAspectRatio = ((float)width / ((float)height));
+                updateMetadata(mVisable);
+            }
 
             @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.d(TAG, "onPrepared is reached");
-                mDuration = mp.getDuration();
-                mEndText.setText(com.google.android.libraries.cast.companionlibrary.utils.Utils
-                        .formatMillis(mDuration));
+            public void onSurfaceSizeChanged(int width, int height) {
+
+            }
+
+            @Override
+            public void onRenderedFirstFrame() {
+                mDuration = (int)mPlayer.getDuration();
+                mEndText.setText(com.google.android.libraries.cast.companionlibrary.utils.Utils.formatMillis(mDuration));
                 mSeekbar.setMax(mDuration);
                 restartTrickplayTimer();
-
-                mp.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-                    @Override
-                    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//                        Log.d(TAG, "Paul Buffered to " + percent);
-//                        if (percent<mSeekbar.getMax()) {
-                            mSeekbar.setSecondaryProgress(percent*mSeekbar.getMax() / 100);
-//                        }
-                    }
-                });
-            }
-        });
-
-        mVideoView.setOnCompletionListener(new OnCompletionListener() {
-
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                stopTrickplayTimer();
-                Log.d(TAG, "setOnCompletionListener()");
-                mPlaybackState = PlaybackState.IDLE;
-                updatePlayButton(mPlaybackState);
             }
         });
 
@@ -672,17 +696,6 @@ public class LocalPlayerActivity extends AppCompatActivity {
             }
         });
 
-        mVideoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
-
-                mediaPlayer.getVideoHeight();
-                mAspectRatio = ((float)mediaPlayer.getVideoWidth() / ((float)mediaPlayer.getVideoHeight()));
-                updateMetadata(mVisable);
-                return false;
-            }
-        });
-
         mSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
             @Override
@@ -690,7 +703,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 if (mPlaybackState == PlaybackState.PLAYING) {
                     play(seekBar.getProgress());
                 } else if (mPlaybackState != PlaybackState.IDLE) {
-                    mVideoView.seekTo(seekBar.getProgress());
+                    mPlayer.seekTo(seekBar.getProgress());
                 }
                 startControllersTimer();
             }
@@ -698,7 +711,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 stopTrickplayTimer();
-                mVideoView.pause();
+                mPlayer.pause();
                 stopControllersTimer();
             }
 
@@ -716,6 +729,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mLocation == PlaybackLocation.LOCAL) {
                     togglePlayback();
+                    mVideoView.setUseController(false);
                 }
             }
         });
@@ -912,7 +926,7 @@ public class LocalPlayerActivity extends AppCompatActivity {
     }
 
     private void loadViews() {
-        mVideoView = (VideoView) findViewById(R.id.videoView1);
+        mVideoView = (PlayerView) findViewById(R.id.videoView1);
         mTitleView = (TextView) findViewById(R.id.textView1);
         mDescriptionView = (TextView) findViewById(R.id.textView2);
         mDescriptionView.setMovementMethod(new ScrollingMovementMethod());

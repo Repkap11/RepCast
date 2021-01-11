@@ -33,6 +33,9 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/notice.txt'
     }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 repositories {
     jcenter()
