@@ -55,16 +55,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.annotation.IntDef;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.MediaRouteActionProvider;
-import android.support.v7.app.MediaRouteButton;
-import android.support.v7.app.MediaRouteDialogFactory;
-import android.support.v7.media.MediaRouteSelector;
-import android.support.v7.media.MediaRouter;
-import android.support.v7.media.MediaRouter.RouteInfo;
+import androidx.annotation.IntDef;
+
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.core.view.MenuItemCompat;
+import androidx.mediarouter.app.MediaRouteActionProvider;
+import androidx.mediarouter.app.MediaRouteButton;
+import androidx.mediarouter.app.MediaRouteDialogFactory;
+import androidx.mediarouter.media.MediaRouteSelector;
+import androidx.mediarouter.media.MediaRouter;
 
 import java.io.IOException;
 import java.lang.annotation.Retention;
@@ -149,7 +150,7 @@ public abstract class BaseCastManager
     protected boolean mConnectionSuspended;
     protected String mSessionId;
     private Handler mUiVisibilityHandler;
-    private RouteInfo mRouteInfo;
+    private MediaRouter.RouteInfo mRouteInfo;
     protected int mApplicationErrorCode = NO_APPLICATION_ERROR;
     protected LaunchOptions mLaunchOptions;
 
@@ -355,12 +356,12 @@ public abstract class BaseCastManager
     }
 
     /**
-     * Called as soon as a non-default {@link RouteInfo} is discovered. The main usage for this is
+     * Called as soon as a non-default {@link MediaRouter.RouteInfo} is discovered. The main usage for this is
      * to provide a hint to clients that the cast button is going to become visible/available soon.
      * A client, for example, can use this to show a quick help screen to educate the user on the
      * cast concept and the usage of the cast button.
      */
-    public final void onCastDeviceDetected(RouteInfo info) {
+    public final void onCastDeviceDetected(MediaRouter.RouteInfo info) {
         for (BaseCastConsumer consumer : mBaseCastConsumers) {
             consumer.onCastDeviceDetected(info);
         }
@@ -561,7 +562,7 @@ public abstract class BaseCastManager
      * Returns the {@link android.support.v7.media.MediaRouter.RouteInfo} corresponding to the
      * selected route.
      */
-    public final RouteInfo getRouteInfo() {
+    public final MediaRouter.RouteInfo getRouteInfo() {
         return mRouteInfo;
     }
 
@@ -569,7 +570,7 @@ public abstract class BaseCastManager
      * Sets the {@link android.support.v7.media.MediaRouter.RouteInfo} corresponding to the
      * selected route.
      */
-    public final void setRouteInfo(RouteInfo routeInfo) {
+    public final void setRouteInfo(MediaRouter.RouteInfo routeInfo) {
         mRouteInfo = routeInfo;
     }
 
@@ -747,7 +748,7 @@ public abstract class BaseCastManager
         return true;
     }
 
-    private void reconnectSessionIfPossibleInternal(RouteInfo theRoute) {
+    private void reconnectSessionIfPossibleInternal(MediaRouter.RouteInfo theRoute) {
         if (isConnected()) {
             return;
         }
@@ -825,10 +826,10 @@ public abstract class BaseCastManager
         }
         String routeId = mPreferenceAccessor.getStringFromPreference(PREFS_KEY_ROUTE_ID);
         if (canConsiderSessionRecovery(ssidName)) {
-            List<RouteInfo> routes = mMediaRouter.getRoutes();
-            RouteInfo theRoute = null;
+            List<MediaRouter.RouteInfo> routes = mMediaRouter.getRoutes();
+            MediaRouter.RouteInfo theRoute = null;
             if (routes != null) {
-                for (RouteInfo route : routes) {
+                for (MediaRouter.RouteInfo route : routes) {
                     if (route.getId().equals(routeId)) {
                         theRoute = route;
                         break;

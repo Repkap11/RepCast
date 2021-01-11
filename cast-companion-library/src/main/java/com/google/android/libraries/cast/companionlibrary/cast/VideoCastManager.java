@@ -76,12 +76,13 @@ import android.preference.PreferenceScreen;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.MediaRouteDialogFactory;
-import android.support.v7.media.MediaRouter.RouteInfo;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.accessibility.CaptioningManager;
+
+import androidx.mediarouter.app.MediaRouteDialogFactory;
+import androidx.mediarouter.media.MediaRouter;
 
 import org.json.JSONObject;
 
@@ -700,7 +701,7 @@ public class VideoCastManager extends BaseCastManager
      * RouteInfo.getVolumeMax()}.
      */
     public void updateVolume(int delta) {
-        RouteInfo info = mMediaRouter.getSelectedRoute();
+        MediaRouter.RouteInfo info = mMediaRouter.getSelectedRoute();
         info.requestUpdateVolume(delta);
     }
 
@@ -873,10 +874,10 @@ public class VideoCastManager extends BaseCastManager
         if (mReconnectionStatus == RECONNECTION_STATUS_IN_PROGRESS) {
             // we have tried to reconnect and successfully launched the app, so
             // it is time to select the route and make the cast icon happy :-)
-            List<RouteInfo> routes = mMediaRouter.getRoutes();
+            List<MediaRouter.RouteInfo> routes = mMediaRouter.getRoutes();
             if (routes != null) {
                 String routeId = mPreferenceAccessor.getStringFromPreference(PREFS_KEY_ROUTE_ID);
-                for (RouteInfo routeInfo : routes) {
+                for (MediaRouter.RouteInfo routeInfo : routes) {
                     if (routeId.equals(routeInfo.getId())) {
                         // found the right route
                         LOGD(TAG, "Found the correct route during reconnection attempt");

@@ -36,9 +36,10 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.Transi
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 
 import android.content.Context;
-import android.support.v7.app.MediaRouteDialogFactory;
-import android.support.v7.media.MediaRouter.RouteInfo;
 import android.text.TextUtils;
+
+import androidx.mediarouter.app.MediaRouteDialogFactory;
+import androidx.mediarouter.media.MediaRouter;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -276,11 +277,11 @@ public class DataCastManager extends BaseCastManager implements Cast.MessageRece
         if (mReconnectionStatus == RECONNECTION_STATUS_IN_PROGRESS) {
             // we have tried to reconnect and successfully launched the app, so
             // it is time to select the route and make the cast icon happy :-)
-            List<RouteInfo> routes = mMediaRouter.getRoutes();
+            List<MediaRouter.RouteInfo> routes = mMediaRouter.getRoutes();
             if (routes != null) {
                 String routeId = mPreferenceAccessor.getStringFromPreference(PREFS_KEY_ROUTE_ID);
                 boolean found = false;
-                for (RouteInfo routeInfo : routes) {
+                for (MediaRouter.RouteInfo routeInfo : routes) {
                     if (routeId.equals(routeInfo.getId())) {
                         // found the right route
                         LOGD(TAG, "Found the correct route during reconnection attempt");

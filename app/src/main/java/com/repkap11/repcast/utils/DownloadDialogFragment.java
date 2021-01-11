@@ -23,8 +23,6 @@ import com.repkap11.repcast.R;
 import com.repkap11.repcast.activities.RepcastActivity;
 import com.repkap11.repcast.model.parcelables.JsonDirectory;
 
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
-
 /**
  * Created by paul on 12/22/17.
  */

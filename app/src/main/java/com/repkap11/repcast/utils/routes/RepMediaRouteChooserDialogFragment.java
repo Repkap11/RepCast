@@ -2,12 +2,12 @@ package com.repkap11.repcast.utils.routes;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.MediaRouteChooserDialog;
-import android.support.v7.app.MediaRouteChooserDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.mediarouter.app.MediaRouteChooserDialog;
+import androidx.mediarouter.app.MediaRouteChooserDialogFragment;
 
 public class RepMediaRouteChooserDialogFragment extends MediaRouteChooserDialogFragment {
     @Override

@@ -16,11 +16,12 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.callbacks;
 
+import androidx.mediarouter.media.MediaRouter;
+
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 
-import android.support.v7.media.MediaRouter.RouteInfo;
 
 /**
  * A no-op implementation of the {@link BaseCastConsumer}
@@ -48,7 +49,7 @@ public class BaseCastConsumerImpl implements BaseCastConsumer {
     }
 
     @Override
-    public void onCastDeviceDetected(RouteInfo info) {
+    public void onCastDeviceDetected(MediaRouter.RouteInfo info) {
         // no-op
     }
 

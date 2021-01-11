@@ -16,13 +16,12 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast;
 
+import androidx.mediarouter.media.MediaRouter;
+
 import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
 
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
-
-import android.support.v7.media.MediaRouter;
-import android.support.v7.media.MediaRouter.RouteInfo;
 
 /**
  * Provides a handy implementation of {@link MediaRouter.Callback}. When a {@link RouteInfo} is
@@ -43,7 +42,7 @@ public class CastMediaRouterCallback extends MediaRouter.Callback {
     }
 
     @Override
-    public void onRouteSelected(MediaRouter router, RouteInfo info) {
+    public void onRouteSelected(MediaRouter router, MediaRouter.RouteInfo info) {
         LOGD(TAG, "onRouteSelected: info=" + info);
         if (mCastManager.getReconnectionStatus()
                 == BaseCastManager.RECONNECTION_STATUS_FINALIZED) {
@@ -59,13 +58,13 @@ public class CastMediaRouterCallback extends MediaRouter.Callback {
     }
 
     @Override
-    public void onRouteUnselected(MediaRouter router, RouteInfo route) {
+    public void onRouteUnselected(MediaRouter router, MediaRouter.RouteInfo route) {
         LOGD(TAG, "onRouteUnselected: route=" + route);
         mCastManager.onDeviceSelected(null);
     }
 
     @Override
-    public void onRouteAdded(MediaRouter router, RouteInfo route) {
+    public void onRouteAdded(MediaRouter router, MediaRouter.RouteInfo route) {
         if (!router.getDefaultRoute().equals(route)) {
             notifyRouteAvailabilityChangedIfNeeded(router);
             mCastManager.onCastDeviceDetected(route);
@@ -88,12 +87,12 @@ public class CastMediaRouterCallback extends MediaRouter.Callback {
     }
 
     @Override
-    public void onRouteRemoved(MediaRouter router, RouteInfo route) {
+    public void onRouteRemoved(MediaRouter router, MediaRouter.RouteInfo route) {
         notifyRouteAvailabilityChangedIfNeeded(router);
     }
 
     @Override
-    public void onRouteChanged(MediaRouter router, RouteInfo route) {
+    public void onRouteChanged(MediaRouter router, MediaRouter.RouteInfo route) {
         notifyRouteAvailabilityChangedIfNeeded(router);
     }
 

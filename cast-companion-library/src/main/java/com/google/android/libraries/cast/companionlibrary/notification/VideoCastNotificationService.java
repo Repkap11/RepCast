@@ -46,7 +46,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.TaskStackBuilder;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 
 /**
  * A service to provide status bar Notifications when we are casting. For JB+ versions, notification
@@ -318,8 +320,8 @@ public class VideoCastNotificationService extends Service {
         }
         int pauseOrPlayTextResourceId = isPlaying ? R.string.ccl_pause : R.string.ccl_play;
 
-        android.support.v4.app.NotificationCompat.Builder builder;
-        builder = new android.support.v4.app.NotificationCompat.Builder(this, REPCAST_CHANNEL_ID);
+        NotificationCompat.Builder builder;
+        builder = new NotificationCompat.Builder(this, REPCAST_CHANNEL_ID);
         builder.setSmallIcon(R.drawable.ic_stat_action_notification)
                 .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE))
                 .setContentText(castingTo)
@@ -327,9 +329,10 @@ public class VideoCastNotificationService extends Service {
                 .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
                 .addAction(isPlaying ? pauseOrStopResourceId : R.drawable.ic_notification_play_48dp, getString(pauseOrPlayTextResourceId), playbackPendingIntent)
                 .addAction(R.drawable.ic_notification_disconnect_24dp, getString(R.string.ccl_disconnect), stopPendingIntent)
-                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0, 1)
-                .setMediaSession(mCastManager.getMediaSessionCompatToken()))
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0, 1)
+                    .setMediaSession(mCastManager.getMediaSessionCompatToken())
+                )
                 .setOngoing(true)
                 .setShowWhen(false);
 

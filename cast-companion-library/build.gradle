@@ -8,7 +8,7 @@ android {
     }
 }
 dependencies {
-    api 'com.android.support:appcompat-v7:27.+'
-    api 'com.android.support:mediarouter-v7:27+'
+//    api 'com.android.support:appcompat-v7:27.+'
+//    api 'com.android.support:mediarouter-v7:27+'
     api 'com.google.android.gms:play-services-cast-framework:16.+'
 }

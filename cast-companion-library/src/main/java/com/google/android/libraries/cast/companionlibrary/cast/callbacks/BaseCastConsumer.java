@@ -16,12 +16,12 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.callbacks;
 
+import androidx.mediarouter.media.MediaRouter;
+
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.OnFailedListener;
-
-import android.support.v7.media.MediaRouter.RouteInfo;
 
 /**
  * An interface for receiving callbacks around the connectivity status to a Cast device.
@@ -71,7 +71,7 @@ public interface BaseCastConsumer extends OnFailedListener {
     /**
      * Called when the MediaRouterCallback detects a non-default route.
      */
-    void onCastDeviceDetected(RouteInfo info);
+    void onCastDeviceDetected(MediaRouter.RouteInfo info);
 
     /**
      * Called when the number of cast devices present on the network changes from 0 to a positive

@@ -1,12 +1,13 @@
 package com.repkap11.repcast.fragments;
 
 import android.os.Parcelable;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
+
+import androidx.fragment.app.ListFragment;
 
 import com.repkap11.repcast.R;
 

@@ -37,12 +37,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -282,7 +283,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         // Create and show the dialog.
         TracksChooserDialog dialogFragment = TracksChooserDialog
                 .newInstance(mCastManager.getRemoteMediaInformation());
-        dialogFragment.show(transaction, DIALOG_TAG);
+//        dialogFragment.show(transaction, DIALOG_TAG);
     }
 
     private void setUpActionBar() {

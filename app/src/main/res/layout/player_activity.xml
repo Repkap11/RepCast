@@ -188,7 +188,7 @@
         android:scrollbars="vertical"
         android:textSize="15sp" />
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:theme="@style/AppTheme.ActionBarTheme"
         android:layout_height="wrap_content"

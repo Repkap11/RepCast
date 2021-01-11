@@ -27,13 +27,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.repkap11.repcast.R;
 import com.repkap11.repcast.fragments.RepcastFragment;
 import com.repkap11.repcast.fragments.SelectFileFragment;

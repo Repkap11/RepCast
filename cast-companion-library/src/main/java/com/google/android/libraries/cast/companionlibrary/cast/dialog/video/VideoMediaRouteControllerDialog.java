@@ -38,12 +38,13 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.MediaRouteControllerDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.mediarouter.app.MediaRouteControllerDialog;
 
 /**
  * A custom {@link MediaRouteControllerDialog} that provides an album art, a play/pause button and

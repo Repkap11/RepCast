@@ -2,10 +2,11 @@ package com.repkap11.repcast.utils.routes;
 
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.app.MediaRouteActionProvider;
-import android.support.v7.app.MediaRouteDialogFactory;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.mediarouter.app.MediaRouteActionProvider;
+import androidx.mediarouter.app.MediaRouteDialogFactory;
 
 
 public class RepCastMediaRouteActionProvider extends MediaRouteActionProvider {

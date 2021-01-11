@@ -27,17 +27,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.MediaRouteButton;
-import android.support.v7.media.MediaRouter.RouteInfo;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.mediarouter.app.MediaRouteButton;
+import androidx.mediarouter.media.MediaRouter;
+
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -138,7 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
             }
 
             @Override
-            public void onCastDeviceDetected(final RouteInfo info) {
+            public void onCastDeviceDetected(final MediaRouter.RouteInfo info) {
                 if (!CastPreferenceActivity.isFtuShown(BaseActivity.this) && mIsHoneyCombOrAbove) {
                     CastPreferenceActivity.setFtuShown(BaseActivity.this);
 
