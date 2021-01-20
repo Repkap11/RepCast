@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Allow .torrent files to be added for download. Remember the scroll position when going back a folder.</string>
+    <string name="changelog_message">Switch to ExoPlayer backend for video playback, and modernize dependencies.</string>
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>

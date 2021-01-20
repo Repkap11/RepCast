@@ -95,6 +95,8 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.google.android.exoplayer2.C.WAKE_MODE_LOCAL;
+
 public class LocalPlayerActivity extends AppCompatActivity {
 
     private static final String TAG = "LocalPlayerActivity";
@@ -233,6 +235,8 @@ public class LocalPlayerActivity extends AppCompatActivity {
         mPlayer = new SimpleExoPlayer.Builder(getApplicationContext()).build();
         mPlayer.setRepeatMode(Player.REPEAT_MODE_OFF);
         mPlayer.setMediaSource(mediaSource);
+        mPlayer.setWakeMode(WAKE_MODE_LOCAL);
+        mVideoView.setKeepScreenOn(true);
         mPlayer.prepare();
         mVideoView.setUseController(false);
 //        mVideoView.setControllerVisibilityListener(new PlayerControlView.VisibilityListener() {
@@ -580,6 +584,18 @@ public class LocalPlayerActivity extends AppCompatActivity {
         if (null != mCastManager) {
             mCastConsumer = null;
         }
+        if (mVideoView != null){
+            mVideoView.setPlayer(null);
+            mVideoView = null;
+        }
+        if (mPlayer != null){
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+            Log.i(TAG,"Paul releaseing");
+        }
+
+
         stopControllersTimer();
         stopTrickplayTimer();
         super.onDestroy();
@@ -636,8 +652,10 @@ public class LocalPlayerActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (mLocation == PlaybackLocation.LOCAL) {
-                        int currentPos = (int)mPlayer.getCurrentPosition();
-                        updateSeekbar(currentPos, mDuration);
+                        if (mPlayer != null) {
+                            int currentPos = (int) mPlayer.getCurrentPosition();
+                            updateSeekbar(currentPos, mDuration);
+                        }
                     }
                 }
             });
