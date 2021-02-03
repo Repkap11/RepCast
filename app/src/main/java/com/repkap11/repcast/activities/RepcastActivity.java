@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -363,19 +364,11 @@ public class RepcastActivity extends BaseActivity implements ViewPager.OnPageCha
         request.setVisibleInDownloadsUi(true);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.allowScanningByMediaScanner();
-        request.setDestinationInExternalPublicDir("/RepCast", dir.name);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, dir.name);
 
         // enqueue this request
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadID = downloadManager.enqueue(request);
-        Toast.makeText(this, R.string.download_from_repcast_downloading, Toast.LENGTH_SHORT).show();
-
-        //IntentFilter downloadCompleteIntentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        //downloadCompleteIntentFilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED);
-        //downloadCompleteIntentFilter.addAction(DownloadManager.ACTION_VIEW_DOWNLOADS);
-        //BroadcastReceiver receiver = new DownloadReceiver();
-        //getActivity().registerReceiver(receiver, downloadCompleteIntentFilter);
-
     }
 
     @Override

@@ -69,7 +69,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Fragment
     private static final String INSTANCE_STATE_SEARCH_EXPANDED = "INSTANCE_STATE_SEARCH_EXPANDED";
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
-    private MiniController mMini;
     private MenuItem mediaRouteMenuItem;
     private boolean mIsHoneyCombOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     protected Toolbar mToolbar;

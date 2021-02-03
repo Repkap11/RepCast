@@ -144,4 +144,7 @@
     <string name="download_from_repcast_cancel">Cancel</string>
     <string name="download_from_copied_to_clipboard">URL Copied to Clipboard</string>
 
+    <string name="notification_next">Next</string>
+    <string name="notification_prev">Previous</string>
+
 </resources>

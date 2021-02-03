@@ -2194,6 +2194,16 @@ public class VideoCastManager extends BaseCastManager
                             || keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PLAY)) {
                         toggle();
                     }
+                    try {
+                        if (keyEvent != null && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_NEXT)){
+                            queueNext(null);
+                        }
+                        if (keyEvent != null && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PREVIOUS)){
+                            queuePrev(null);
+                        }
+                    } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
+                        LOGE(TAG, "MediaSessionCompat.Callback(): Failed to next/prev", e);
+                    }
                     return true;
                 }
 

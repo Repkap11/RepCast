@@ -47,39 +47,40 @@ public class VideoIntentReceiver extends BroadcastReceiver {
         if (action == null) {
             return;
         }
-        switch (action) {
-            case VideoCastNotificationService.ACTION_TOGGLE_PLAYBACK:
-                try {
-                    VideoCastManager.getInstance().togglePlayback();
-                } catch (CastException | TransientNetworkDisconnectionException |
-                        NoConnectionException e) {
-                    LOGE(TAG, "onReceive() Failed to toggle playback ");
-                }
-                break;
-            case VideoCastNotificationService.ACTION_STOP:
-                LOGD(TAG, "Calling stopApplication from intent");
-                castMgr.disconnect();
-                break;
-            case Intent.ACTION_MEDIA_BUTTON:
-                // this is used when we toggle playback from lockscreen in versions prior to
-                // Lollipop
-                if (!intent.hasExtra(Intent.EXTRA_KEY_EVENT)) {
-                    return;
-                }
-                KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
-                if (keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
-                    return;
-                }
-
-                if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-                    try {
-                        VideoCastManager.getInstance().togglePlayback();
-                    } catch (CastException | TransientNetworkDisconnectionException |
-                            NoConnectionException e) {
-                        LOGE(TAG, "onReceive() Failed to toggle playback ");
+        try {
+            switch (action) {
+                case VideoCastNotificationService.ACTION_TOGGLE_PLAYBACK:
+                    castMgr.togglePlayback();
+                    break;
+                case VideoCastNotificationService.ACTION_NEXT:
+                    castMgr.queueNext(null);
+                    break;
+                case VideoCastNotificationService.ACTION_PREVIOUS:
+                    castMgr.queuePrev(null);
+                    break;
+                case VideoCastNotificationService.ACTION_STOP:
+                    LOGD(TAG, "Calling stopApplication from intent");
+                    castMgr.disconnect();
+                    break;
+                case Intent.ACTION_MEDIA_BUTTON:
+                    // this is used when we toggle playback from lockscreen in versions prior to
+                    // Lollipop
+                    if (!intent.hasExtra(Intent.EXTRA_KEY_EVENT)) {
+                        return;
                     }
-                }
-                break;
+                    KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
+                    if (keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
+                        return;
+                    }
+
+                    if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+                        VideoCastManager.getInstance().togglePlayback();
+                    }
+                    break;
+            }
+        } catch (CastException | TransientNetworkDisconnectionException |
+                NoConnectionException e) {
+            LOGE(TAG, "onReceive() Failed to apply action:"+action);
         }
     }
 }

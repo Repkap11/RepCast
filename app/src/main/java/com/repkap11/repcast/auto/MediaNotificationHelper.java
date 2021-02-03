@@ -69,7 +69,7 @@ public class MediaNotificationHelper {
                     R.drawable.ic_default_art);
         }
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, "default");
         notificationBuilder
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         // show only play/pause in compact view.

@@ -21,7 +21,9 @@ import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.
 
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.cast.MediaStatus;
+import com.google.android.gms.cast.MediaTrack;
 import com.google.android.libraries.cast.companionlibrary.R;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
@@ -29,6 +31,8 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastEx
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
+import com.google.android.libraries.cast.companionlibrary.cast.tracks.OnTracksSelectedListener;
+import com.google.android.libraries.cast.companionlibrary.remotecontrol.VideoIntentReceiver;
 import com.google.android.libraries.cast.companionlibrary.utils.FetchBitmapTask;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
@@ -50,6 +54,8 @@ import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 
+import java.util.List;
+
 /**
  * A service to provide status bar Notifications when we are casting. For JB+ versions, notification
  * area provides a play/pause toggle and an "x" button to disconnect but that for GB, we do not
@@ -59,8 +65,12 @@ public class VideoCastNotificationService extends Service {
 
     private static final String TAG = LogUtils.makeLogTag(VideoCastNotificationService.class);
 
+    public static final String ACTION_PREVIOUS =
+            "com.google.android.libraries.cast.companionlibrary.action.previous";
     public static final String ACTION_TOGGLE_PLAYBACK =
             "com.google.android.libraries.cast.companionlibrary.action.toggleplayback";
+    public static final String ACTION_NEXT =
+            "com.google.android.libraries.cast.companionlibrary.action.next";
     public static final String ACTION_STOP =
             "com.google.android.libraries.cast.companionlibrary.action.stop";
     public static final String ACTION_VISIBILITY =
@@ -126,9 +136,29 @@ public class VideoCastNotificationService extends Service {
                     stopForeground(true);
                 }
             }
+
+            @Override
+            public void onMediaQueueOperationResult(int operationId, int statusCode) {
+                try {
+                    VideoCastNotificationService.this.setUpNotification(mCastManager.getRemoteMediaInformation());
+                } catch (TransientNetworkDisconnectionException e) {
+                    e.printStackTrace();
+                } catch (NoConnectionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onMediaQueueUpdated(List<MediaQueueItem> queueItems, MediaQueueItem item, int repeatMode, boolean shuffle) {
+                try {
+                    VideoCastNotificationService.this.setUpNotification(mCastManager.getRemoteMediaInformation());
+                } catch (TransientNetworkDisconnectionException e) {
+                    e.printStackTrace();
+                } catch (NoConnectionException e) {
+                    e.printStackTrace();
+                }            }
         };
         mCastManager.addVideoCastConsumer(mConsumer);
-
     }
 
     @Override
@@ -178,9 +208,15 @@ public class VideoCastNotificationService extends Service {
             mBitmapDecoderTask.cancel(false);
         }
         Uri imgUri = null;
+        int queueLength = mCastManager.getMediaQueue().getCount();
+        int position = mCastManager.getMediaQueue().getCurrentItemPosition();
+        final boolean prevAvailable = position > 0;
+        final boolean nextAvailable = position < queueLength - 1;
         try {
             if (!info.getMetadata().hasImages()) {
-                build(info, null, mIsPlaying);
+
+
+                build(info, null, mIsPlaying, prevAvailable, nextAvailable);
                 return;
             } else {
                 imgUri = info.getMetadata().getImages().get(0).getUrl();
@@ -194,7 +230,7 @@ public class VideoCastNotificationService extends Service {
                 try {
                     mVideoArtBitmap = Utils.scaleAndCenterCropBitmap(bitmap, mDimensionInPixels,
                             mDimensionInPixels);
-                    build(info, mVideoArtBitmap, mIsPlaying);
+                    build(info, mVideoArtBitmap, mIsPlaying, prevAvailable, nextAvailable);
                 } catch (CastException | NoConnectionException
                         | TransientNetworkDisconnectionException e) {
                     LOGE(TAG, "Failed to set notification for " + info.toString(), e);
@@ -280,19 +316,26 @@ public class VideoCastNotificationService extends Service {
      * Build the RemoteViews for the notification. We also need to add the appropriate "back stack"
      * so when user goes into the CastPlayerActivity, she can have a meaningful "back" experience.
      */
-    private void build(MediaInfo info, Bitmap bitmap, boolean isPlaying)
+    private void build(MediaInfo info, Bitmap bitmap, boolean isPlaying, boolean prevAvailable, boolean nextAvaliable)
             throws CastException, TransientNetworkDisconnectionException, NoConnectionException {
 
         // Playback PendingIntent
         Intent playbackIntent = new Intent(ACTION_TOGGLE_PLAYBACK);
-        playbackIntent.setPackage(getPackageName());
-        PendingIntent playbackPendingIntent = PendingIntent
-                .getBroadcast(this, 0, playbackIntent, 0);
+        playbackIntent.setClass(this, VideoIntentReceiver.class);
+        PendingIntent playbackPendingIntent = PendingIntent.getBroadcast(this, 0, playbackIntent, 0);
 
         // Disconnect PendingIntent
         Intent stopIntent = new Intent(ACTION_STOP);
-        stopIntent.setPackage(getPackageName());
+        stopIntent.setClass(this, VideoIntentReceiver.class);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0, stopIntent, 0);
+
+        Intent prevIntent = new Intent(ACTION_PREVIOUS);
+        prevIntent.setClass(this, VideoIntentReceiver.class);
+        PendingIntent prevPendingIntent = PendingIntent.getBroadcast(this, 0, prevIntent, 0);
+
+        Intent nextIntent = new Intent(ACTION_NEXT);
+        nextIntent.setClass(this, VideoIntentReceiver.class);
+        PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, 0);
 
         // Main Content PendingIntent
         Bundle mediaWrapper = Utils.mediaInfoToBundle(mCastManager.getRemoteMediaInformation());
@@ -326,11 +369,27 @@ public class VideoCastNotificationService extends Service {
                 .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE))
                 .setContentText(castingTo)
                 .setContentIntent(contentPendingIntent)
-                .setSmallIcon(R.drawable.cast_ic_notification_small_icon)
-                .addAction(isPlaying ? pauseOrStopResourceId : R.drawable.ic_notification_play_48dp, getString(pauseOrPlayTextResourceId), playbackPendingIntent)
-                .addAction(R.drawable.ic_notification_disconnect_24dp, getString(R.string.ccl_disconnect), stopPendingIntent)
+                .setSmallIcon(R.drawable.cast_ic_notification_small_icon);
+        if (prevAvailable) {
+            builder.addAction(R.drawable.cast_ic_expanded_controller_skip_previous, getString(R.string.ccl_previous), prevPendingIntent);
+        }
+        builder.addAction(isPlaying ? pauseOrStopResourceId : R.drawable.ic_notification_play_48dp, getString(pauseOrPlayTextResourceId), playbackPendingIntent);
+        if (nextAvaliable) {
+            builder.addAction(R.drawable.cast_ic_expanded_controller_skip_next, getString(R.string.ccl_next), nextPendingIntent);
+        }
+        int[] showCompat;
+        if (prevAvailable && nextAvaliable){
+            showCompat = new int[]{0,1,2};
+        } else if (prevAvailable){
+            showCompat = new int[]{0,1};
+        } else if (nextAvaliable){
+            showCompat = new int[]{0,1};
+        } else {
+            showCompat = new int[]{0};
+        }
+        builder.addAction(R.drawable.ic_notification_disconnect_24dp, getString(R.string.ccl_disconnect), stopPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                    .setShowActionsInCompactView(0, 1)
+                    .setShowActionsInCompactView(showCompat)
                     .setMediaSession(mCastManager.getMediaSessionCompatToken())
                 )
                 .setOngoing(true)
