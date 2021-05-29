@@ -15,7 +15,7 @@
   -->
 <resources>
 
-    <string name="changelog_message">Switch to ExoPlayer backend for video playback, and modernize dependencies.</string>
+    <string name="changelog_message">Add Android TV Support</string>
 
     <string name="action_settings">Settings</string>
     <string name="app_name">RepCast</string>

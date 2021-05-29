@@ -3,46 +3,59 @@
     package="com.repkap11.repcast">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-
     <uses-feature
         android:name="android.hardware.wifi"
-        android:required="true"></uses-feature>
+        android:required="true" />
 
     <application
         android:name=".application.AutoUpdateApplication"
         android:allowBackup="true"
+        android:banner="@mipmap/repcast_banner"
         android:icon="@mipmap/repcast_icon"
-        android:usesCleartextTraffic="true"
         android:label="@string/app_name"
-        android:theme="@style/Theme.CastVideosTheme">
+        android:theme="@style/Theme.CastVideosTheme"
+        android:usesCleartextTraffic="true">
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".activities.RepcastActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize"></activity>
-
-        <activity
-            android:name=".Launcher">
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.LocalPlayerActivity"
-            android:supportsPictureInPicture="true"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:supportsPictureInPicture="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -77,25 +90,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:mimeType="application/x-bittorrent"/>
+                <data android:mimeType="application/x-bittorrent" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.YouTubeConfirmationActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:host="www.youtube.com" android:mimeType="text/*" />
+
+                <data
+                    android:host="www.youtube.com"
+                    android:mimeType="text/*" />
             </intent-filter>
         </activity>
-
-
-
-
-
-
         <activity
             android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
             android:label="@string/app_name"
@@ -148,21 +158,16 @@
                 <action android:name="com.google.android.libraries.cast.companionlibrary.action.notificationvisibility" />
             </intent-filter>
         </service>
-
-        <service android:name="com.google.android.libraries.cast.companionlibrary.cast.reconnection.ReconnectionService" />
-
-        <!--<meta-data-->
-            <!--android:name="com.google.android.gms.car.application"-->
-            <!--android:resource="@xml/automotive_app_desc" />-->
-
-        <!--<service-->
-            <!--android:name=".auto.MusicService"-->
-            <!--android:exported="true">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.media.browse.MediaBrowserService" />-->
-            <!--</intent-filter>-->
-        <!--</service>-->
-
+        <service android:name="com.google.android.libraries.cast.companionlibrary.cast.reconnection.ReconnectionService" /> <!-- <meta-data -->
+        <!-- android:name="com.google.android.gms.car.application" -->
+        <!-- android:resource="@xml/automotive_app_desc" /> -->
+        <!-- <service -->
+        <!-- android:name=".auto.MusicService" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.media.browse.MediaBrowserService" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
         <provider
             android:name=".application.GenericFileProvider"
             android:authorities="${applicationId}.provider"
@@ -175,7 +180,7 @@
 
         <receiver
             android:name=".utils.DownloadReceiver"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
